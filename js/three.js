@@ -20268,7 +20268,7 @@
 
 				if ( texture.wrapS !== ClampToEdgeWrapping || texture.wrapT !== ClampToEdgeWrapping ) {
 
-					console.warn( 'THREE.WebGLRenderer: Texture is not power of two. Texture.wrapS and Texture.wrapT should be set to THREE.ClampToEdgeWrapping.' );
+					// console.warn( 'THREE.WebGLRenderer: Texture is not power of two. Texture.wrapS and Texture.wrapT should be set to THREE.ClampToEdgeWrapping.' );
 
 				}
 
@@ -20277,7 +20277,7 @@
 
 				if ( texture.minFilter !== NearestFilter && texture.minFilter !== LinearFilter ) {
 
-					console.warn( 'THREE.WebGLRenderer: Texture is not power of two. Texture.minFilter should be set to THREE.NearestFilter or THREE.LinearFilter.' );
+					// console.warn( 'THREE.WebGLRenderer: Texture is not power of two. Texture.minFilter should be set to THREE.NearestFilter or THREE.LinearFilter.' );
 
 				}
 
@@ -22041,7 +22041,7 @@
 
 	function WebGLRenderer( parameters ) {
 
-		console.log( 'THREE.WebGLRenderer', REVISION );
+		// console.log( 'THREE.WebGLRenderer', REVISION );
 
 		parameters = parameters || {};
 
