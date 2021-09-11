@@ -384,6 +384,7 @@ var NINE_DOTS_PUZZLE_DEFAULT_CONFIG = {
                 this.drawingContext.lineTo(centre + mouthRadius, centre);
                 this.drawingContext.fill();
                 this.drawingContext.stroke();
+                window.location.href = "/un";
             } else {
                 var leftCornerOfMouthX = centre - headRadius * 0.6;
                 var leftCornerOfMouthY = centre + headRadius * 0.1;
