@@ -44,7 +44,17 @@
 			}
 
 		</style>
-		
+
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SD111PLQKX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SD111PLQKX');
+</script>
+
 	</head>
 	<body>
 		<div id="info">
@@ -615,7 +625,7 @@
 
 				var geometry = new THREE.BirdGeometry();
 
-				console.log("Want to know how I made this? Shoot me an email at jbaker1@mit.edu");
+				console.log("Want to know how I made this? Shoot me an email at jamesbak@seas.upenn.edu");
 				// For Vertex and Fragment
 				birdUniforms = {
 					color: { value: new THREE.Color( 0xff2200 ) },
