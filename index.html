@@ -1985,11 +1985,13 @@
 				});
 			}
 
-			// Show toast - handle case where page is already loaded
-			if (document.readyState === 'complete') {
-				showToast();
-			} else {
-				window.addEventListener('load', showToast);
+			// Show toast - only on 2nd+ visit, handle case where page is already loaded
+			if (visitCount >= 2) {
+				if (document.readyState === 'complete') {
+					showToast();
+				} else {
+					window.addEventListener('load', showToast);
+				}
 			}
 		})();
 		</script>
