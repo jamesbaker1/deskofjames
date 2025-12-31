@@ -1,0 +1,117 @@
+.fade-in {
+	opacity: 1;
+	animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 2s;
+}
+
+@keyframes fadeInOpacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+.top-level {
+  position:fixed;
+  padding:0;
+  margin:0;
+
+  top:0;
+  left:0;
+
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+     -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome, Opera and Firefox */
+}
+
+.logo {
+  padding-top: 15%;
+  width: 100%;
+  text-align: center;
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 2s;
+}
+
+.typing {
+  padding-top: 20px;
+  width: 100%;
+  text-align: center;
+  height: 30px
+}
+
+.buttons {
+  padding-top: 60px;
+  width: 100%;
+  text-align: center;
+}
+
+.typed-cursor {
+  /* font-size: 20px; */
+  opacity: 0;
+}
+
+.button {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 2s;
+	background-color:transparent;
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-family:Gill Sans,Gill Sans MT,Calibri,sans-serif;;
+	font-size:15px;
+	padding:10px 32px;
+	text-decoration:none;
+  margin: 5px;
+}
+.button:hover {
+	color: white;
+}
+.button:active {
+	position:relative;
+	top:1px;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+th {
+	padding: 9px 1px;
+    background-color: #A1A4A5;
+    text-align: left;
+    color: #F8F8F8;
+    border-bottom: 1px solid #E1E1E1
+}
+td {
+  padding: 9px 1px;
+  padding-right: 20px;
+  text-align: left;
+  border-bottom: 1px solid #E1E1E1; }
+th:first-child,
+td:first-child {
+  padding-left: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0; }
+
+tr:nth-child(even) {
+    background-color: #A1A4A5;
+}

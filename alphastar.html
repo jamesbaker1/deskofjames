@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture identify alias set_config startSessionRecording stopSessionRecording get_distinct_id get_session_id opt_in_capturing opt_out_capturing register register_once unregister reset".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only',capture_pageview:true,capture_pageleave:true,autocapture:true})
+    </script>
+<link rel="icon" href="logo.png" type="image/x-icon">
+<link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <title>AlphaStar</title>
+    <style>
+        /* Avoid white flash on load */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1c1c1c; /* Matte black background */
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            opacity: 1;
+            transition: background-color 1s ease;
+        }
+
+        /* Fade-in effect from bottom */
+        @keyframes fadeInFromBottom {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInFromBottom 1.5s ease-out forwards;
+        }
+
+        .logo {
+            max-width: 150px; /* Smaller logo size */
+            margin-bottom: 30px;
+        }
+
+        .email-signup {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .email-signup input[type="email"] {
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid #555;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 400px;
+            background-color: #222;
+            color: white;
+            outline: none;
+            transition: border-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .email-signup input[type="email"]::placeholder {
+            color: #888;
+        }
+
+        .email-signup input[type="email"]:focus {
+            border-color: #ff6500;
+        }
+
+        .email-signup button {
+            padding: 15px 25px;
+            font-size: 18px;
+            background-color: #ff6500;
+            color: white;
+            border: 2px solid #ff6500;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .email-signup button:hover {
+            background-color: #e55d00;
+            border-color: #e55d00;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 600px) {
+            .logo {
+                max-width: 100px; /* Smaller logo for mobile */
+                margin-bottom: 20px;
+            }
+
+            .email-signup input[type="email"],
+            .email-signup button {
+                font-size: 16px;
+                padding: 12px 20px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.png" alt="Logo" class="logo">
+    </div>
+</body>
+</html>

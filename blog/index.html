@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James's Blog</title>
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture identify alias set_config startSessionRecording stopSessionRecording get_distinct_id get_session_id opt_in_capturing opt_out_capturing register register_once unregister reset".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only',capture_pageview:true,capture_pageleave:true,autocapture:true})
+    </script>
+    <link rel="icon" href="/favicon.ico">
+    
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Caveat:wght@400..700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9f9f9;
+            --text-primary: #111111;
+            --text-secondary: #555555;
+            --text-muted: #888888;
+            --accent: #000000;
+            --border: #eaeaea;
+            --code-bg: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Newsreader', serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, button, .nav-link, .tag {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Congratulations Screen */
+        #congrats-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-primary);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #congrats-screen.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #congrats-screen .congrats-icon {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            color: var(--text-primary);
+        }
+
+        #congrats-screen h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        #congrats-screen p {
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            max-width: 400px;
+            margin-bottom: 3rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        #congrats-screen .enter-btn {
+            padding: 1rem 2.5rem;
+            background: var(--text-primary);
+            border: 1px solid var(--text-primary);
+            color: var(--bg-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        #congrats-screen .enter-btn:hover {
+            background: transparent;
+            color: var(--text-primary);
+        }
+
+        /* Main Blog Container */
+        #blog-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        #blog-container.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 4rem 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid transparent;
+        }
+
+        .logo {
+            font-family: 'Caveat', cursive;
+            font-weight: 500;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: 0;
+        }
+
+        nav a {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem 0 6rem;
+        }
+
+        /* Blog Intro */
+        .blog-intro {
+            margin-bottom: 4rem;
+            padding-bottom: 1rem;
+        }
+
+        .blog-intro h1 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .blog-intro .subtitle {
+            font-family: 'Newsreader', serif;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        /* Posts List */
+        .posts-section h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .post-card {
+            padding: 1.5rem 0;
+            border-top: 1px solid var(--border);
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .post-card:first-of-type {
+            border-top: none;
+        }
+
+        .post-card:hover {
+            opacity: 0.7;
+        }
+
+        .post-card .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-card h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .post-card .date {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .post-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .post-card .tags {
+            margin-top: 0.75rem;
+            display: none; /* Cleaner look */
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .empty-state-icon:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .empty-state h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .dots-canvas-container {
+            margin: 2rem auto;
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .dots-canvas {
+            width: 200px;
+            height: 200px;
+            cursor: crosshair;
+            border-radius: 4px;
+        }
+
+        .fun-message {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            min-height: 1.5rem;
+        }
+
+        .click-counter {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Post View */
+        #post-view {
+            display: none;
+        }
+
+        #post-view.show {
+            display: block;
+        }
+
+        #posts-list.hide {
+            display: none;
+        }
+
+        .back-btn {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 3rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--text-primary);
+        }
+
+        /* Markdown Content Styling */
+        .markdown-body {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+        }
+
+        .markdown-body h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        
+        /* Hide the title in the body since we show it nicely above if needed, 
+           but usually markdown includes title. Let's style the first H1 specifically */
+        .markdown-body > h1:first-child {
+            margin-top: 0;
+        }
+
+        .markdown-body p + p {
+            margin-top: 1.5rem;
+        }
+
+        .markdown-body em {
+            color: var(--text-secondary);
+        }
+
+        .markdown-body .post-meta {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .markdown-body h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .markdown-body h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .markdown-body a {
+            color: var(--text-primary);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-thickness: 1px;
+            text-decoration-color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .markdown-body a:hover {
+            text-decoration-color: var(--text-primary);
+            background: #f0f0f0;
+        }
+
+        .markdown-body blockquote {
+            margin: 2rem 0;
+            padding-left: 1.5rem;
+            border-left: 2px solid var(--text-primary);
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .markdown-body ul, .markdown-body ol {
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .markdown-body li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+        }
+        
+        .markdown-body li::marker {
+            color: var(--text-muted);
+        }
+
+        .markdown-body code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--code-bg);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+
+        .markdown-body pre {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--code-bg);
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        .markdown-body pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            display: block;
+            margin: 3rem auto;
+            border-radius: 2px;
+        }
+
+        .markdown-body hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 3rem 0;
+            width: 100%;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+        }
+        
+        footer a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            html {
+                font-size: 15px;
+            }
+            
+            #blog-container {
+                padding: 0 1.25rem;
+            }
+            
+            header {
+                padding: 2rem 0;
+            }
+            
+            .post-card {
+                padding: 1.25rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Congratulations Screen (shown after first solve) -->
+    <div id="congrats-screen">
+        <div class="congrats-icon">🎉</div>
+        <h1>Congratulations!</h1>
+        <p>You solved the classic 9-dots puzzle by thinking outside the box. Welcome to my secret blog.</p>
+        <button class="enter-btn" onclick="enterBlog()">ENTER THE BLOG</button>
+    </div>
+
+    <!-- Main Blog Container -->
+    <div id="blog-container">
+        <header>
+            <div class="header-inner">
+                <a href="/blog/" class="logo">desk of jim <span>✎</span></a>
+                <nav>
+                    <a href="/">Home</a>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <div id="posts-list">
+                <div class="blog-intro">
+                    <h1>Thinking Outside the Box</h1>
+                    <p class="subtitle">Notes on puzzles, engineering, and design.</p>
+                </div>
+
+                <section class="posts-section">
+                    <h2>Writing</h2>
+                    <div id="posts-container"></div>
+                    <div id="empty-state" class="empty-state" style="display: none;">
+                        <div class="empty-state-icon" onclick="animateIcon()">📝</div>
+                        <h2>No posts yet</h2>
+                        <p>Check back soon for new writing.</p>
+                        <div class="dots-canvas-container">
+                            <canvas id="empty-state-canvas" class="dots-canvas" width="200" height="200"></canvas>
+                        </div>
+                        <div class="fun-message" id="fun-message"></div>
+                        <div class="click-counter" id="click-counter"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="post-view">
+                <a href="#" class="back-btn" onclick="showPostsList(); return false;">← All Posts</a>
+                <article class="markdown-body" id="post-content"></article>
+            </div>
+        </main>
+
+        <footer>
+            <p><a href="/">← James Baker</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Blog posts in markdown format
+        const posts = [];
+
+        // Check access and show appropriate screen
+        function checkAccess() {
+            const puzzleSolved = localStorage.getItem('puzzle_solved');
+            const solvedTime = localStorage.getItem('puzzle_solved_time');
+            const hasSeenCongrats = localStorage.getItem('has_seen_congrats');
+            
+            if (puzzleSolved === 'true') {
+                // Check if they just solved it (within last 10 seconds) and haven't seen congrats
+                const timeSinceSolve = Date.now() - parseInt(solvedTime || '0');
+                
+                if (timeSinceSolve < 10000 && hasSeenCongrats !== 'true') {
+                    // Show congratulations
+                    document.getElementById('congrats-screen').classList.add('show');
+                } else {
+                    // Show blog directly
+                    showBlog();
+                }
+            } else {
+                // Redirect to puzzle
+                window.location.href = 'open.html';
+            }
+        }
+
+        function enterBlog() {
+            localStorage.setItem('has_seen_congrats', 'true');
+            document.getElementById('congrats-screen').classList.remove('show');
+            showBlog();
+        }
+
+        function showBlog() {
+            document.getElementById('congrats-screen').classList.remove('show');
+            document.getElementById('blog-container').classList.add('show');
+            renderPostsList();
+            
+            // Check URL hash for direct post link
+            if (window.location.hash) {
+                const postId = window.location.hash.substring(1);
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    showPost(post);
+                }
+            }
+        }
+
+        function renderPostsList() {
+            const container = document.getElementById('posts-container');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (posts.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                // Initialize canvas after a short delay to ensure DOM is ready
+                setTimeout(() => {
+                    initEmptyStateCanvas();
+                    updateFunMessage();
+                }, 100);
+            } else {
+                emptyState.style.display = 'none';
+                container.innerHTML = posts.map(post => `
+                    <div class="post-card" onclick="showPost(posts.find(p => p.id === '${post.id}'))">
+                        <div class="meta-row">
+                            <h3>${post.title}</h3>
+                            <div class="date">${formatDate(post.date)}</div>
+                        </div>
+                        <p>${post.excerpt}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function showPost(post) {
+            document.getElementById('posts-list').classList.add('hide');
+            document.getElementById('post-view').classList.add('show');
+            
+            // Configure marked
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        return hljs.highlight(code, { language: lang }).value;
+                    }
+                    return hljs.highlightAuto(code).value;
+                },
+                breaks: true
+            });
+            
+            document.getElementById('post-content').innerHTML = marked.parse(post.content);
+            window.location.hash = post.id;
+            window.scrollTo(0, 0);
+        }
+
+        function showPostsList() {
+            document.getElementById('posts-list').classList.remove('hide');
+            document.getElementById('post-view').classList.remove('show');
+            window.location.hash = '';
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        // Handle back button
+        window.onpopstate = function() {
+            if (!window.location.hash) {
+                showPostsList();
+            }
+        };
+
+        // Empty state fun interactions
+        let clickCount = 0;
+        let lastClickTime = 0;
+        const funMessages = [
+            "Try connecting the dots!",
+            "Draw something creative ✨",
+            "Make your mark 🎨",
+            "Lines are just dots connected",
+            "Think outside the... canvas?",
+            "You're getting creative!",
+            "Keep going! 🚀",
+            "This is oddly satisfying...",
+            "Almost there!",
+            "You're a dot-connecting master! 🏆"
+        ];
+
+        function animateIcon() {
+            const icon = document.querySelector('.empty-state-icon');
+            icon.style.animation = 'none';
+            setTimeout(() => {
+                icon.style.animation = 'bounce 0.5s ease';
+            }, 10);
+        }
+
+        function initEmptyStateCanvas() {
+            const canvas = document.getElementById('empty-state-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const dots = [];
+            const lines = [];
+            let isDrawing = false;
+            let currentLine = null;
+            
+            // Create 9 dots in a grid
+            const spacing = 60;
+            const offset = 40;
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    dots.push({
+                        x: offset + j * spacing,
+                        y: offset + i * spacing,
+                        radius: 4,
+                        clicked: false
+                    });
+                }
+            }
+            
+            function drawDots() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw lines
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+                lines.forEach(line => {
+                    ctx.beginPath();
+                    ctx.moveTo(line.start.x, line.start.y);
+                    ctx.lineTo(line.end.x, line.end.y);
+                    ctx.stroke();
+                });
+                
+                // Draw current line
+                if (currentLine) {
+                    ctx.beginPath();
+                    ctx.moveTo(currentLine.start.x, currentLine.start.y);
+                    ctx.lineTo(currentLine.end.x, currentLine.end.y);
+                    ctx.stroke();
+                }
+                
+                // Draw dots
+                dots.forEach(dot => {
+                    ctx.beginPath();
+                    ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = dot.clicked ? '#000' : '#666';
+                    ctx.fill();
+                });
+            }
+            
+            function getDotAt(x, y) {
+                for (let i = 0; i < dots.length; i++) {
+                    const dot = dots[i];
+                    const dx = x - dot.x;
+                    const dy = y - dot.y;
+                    if (dx * dx + dy * dy < dot.radius * dot.radius * 4) {
+                        return { index: i, dot };
+                    }
+                }
+                return null;
+            }
+            
+            canvas.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const hit = getDotAt(x, y);
+                
+                if (hit) {
+                    isDrawing = true;
+                    currentLine = {
+                        start: { x: hit.dot.x, y: hit.dot.y },
+                        end: { x: hit.dot.x, y: hit.dot.y }
+                    };
+                    hit.dot.clicked = true;
+                    clickCount++;
+                    updateFunMessage();
+                }
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing && currentLine) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    currentLine.end = { x, y };
+                    drawDots();
+                }
+            });
+            
+            canvas.addEventListener('mouseup', (e) => {
+                if (isDrawing && currentLine) {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const hit = getDotAt(x, y);
+                    
+                    if (hit && hit.dot !== dots.find(d => d.x === currentLine.start.x && d.y === currentLine.start.y)) {
+                        currentLine.end = { x: hit.dot.x, y: hit.dot.y };
+                        lines.push({
+                            start: currentLine.start,
+                            end: currentLine.end
+                        });
+                        hit.dot.clicked = true;
+                    }
+                    
+                    currentLine = null;
+                    isDrawing = false;
+                    drawDots();
+                }
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                if (isDrawing) {
+                    currentLine = null;
+                    isDrawing = false;
+                    drawDots();
+                }
+            });
+            
+            // Double-click to reset
+            canvas.addEventListener('dblclick', () => {
+                lines.length = 0;
+                dots.forEach(dot => dot.clicked = false);
+                clickCount = 0;
+                drawDots();
+                updateFunMessage();
+            });
+            
+            drawDots();
+        }
+        
+        function updateFunMessage() {
+            const messageEl = document.getElementById('fun-message');
+            const counterEl = document.getElementById('click-counter');
+            
+            if (messageEl) {
+                if (clickCount === 0) {
+                    messageEl.textContent = 'Click and drag between dots to draw lines';
+                } else {
+                    const messageIndex = Math.min(Math.floor(clickCount / 2), funMessages.length - 1);
+                    messageEl.textContent = funMessages[messageIndex] || funMessages[funMessages.length - 1];
+                }
+            }
+            
+            if (counterEl && clickCount > 0) {
+                counterEl.textContent = `${clickCount} ${clickCount === 1 ? 'line' : 'lines'} drawn • Double-click to reset`;
+            } else if (counterEl) {
+                counterEl.textContent = 'Double-click canvas to reset';
+            }
+        }
+        
+        // Add bounce animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize
+        checkAccess();
+    </script>
+</body>
+</html>
