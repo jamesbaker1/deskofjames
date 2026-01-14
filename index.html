@@ -680,16 +680,50 @@
 	</head>
 	<body>
 		<!-- Peaceful lake video background -->
-		<video id="video-bg" autoplay muted loop playsinline>
+		<video id="video-bg" autoplay muted loop playsinline webkit-playsinline>
 			<source src="lak.mp4" type="video/mp4">
 		</video>
 		<script>
-			// Skip last 5 seconds of video
+			// Ensure video autoplays on mobile
 			const videoBg = document.getElementById('video-bg');
+			
+			// Function to play video (handles autoplay restrictions)
+			function playVideo() {
+				const playPromise = videoBg.play();
+				if (playPromise !== undefined) {
+					playPromise.catch(error => {
+						// Autoplay was prevented, try again on user interaction
+						console.log('Autoplay prevented, will retry on interaction');
+						document.addEventListener('touchstart', function playOnTouch() {
+							videoBg.play().catch(() => {});
+							document.removeEventListener('touchstart', playOnTouch);
+						}, { once: true });
+					});
+				}
+			}
+			
+			// Try to play immediately
+			if (videoBg.readyState >= 2) {
+				playVideo();
+			} else {
+				videoBg.addEventListener('loadeddata', playVideo, { once: true });
+			}
+			
+			// Also try on canplay event (more reliable for mobile)
+			videoBg.addEventListener('canplay', function() {
+				playVideo();
+			}, { once: true });
+			
+			// Skip last 5 seconds of video
 			videoBg.addEventListener('timeupdate', function() {
 				if (this.duration - this.currentTime <= 5) {
 					this.currentTime = 0;
 				}
+			});
+			
+			// Ensure video plays after page load (for mobile browsers)
+			window.addEventListener('load', function() {
+				setTimeout(playVideo, 100);
 			});
 		</script>
 		
