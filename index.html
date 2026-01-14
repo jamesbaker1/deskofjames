@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
 			body {
-				background-color: #ffffff;
+				background-color: #000000;
 				margin: 0px;
 				overflow: hidden;
 				font-family:Monospace;
@@ -15,6 +15,19 @@
 				text-align:center;
 				/* Subtle predator cursor - minimal swooping shape */
 				cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L4 12 L12 11 L20 12 Z" fill="%23333" opacity="0.6"/><circle cx="12" cy="9" r="1" fill="%23333" opacity="0.8"/></svg>') 12 10, crosshair;
+			}
+			
+			/* Peaceful lake video background */
+			#video-bg {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 100vh;
+				object-fit: cover;
+				z-index: 0;
+				opacity: 0.5;
+				pointer-events: none;
 			}
 
 			a {
@@ -662,6 +675,20 @@
 
 	</head>
 	<body>
+		<!-- Peaceful lake video background -->
+		<video id="video-bg" autoplay muted loop playsinline>
+			<source src="lak.mp4" type="video/mp4">
+		</video>
+		<script>
+			// Skip last 5 seconds of video
+			const videoBg = document.getElementById('video-bg');
+			videoBg.addEventListener('timeupdate', function() {
+				if (this.duration - this.currentTime <= 5) {
+					this.currentTime = 0;
+				}
+			});
+		</script>
+		
 		<!-- Returning visitor toast -->
 		<div id="visitor-toast">
 			<div class="toast-content" id="toast-content">
@@ -1159,10 +1186,11 @@
 				camera.position.z = 350;
 
 				scene = new THREE.Scene();
-				scene.background = new THREE.Color( 0xffffff );
+				scene.background = null; // Transparent to show video behind
 				scene.fog = new THREE.Fog( 0xffffff, 100, 1000 );
 
-				renderer = new THREE.WebGLRenderer();
+				renderer = new THREE.WebGLRenderer({ alpha: true });
+				renderer.setClearColor( 0x000000, 0 ); // Transparent clear
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
