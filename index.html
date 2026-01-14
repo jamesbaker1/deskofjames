@@ -14,7 +14,7 @@
 				text-align:center;
 				text-align:center;
 				/* Subtle predator cursor - minimal swooping shape */
-				cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L4 12 L12 11 L20 12 Z" fill="%23333" opacity="0.6"/><circle cx="12" cy="9" r="1" fill="%23333" opacity="0.8"/></svg>') 12 10, crosshair;
+				cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L4 12 L12 11 L20 12 Z" fill="%23fff" opacity="0.8"/><circle cx="12" cy="9" r="1" fill="%23fff" opacity="0.9"/></svg>') 12 10, crosshair;
 			}
 			
 			/* Peaceful lake video background */
@@ -31,15 +31,21 @@
 			}
 
 			a {
-				color:#0078ff;
+				color: #fff;
 				cursor: pointer;
+				opacity: 0.9;
+				transition: opacity 0.2s;
+			}
+			
+			a:hover {
+				opacity: 1;
 			}
 			
 			canvas {
-				cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L4 12 L12 11 L20 12 Z" fill="%23333" opacity="0.6"/><circle cx="12" cy="9" r="1" fill="%23333" opacity="0.8"/></svg>') 12 10, crosshair;
 				position: relative;
 				z-index: 1;
 			}
+			
 			h3 {
 			  text-align: center;
 			}
@@ -52,9 +58,9 @@
 				transform: translate(-50%, -50%);
 				z-index: 100;
 				pointer-events: auto;
-				/* Ensure text is always visible over canvas */
-				color: #000;
-				text-shadow: 0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(255,255,255,0.5);
+				color: #fff;
+				text-shadow: 0 2px 20px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3);
+				letter-spacing: 0.5px;
 			}
 			
 			#three-container {
@@ -64,6 +70,7 @@
 				width: 100%;
 				height: 100%;
 				z-index: 1;
+				cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 6 L4 12 L12 11 L20 12 Z" fill="white"/><circle cx="12" cy="9" r="1.5" fill="white"/></svg>') 12 10, crosshair;
 			}
 			
 			#three-container canvas {
