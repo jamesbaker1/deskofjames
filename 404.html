@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>404 · James Baker</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box }
+
+    body {
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: #000000;
+        color: #f2f0e9;
+        font: 12.5px/1.6 ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    }
+
+    a {
+        color: #8a877f;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: color 120ms ease, border-color 120ms ease;
+    }
+
+    a:hover { color: #ffffff; border-bottom-color: #ffffff }
+
+    .sky { position: fixed; top: 17vh; left: 0; width: 100%; pointer-events: none }
+
+    /* Negative delay: the bird is already mid-flight when the page opens. */
+    .flight { width: 32px; animation: drift 38s linear -9s infinite }
+
+    .bird {
+        display: block;
+        width: 100%;
+        fill: none;
+        stroke: #8a877f;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transform-origin: 50% 22%;
+        animation: flap 2.8s ease-in-out infinite;
+    }
+
+    @keyframes drift {
+        from { transform: translate(-10vw, 0) }
+        50%  { transform: translate(52vw, -4vh) }
+        to   { transform: translate(110vw, 0) }
+    }
+
+    @keyframes flap {
+        0%, 100% { transform: scaleY(1) }
+        50%      { transform: scaleY(0.5) }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .flight, .bird { animation: none }
+        .flight { transform: translate(50vw, 0) }
+    }
+</style>
+</head>
+<body>
+<div class="sky">
+    <div class="flight">
+        <svg class="bird" viewBox="0 0 40 16" aria-hidden="true">
+            <path d="M2 13 L20 3 L38 13"></path>
+        </svg>
+    </div>
+</div>
+
+<p>this page flew off.</p>
+<p><a href="/">← home</a></p>
+</body>
+</html>
