@@ -60,8 +60,12 @@ const cap = (s, n = 300) => {
 const curl = (s) => s.replace(/'/g, '’');
 
 async function fromFeed() {
-  const res = await attempt(FEED);
-  const items = (await res.text()).match(/<item(?:\s[^>]*)?>[\s\S]*?<\/item>/g) ?? [];
+  // CI fetches the feed with curl first (Cloudflare tolerates its TLS fingerprint better than
+  // undici's) and hands the file over via FEED_FILE; everywhere else this fetches directly.
+  const xml = process.env.FEED_FILE
+    ? await readFile(process.env.FEED_FILE, 'utf8')
+    : await (await attempt(FEED)).text();
+  const items = xml.match(/<item(?:\s[^>]*)?>[\s\S]*?<\/item>/g) ?? [];
   if (!items.length) throw new Error('feed contained no items');
 
   return items.map((item) => {

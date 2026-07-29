@@ -16,7 +16,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: node scripts/fetch-substack.mjs
+      - name: fetch feed with curl (Cloudflare 403s Node's TLS fingerprint from runner IPs)
+        run: |
+          curl -fsSL --retry 2 --retry-delay 10 \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" \
+            -H "accept: application/rss+xml, application/xml;q=0.9, */*;q=0.8" \
+            -H "accept-language: en-US,en;q=0.9" \
+            "https://jamesfbaker.substack.com/feed" -o "$RUNNER_TEMP/feed.xml"
+      - run: FEED_FILE="$RUNNER_TEMP/feed.xml" node scripts/fetch-substack.mjs
       - name: commit if changed
         run: |
           if git diff --quiet -- blog/posts.json; then
