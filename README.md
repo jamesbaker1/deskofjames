@@ -26,8 +26,11 @@ to black with depth, so the flock has no edges.
 ## substack sync
 
 `scripts/fetch-substack.mjs` (node 20, zero deps) pulls the feed, merges into
-`blog/posts.json` by url, sorts desc. the workflow runs it daily at 09:17 utc
-and commits only when the file changes. by hand:
+`blog/posts.json` by url, sorts desc. two schedulers run it, because substack's
+cdn turns away github's datacenter ips on many days: the workflow tries daily
+at 09:17 utc (a 403 skips green and waits for a luckier day), and
+`scripts/sync-local.cmd` runs from an actual desk via windows task scheduler.
+either one commits only when the file changes. by hand:
 
     node scripts/fetch-substack.mjs
 

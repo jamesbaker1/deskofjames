@@ -16,15 +16,29 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: fetch feed with curl (Cloudflare 403s Node's TLS fingerprint from runner IPs)
+      # Substack's CDN blocks GitHub runner IPs on and off. A 403 here is weather, not a bug:
+      # skip green (no failure mail), and the local sync or a luckier day covers it.
+      - name: fetch feed
+        id: feed
         run: |
-          curl -fsSL --retry 2 --retry-delay 10 \
+          code=$(curl -sSL --retry 2 --retry-delay 10 -w '%{http_code}' \
             -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" \
             -H "accept: application/rss+xml, application/xml;q=0.9, */*;q=0.8" \
             -H "accept-language: en-US,en;q=0.9" \
-            "https://jamesfbaker.substack.com/feed" -o "$RUNNER_TEMP/feed.xml"
-      - run: FEED_FILE="$RUNNER_TEMP/feed.xml" node scripts/fetch-substack.mjs
+            "https://jamesfbaker.substack.com/feed" -o "$RUNNER_TEMP/feed.xml" || echo 000)
+          if [ "$code" = "200" ]; then
+            echo "got=yes" >> "$GITHUB_OUTPUT"
+          elif [ "$code" = "403" ]; then
+            echo "cloudflare turned the runner away today; skipping"
+            echo "got=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "feed fetch failed with HTTP $code" >&2
+            exit 1
+          fi
+      - if: steps.feed.outputs.got == 'yes'
+        run: FEED_FILE="$RUNNER_TEMP/feed.xml" node scripts/fetch-substack.mjs
       - name: commit if changed
+        if: steps.feed.outputs.got == 'yes'
         run: |
           if git diff --quiet -- blog/posts.json; then
             echo 'no new posts'
