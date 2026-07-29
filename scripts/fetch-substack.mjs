@@ -5,9 +5,30 @@
 import { readFile, writeFile, rename, unlink } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
-const FEED = 'https://jamesfbaker.substack.com/feed';
+const SITE = 'https://jamesfbaker.substack.com';
+const FEED = `${SITE}/feed`;
 const OUT = fileURLToPath(new URL('../blog/posts.json', import.meta.url));
-const AGENT = 'deskofjim-substack-sync (+https://deskofjim.com)';
+// Substack's CDN 403s obvious-bot user agents from datacenter IPs (GitHub runners included),
+// so this asks the way a browser would.
+const HEADERS = {
+  'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+  accept: 'application/rss+xml, application/xml, text/xml, application/json;q=0.9, */*;q=0.8',
+  'accept-language': 'en-US,en;q=0.9',
+};
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function attempt(url) {
+  for (let tries = 0, waits = [5_000, 20_000]; ; tries++) {
+    const res = await fetch(url, { headers: HEADERS, signal: AbortSignal.timeout(20_000) }).catch((err) => {
+      if (tries >= waits.length) throw err;
+      return null;
+    });
+    if (res?.ok) return res;
+    if (tries >= waits.length) throw new Error(`${url.replace(SITE, '')} returned HTTP ${res?.status ?? 'no response'}`);
+    await sleep(waits[tries]);
+  }
+}
 
 const NAMED = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
 
@@ -38,13 +59,12 @@ const cap = (s, n = 300) => {
 // The feed mixes straight and curly apostrophes across posts; a serif page telegraphs the mix.
 const curl = (s) => s.replace(/'/g, '’');
 
-async function main() {
-  const res = await fetch(FEED, { headers: { 'user-agent': AGENT }, signal: AbortSignal.timeout(20_000) });
-  if (!res.ok) throw new Error(`feed returned HTTP ${res.status}`);
+async function fromFeed() {
+  const res = await attempt(FEED);
   const items = (await res.text()).match(/<item(?:\s[^>]*)?>[\s\S]*?<\/item>/g) ?? [];
   if (!items.length) throw new Error('feed contained no items');
 
-  const fresh = items.map((item) => {
+  return items.map((item) => {
     const title = curl(field(item, 'title'));
     const url = field(item, 'link').replace(/[?#].*$/, '');
     const pubDate = field(item, 'pubDate');
@@ -55,6 +75,35 @@ async function main() {
     if (subtitle) post.subtitle = subtitle; // never clobber a good subtitle with an empty one
     return post;
   });
+}
+
+// Same posts, Substack's JSON API — a second door for when the CDN dislikes the first.
+async function fromApi() {
+  const res = await attempt(`${SITE}/api/v1/posts?limit=50`);
+  const rows = await res.json();
+  if (!Array.isArray(rows) || !rows.length) throw new Error('api returned no posts');
+
+  return rows
+    .filter((r) => r.post_date && r.canonical_url && (r.audience ?? 'everyone') !== 'only_paid')
+    .map((r) => {
+      const post = {
+        title: curl(decode(String(r.title ?? '')).trim()),
+        url: String(r.canonical_url).replace(/[?#].*$/, ''),
+        date: new Date(r.post_date).toISOString().slice(0, 10),
+      };
+      if (!post.title || Number.isNaN(Date.parse(post.date))) throw new Error(`malformed api row: ${r.canonical_url}`);
+      const subtitle = cap(curl(plain(String(r.subtitle ?? ''))));
+      if (subtitle) post.subtitle = subtitle;
+      return post;
+    });
+}
+
+async function main() {
+  const fresh = await fromFeed().catch((feedErr) =>
+    fromApi().catch((apiErr) => {
+      throw new Error(`${feedErr.message}; ${apiErr.message}`);
+    }),
+  );
 
   // The feed only carries the recent ~20 posts; older ones live on in the file.
   const before = await readFile(OUT, 'utf8').catch(() => '');
@@ -84,7 +133,7 @@ async function main() {
     await unlink(tmp).catch(() => {});
     throw err;
   }
-  console.log(`substack: ${posts.length} posts (${added} new, ${items.length} in feed) → blog/posts.json`);
+  console.log(`substack: ${posts.length} posts (${added} new, ${fresh.length} in feed) → blog/posts.json`);
 }
 
 main().catch((err) => {
