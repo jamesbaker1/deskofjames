@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why the AI Renaissance Keeps Not Arriving (and why it won’t under the current post-training regime) · James Baker</title>
+<meta name="description" content="The subtle and frustrating nature of manifold collapse">
+<link rel="canonical" href="https://deskofjim.com/blog/why-the-ai-renaissance-keeps-not/">
+
+<meta property="og:title" content="Why the AI Renaissance Keeps Not Arriving (and why it won’t under the current post-training regime) · James Baker">
+<meta property="og:description" content="The subtle and frustrating nature of manifold collapse">
+<meta property="og:image" content="https://deskofjim.com/og.png">
+<meta property="og:url" content="https://deskofjim.com/blog/why-the-ai-renaissance-keeps-not/">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+
+<link rel="preload" href="/fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts-web/fonts.css">
+
+<style>
+:root {
+	--bg: #f7f5f0;
+	--ink: #1a1917;
+	--muted: #706c63;
+	--accent: #0f52ba;
+	--rule: rgba(26, 25, 23, .13);
+	--tint: rgba(26, 25, 23, .045);
+	--serif: Newsreader, Georgia, "Times New Roman", serif;
+	--mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 17.5px/1.7 var(--serif);
+}
+
+.column {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 5.5rem 1.75rem 4rem;
+}
+
+a { color: inherit; text-decoration: none; transition: color 120ms ease }
+a:hover { color: var(--accent) }
+
+/* --- masthead: the breadcrumb is the whole nav --- */
+
+.crumb {
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+header {
+	padding-bottom: 2.5rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+h1 {
+	margin: 1.9rem 0 0;
+	font: 500 30px/1.2 var(--serif);
+	letter-spacing: -.005em;
+}
+
+.subtitle {
+	margin: .55rem 0 0;
+	font-size: 16.5px;
+	font-style: italic;
+	color: var(--muted);
+}
+
+.date {
+	margin: 1rem 0 0;
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+/* --- body --- */
+
+article { margin-top: 2.5rem }
+
+article p { margin: 0 0 1.35rem }
+
+/* substack exports section heads as h3, so h3 has to read as a section head, not as bold body */
+article h2 { margin: 2.9rem 0 .9rem; font: 500 22px/1.35 var(--serif) }
+article h3 { margin: 2.6rem 0 .8rem; font: 500 20px/1.35 var(--serif) }
+article h4 { margin: 2rem 0 .6rem; font: 500 17.5px/1.4 var(--serif) }
+
+article a {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+article ul, article ol { margin: 0 0 1.35rem; padding-left: 1.35rem }
+article li { margin-bottom: .55rem }
+/* substack wraps list text in its own <p>, so those must not carry block spacing */
+article li p { margin: 0 0 .4rem }
+article li p:last-child { margin-bottom: 0 }
+
+article blockquote {
+	margin: 1.8rem 0;
+	padding-left: 1.25rem;
+	border-left: 3px solid var(--rule);
+	font-style: italic;
+	color: var(--muted);
+}
+
+article pre {
+	margin: 1.8rem 0;
+	padding: 1rem;
+	background: var(--tint);
+	font: 400 13px/1.6 var(--mono);
+	overflow-x: auto;
+}
+
+article code {
+	padding: 1px 4px;
+	background: var(--tint);
+	font-family: var(--mono);
+	font-size: .88em;
+}
+
+article pre code { padding: 0; background: none; font-size: inherit }
+
+article figure { margin: 2rem 0 }
+article img { display: block; max-width: 100%; height: auto }
+
+article figcaption {
+	margin-top: .6rem;
+	font: 400 12px/1.5 var(--mono);
+	color: var(--muted);
+	text-align: center;
+}
+
+article hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--rule) }
+
+article table {
+	width: 100%;
+	margin: 1.8rem 0;
+	border-collapse: collapse;
+	font-size: 15.5px;
+}
+
+article th, article td {
+	padding: .45rem .7rem .45rem 0;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+/* --- footer --- */
+
+footer {
+	margin-top: 4.5rem;
+	padding-top: 1.4rem;
+	border-top: 1px solid var(--rule);
+	font: 400 12.5px/2 var(--mono);
+	color: var(--muted);
+}
+
+footer p { margin: 0 }
+
+@media (max-width: 560px) {
+	.column { padding: 3.5rem 1.4rem 3rem }
+	body { font-size: 17px }
+}
+</style>
+</head>
+
+<body>
+<div class="column">
+
+<header>
+	<p class="crumb"><a href="/">James Baker</a> · <a href="/blog/">writing</a></p>
+	<h1>Why the AI Renaissance Keeps Not Arriving (and why it won’t under the current post-training regime)</h1>
+	<p class="subtitle">The subtle and frustrating nature of manifold collapse</p>
+	<p class="date"><time datetime="2026-06-12">jun 12, 2026</time></p>
+</header>
+
+<article>
+<p>Everyone remembers the first time AI really works. You ask the model for an essay, a strategy, a name for the thing you’re building, and it comes back in seconds, polished and coherent and better than what most people you know could write in hours. It feels like the start of a renaissance that took only a small kick to get going.</p>
+<p>Then you use it every day for a year, and you slowly realize that the model has only a few ways of doing everything. Every brainstorm is the same brainstorm-shaped object and every essay has the same skeleton. Put simply, the outputs are locally excellent and globally identical.</p>
+<p>I call this manifold collapse. The model never explores the whole landscape of possible ideas. It circles a small, well-worn region of it, and inside that region it travels what I think of as latent grooves, a few deep and reliable paths it falls into no matter how you phrase the request. While words change every time, the “groove” doesn’t, and this pattern is well replicated across the field. People working with AI produce better individual work while the pool of everyone’s work grows measurably more alike. Everyone gets a better paragraph but the world gets more paragraphs that feel (and functionally are!) the same.</p>
+<p>What’s scarier is when you scale it up and see the societal level effects of such an monotinicy. Every knowledge profession is adopting these tools, because for each individual they genuinely help. Consultants, lawyers, marketers, founders, and researchers all draft through the same handful of models, which means they all draw on the same ten thousand or so moves, because that is what the shared region contains. The floor rises but the tail (where some of the truly helpful work comes from)  completely vanishes. Things like breakthrough legal theories, category-defining companies, and new art movements that were never medians done slightly better. What you’re left with is a society that keeps producing its best average work ever while the frontier stalls.</p>
+<p>What’s worse is that mistakes synchronize and compound. When everyone reasons through the same system, everyone misses the same argument, crowds the same trade, and chases the same direction at the same time, like a monocrop farm sitting one blight from disaster. In a lawsuit it turns almost comic. If both sides draft with the same model, your opponent’s AI anticipates your argument because it would have written your argument. The loop even closes across generations. People learn to write and think from model outputs, models train on text shaped by models, and each pass compresses the culture a little further.</p>
+<p>This is why the AI renaissance keeps not arriving. A true renaissance was never about producing more high-quality artifacts, its when frontier itself expands, when new mediums and new scenes and weird people push against consensus until the consensus moves. A system trained to satisfy consensus hands you the median of everything humanity has tried, instantly. That feels like genius exactly once. Smarter models actually make this <em>worse</em>. In turn, when a billion people draw from the same grooves, we end up in a weird monoculture.</p>
+<h3>The evidence</h3>
+<p>A <a href="https://arxiv.org/abs/2505.17241">2025 meta-analysis</a> of 28 studies and 8,214 participants quantified the trade. Working with AI improves a person’s creative performance relative to working alone (Hedges’ g = 0.27) and imposes a large negative effect on idea diversity across participants (g = -0.86). <a href="https://www.science.org/doi/10.1126/sciadv.adn5290">Doshi and Hauser</a> established causality in <em>Science Advances</em>. Writers given AI story ideas produced stories rated more creative and more enjoyable, with the effect concentrated among less creative writers, yet the AI-assisted stories were significantly more similar to one another. The authors frame it as a social dilemma, in which adoption is individually rational and collectively narrowing. <a href="https://arxiv.org/abs/2402.01536">Anderson, Shah, and Kreminski</a> found the same pattern in ideation. ChatGPT users generated more ideas in more detail, but the ideas were less semantically distinct across users.</p>
+<p><a href="https://doi.org/10.1093/pnasnexus/pgag042">Wenger and Kenett</a> closed the obvious escape hatch, the hope that the sameness belongs to one particular model, by testing a broad set of LLMs against humans on standardized divergent-thinking tasks (Alternative Uses, Divergent Association, Forward Flow). Their 2026 <em>PNAS Nexus</em> paper carries the result in its title, “Large language models are homogeneously creative.” Model responses resemble other models’ responses far more than human responses resemble other humans, even after controlling for response structure. Homogenization belongs to the model class rather than to any one model.</p>
+<h3>The geometry</h3>
+<p>Stated operationally, manifold collapse is a claim about output distributions in embedding space. Encode a corpus of human outputs and a corpus of model outputs as sentence embeddings, then compare the two point clouds. Three signatures appear. The first is variance. The human cloud has greater total spread, meaning larger pairwise semantic distances. The second is effective dimensionality. Under PCA, the explained-variance spectrum of the human cloud decays slowly, while the model spectrum saturates after a few components. The surface variety in wording masks a small number of underlying degrees of freedom, so the model manifold is smaller in volume and lower in intrinsic dimension at the same time. The third is cross-model convergence. The clouds of independent models (GPT, Gemini, and Llama in the Wenger and Kenett data) overlap heavily, which fits the growing evidence of feature universality, the finding that distinct LLMs learn highly aligned internal representations. The compression shows up inside the network as well. Contextual embeddings have been <a href="https://arxiv.org/abs/1909.00512">known since 2019</a> to be anisotropic, occupying a narrow cone of the available representation space.</p>
+<p>The collapse is also not a sampling artifact. Wenger and Kenett raised temperature to force diversity, and variability did rise, but the responses degraded into incoherence before they became interestingly different. Creativity requires novelty and appropriateness at the same time. Random noise exits the manifold instead of traversing unexplored regions of valid solution space.</p>
+<h3>The mechanism</h3>
+<p>Pretraining fits the distribution of human text. Post-training, meaning RLHF and its successors, then optimizes toward the high-approval center of that distribution. <a href="https://arxiv.org/abs/2310.06452">Kirk et al.</a> measured the cost. RLHF improves out-of-distribution generalization relative to supervised fine-tuning while significantly reducing output diversity. The aligned model converges on a small set of high-reward behavioral programs, which are the latent grooves.</p>
+<p>The term sits in a family of established failure modes. <em>Mode collapse</em> describes a generative model that covers too few modes of its target distribution. <em>Model collapse</em>, demonstrated by <a href="https://doi.org/10.1038/s41586-024-07566-y">Shumailov et al.</a> in <em>Nature</em>, occurs when recursive training on synthetic data erases low-probability events, and the tails of the distribution go first. <em>Representation collapse</em> describes internal features compressing into low-rank subspaces. Manifold collapse is the population-level synthesis. A training loop, in which synthetic data shaves the tails off future models, runs alongside a usage loop, in which millions of people drafting through the same few models converge on the same moves, and culture gets compressed from both ends. A recent <em><a href="https://www.cell.com/trends/cognitive-sciences/abstract/S1364-6613(26)00003-3">Trends in Cognitive Sciences</a></em><a href="https://www.cell.com/trends/cognitive-sciences/abstract/S1364-6613(26)00003-3"> review</a> describes the endpoint as a threat to the cognitive variety that collective intelligence depends on.</p>
+<h3>The monoculture theorem</h3>
+<p><a href="https://www.pnas.org/doi/10.1073/pnas.2018340118">Kleinberg and Raghavan</a> proved in a 2021 <em>PNAS</em> paper that when many decision-makers converge on one algorithm, aggregate decision quality can fall even when that algorithm is more accurate than each agent’s independent alternative. The result resembles a Braess paradox and requires no shocks, only normal operation. Substitute a drafting model for their screening algorithm and the implication for knowledge work follows directly. Firms, funds, and labs develop correlated blind spots.</p>
+<h3>The escape hatch</h3>
+<p>The tradeoff appears to be a property of uniform deployment rather than of the technology itself. Ashkinaze et al. found that high exposure to AI ideas increased collective idea diversity, making ideas different though not better, and persona variation, multi-model ensembles, adversarial prompting, and atypical source material all measurably resist homogenization. Such engines can be built. The default remains the groove.</p>
+</article>
+
+<footer>
+	<!-- FE0E after the arrow: text presentation, so Windows doesn't swap in a colour emoji glyph -->
+	<p><a href="/blog/">← writing</a></p>
+	<p><a href="https://jamesfbaker.substack.com/p/why-the-ai-renaissance-keeps-not" target="_blank" rel="noopener">discuss on substack ↗&#xFE0E;</a></p>
+	<p><a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">get new essays by email ↗&#xFE0E;</a></p>
+</footer>
+
+</div>
+
+<script>
+	!function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Xr es pi Zr rs Kr Qr capture Ni calculateEventProperties os register register_once register_for_session unregister unregister_for_session ds getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty us ns createPersonProfile hs Vr vs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing ss debug O ls getPageViewId captureTraceFeedback captureTraceMetric qr".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+	posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj', {
+		api_host: 'https://us.i.posthog.com',
+		person_profiles: 'identified_only',
+		capture_pageview: true,
+		capture_pageleave: true,
+		autocapture: true
+	})
+</script>
+</body>
+</html>

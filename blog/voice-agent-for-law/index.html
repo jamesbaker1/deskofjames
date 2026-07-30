@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice Agent for Law · James Baker</title>
+<meta name="description" content="Is voice the ideal method to interact with AI tools?">
+<link rel="canonical" href="https://deskofjim.com/blog/voice-agent-for-law/">
+
+<meta property="og:title" content="Voice Agent for Law · James Baker">
+<meta property="og:description" content="Is voice the ideal method to interact with AI tools?">
+<meta property="og:image" content="https://deskofjim.com/og.png">
+<meta property="og:url" content="https://deskofjim.com/blog/voice-agent-for-law/">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+
+<link rel="preload" href="/fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts-web/fonts.css">
+
+<style>
+:root {
+	--bg: #f7f5f0;
+	--ink: #1a1917;
+	--muted: #706c63;
+	--accent: #0f52ba;
+	--rule: rgba(26, 25, 23, .13);
+	--tint: rgba(26, 25, 23, .045);
+	--serif: Newsreader, Georgia, "Times New Roman", serif;
+	--mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 17.5px/1.7 var(--serif);
+}
+
+.column {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 5.5rem 1.75rem 4rem;
+}
+
+a { color: inherit; text-decoration: none; transition: color 120ms ease }
+a:hover { color: var(--accent) }
+
+/* --- masthead: the breadcrumb is the whole nav --- */
+
+.crumb {
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+header {
+	padding-bottom: 2.5rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+h1 {
+	margin: 1.9rem 0 0;
+	font: 500 30px/1.2 var(--serif);
+	letter-spacing: -.005em;
+}
+
+.subtitle {
+	margin: .55rem 0 0;
+	font-size: 16.5px;
+	font-style: italic;
+	color: var(--muted);
+}
+
+.date {
+	margin: 1rem 0 0;
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+/* --- body --- */
+
+article { margin-top: 2.5rem }
+
+article p { margin: 0 0 1.35rem }
+
+/* substack exports section heads as h3, so h3 has to read as a section head, not as bold body */
+article h2 { margin: 2.9rem 0 .9rem; font: 500 22px/1.35 var(--serif) }
+article h3 { margin: 2.6rem 0 .8rem; font: 500 20px/1.35 var(--serif) }
+article h4 { margin: 2rem 0 .6rem; font: 500 17.5px/1.4 var(--serif) }
+
+article a {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+article ul, article ol { margin: 0 0 1.35rem; padding-left: 1.35rem }
+article li { margin-bottom: .55rem }
+/* substack wraps list text in its own <p>, so those must not carry block spacing */
+article li p { margin: 0 0 .4rem }
+article li p:last-child { margin-bottom: 0 }
+
+article blockquote {
+	margin: 1.8rem 0;
+	padding-left: 1.25rem;
+	border-left: 3px solid var(--rule);
+	font-style: italic;
+	color: var(--muted);
+}
+
+article pre {
+	margin: 1.8rem 0;
+	padding: 1rem;
+	background: var(--tint);
+	font: 400 13px/1.6 var(--mono);
+	overflow-x: auto;
+}
+
+article code {
+	padding: 1px 4px;
+	background: var(--tint);
+	font-family: var(--mono);
+	font-size: .88em;
+}
+
+article pre code { padding: 0; background: none; font-size: inherit }
+
+article figure { margin: 2rem 0 }
+article img { display: block; max-width: 100%; height: auto }
+
+article figcaption {
+	margin-top: .6rem;
+	font: 400 12px/1.5 var(--mono);
+	color: var(--muted);
+	text-align: center;
+}
+
+article hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--rule) }
+
+article table {
+	width: 100%;
+	margin: 1.8rem 0;
+	border-collapse: collapse;
+	font-size: 15.5px;
+}
+
+article th, article td {
+	padding: .45rem .7rem .45rem 0;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+/* --- footer --- */
+
+footer {
+	margin-top: 4.5rem;
+	padding-top: 1.4rem;
+	border-top: 1px solid var(--rule);
+	font: 400 12.5px/2 var(--mono);
+	color: var(--muted);
+}
+
+footer p { margin: 0 }
+
+@media (max-width: 560px) {
+	.column { padding: 3.5rem 1.4rem 3rem }
+	body { font-size: 17px }
+}
+</style>
+</head>
+
+<body>
+<div class="column">
+
+<header>
+	<p class="crumb"><a href="/">James Baker</a> · <a href="/blog/">writing</a></p>
+	<h1>Voice Agent for Law</h1>
+	<p class="subtitle">Is voice the ideal method to interact with AI tools?</p>
+	<p class="date"><time datetime="2025-04-19">apr 19, 2025</time></p>
+</header>
+
+<article>
+<p>Hey, everyone.</p>
+<p>Today I want to talk about communications management. The legal technology sector is lacking in this area. Think of it this way: you have a central management system such as Clio or another system or record that handles all of your clients and their interactions. But leveraging value out of these interactions and connecting them when you need them the most, like when a client is talking to you, is not yet a solved problem.</p>
+<p>With the recent advancements in voice agents, I'm now starting to think that the cleanest human-computer interaction with artificial intelligence systems is through voice. These voice interactions, paired with an agentic structure that can act on your behalf, may in fact be the highest leverage that you can get out of these systems with the lowest amount of integration costs.</p>
+<p>I'm super excited to explore this space. If you want to reach out specifically about this area, shoot me an email.</p>
+<p>james.baker@duke.edu</p>
+</article>
+
+<footer>
+	<!-- FE0E after the arrow: text presentation, so Windows doesn't swap in a colour emoji glyph -->
+	<p><a href="/blog/">← writing</a></p>
+	<p><a href="https://jamesfbaker.substack.com/p/voice-agent-for-law" target="_blank" rel="noopener">discuss on substack ↗&#xFE0E;</a></p>
+	<p><a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">get new essays by email ↗&#xFE0E;</a></p>
+</footer>
+
+</div>
+
+<script>
+	!function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Xr es pi Zr rs Kr Qr capture Ni calculateEventProperties os register register_once register_for_session unregister unregister_for_session ds getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty us ns createPersonProfile hs Vr vs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing ss debug O ls getPageViewId captureTraceFeedback captureTraceMetric qr".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+	posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj', {
+		api_host: 'https://us.i.posthog.com',
+		person_profiles: 'identified_only',
+		capture_pageview: true,
+		capture_pageleave: true,
+		autocapture: true
+	})
+</script>
+</body>
+</html>

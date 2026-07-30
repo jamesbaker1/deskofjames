@@ -40,12 +40,15 @@ jobs:
       - name: commit if changed
         if: steps.feed.outputs.got == 'yes'
         run: |
-          if git diff --quiet -- blog/posts.json; then
+          # New essay pages arrive as untracked directories, so stage before testing. The
+          # pathspecs are git's to expand, not the shell's, and name only what the generator
+          # writes: posts.json and the contents of the per-post directories.
+          git add -- blog/posts.json 'blog/*/*'
+          if git diff --cached --quiet -- blog/; then
             echo 'no new posts'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add blog/posts.json
           git commit -m 'sync substack posts'
           git push

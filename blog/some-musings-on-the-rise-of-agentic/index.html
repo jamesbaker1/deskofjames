@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Some Musings on the Rise of Agentic Legal AI · James Baker</title>
+<meta name="description" content="Lawyers will revert to their stated purpose - a counselor">
+<link rel="canonical" href="https://deskofjim.com/blog/some-musings-on-the-rise-of-agentic/">
+
+<meta property="og:title" content="Some Musings on the Rise of Agentic Legal AI · James Baker">
+<meta property="og:description" content="Lawyers will revert to their stated purpose - a counselor">
+<meta property="og:image" content="https://deskofjim.com/og.png">
+<meta property="og:url" content="https://deskofjim.com/blog/some-musings-on-the-rise-of-agentic/">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+
+<link rel="preload" href="/fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts-web/fonts.css">
+
+<style>
+:root {
+	--bg: #f7f5f0;
+	--ink: #1a1917;
+	--muted: #706c63;
+	--accent: #0f52ba;
+	--rule: rgba(26, 25, 23, .13);
+	--tint: rgba(26, 25, 23, .045);
+	--serif: Newsreader, Georgia, "Times New Roman", serif;
+	--mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 17.5px/1.7 var(--serif);
+}
+
+.column {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 5.5rem 1.75rem 4rem;
+}
+
+a { color: inherit; text-decoration: none; transition: color 120ms ease }
+a:hover { color: var(--accent) }
+
+/* --- masthead: the breadcrumb is the whole nav --- */
+
+.crumb {
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+header {
+	padding-bottom: 2.5rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+h1 {
+	margin: 1.9rem 0 0;
+	font: 500 30px/1.2 var(--serif);
+	letter-spacing: -.005em;
+}
+
+.subtitle {
+	margin: .55rem 0 0;
+	font-size: 16.5px;
+	font-style: italic;
+	color: var(--muted);
+}
+
+.date {
+	margin: 1rem 0 0;
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+/* --- body --- */
+
+article { margin-top: 2.5rem }
+
+article p { margin: 0 0 1.35rem }
+
+/* substack exports section heads as h3, so h3 has to read as a section head, not as bold body */
+article h2 { margin: 2.9rem 0 .9rem; font: 500 22px/1.35 var(--serif) }
+article h3 { margin: 2.6rem 0 .8rem; font: 500 20px/1.35 var(--serif) }
+article h4 { margin: 2rem 0 .6rem; font: 500 17.5px/1.4 var(--serif) }
+
+article a {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+article ul, article ol { margin: 0 0 1.35rem; padding-left: 1.35rem }
+article li { margin-bottom: .55rem }
+/* substack wraps list text in its own <p>, so those must not carry block spacing */
+article li p { margin: 0 0 .4rem }
+article li p:last-child { margin-bottom: 0 }
+
+article blockquote {
+	margin: 1.8rem 0;
+	padding-left: 1.25rem;
+	border-left: 3px solid var(--rule);
+	font-style: italic;
+	color: var(--muted);
+}
+
+article pre {
+	margin: 1.8rem 0;
+	padding: 1rem;
+	background: var(--tint);
+	font: 400 13px/1.6 var(--mono);
+	overflow-x: auto;
+}
+
+article code {
+	padding: 1px 4px;
+	background: var(--tint);
+	font-family: var(--mono);
+	font-size: .88em;
+}
+
+article pre code { padding: 0; background: none; font-size: inherit }
+
+article figure { margin: 2rem 0 }
+article img { display: block; max-width: 100%; height: auto }
+
+article figcaption {
+	margin-top: .6rem;
+	font: 400 12px/1.5 var(--mono);
+	color: var(--muted);
+	text-align: center;
+}
+
+article hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--rule) }
+
+article table {
+	width: 100%;
+	margin: 1.8rem 0;
+	border-collapse: collapse;
+	font-size: 15.5px;
+}
+
+article th, article td {
+	padding: .45rem .7rem .45rem 0;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+/* --- footer --- */
+
+footer {
+	margin-top: 4.5rem;
+	padding-top: 1.4rem;
+	border-top: 1px solid var(--rule);
+	font: 400 12.5px/2 var(--mono);
+	color: var(--muted);
+}
+
+footer p { margin: 0 }
+
+@media (max-width: 560px) {
+	.column { padding: 3.5rem 1.4rem 3rem }
+	body { font-size: 17px }
+}
+</style>
+</head>
+
+<body>
+<div class="column">
+
+<header>
+	<p class="crumb"><a href="/">James Baker</a> · <a href="/blog/">writing</a></p>
+	<h1>Some Musings on the Rise of Agentic Legal AI</h1>
+	<p class="subtitle">Lawyers will revert to their stated purpose - a counselor</p>
+	<p class="date"><time datetime="2025-04-11">apr 11, 2025</time></p>
+</header>
+
+<article>
+<p>Agentic Legal AI is here. And as much as you might be scared of it, it's going to be handling your emails and it's going to be responding for you. It'll be even calling certain individuals, getting information from them, and combining that into a review for a lawyer.</p>
+<p>Lawyers are going to transition from “lawyer as the loop” to “lawyer in the loop.” They'll simply review the outputs of AI agents. Think of every single administrative non-billable task that you do as a lawyer. That all can be abstracted away. And every day, you, as a lawyer will come to the office and rubber stamp exactly what you think is good and what you think isn't.</p>
+<p>The value add that you'll have as a lawyer won't be in how close of a reading you can do of a paper or your vast knowledge of legal corpus and case texts, but it'll be your judgment. This is really what being a lawyer is. It's the counselor. It's someone who understands, given a certain situation, what are the best options given your goals. And so lawyers as counselors will come back, and I'm excited for this new revolution.</p>
+<p>In the coming days, weeks and months, I'll explore some of the uses of agentic AI and how lawyers can work in symbiosis with them.</p>
+</article>
+
+<footer>
+	<!-- FE0E after the arrow: text presentation, so Windows doesn't swap in a colour emoji glyph -->
+	<p><a href="/blog/">← writing</a></p>
+	<p><a href="https://jamesfbaker.substack.com/p/some-musings-on-the-rise-of-agentic" target="_blank" rel="noopener">discuss on substack ↗&#xFE0E;</a></p>
+	<p><a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">get new essays by email ↗&#xFE0E;</a></p>
+</footer>
+
+</div>
+
+<script>
+	!function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Xr es pi Zr rs Kr Qr capture Ni calculateEventProperties os register register_once register_for_session unregister unregister_for_session ds getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty us ns createPersonProfile hs Vr vs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing ss debug O ls getPageViewId captureTraceFeedback captureTraceMetric qr".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+	posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj', {
+		api_host: 'https://us.i.posthog.com',
+		person_profiles: 'identified_only',
+		capture_pageview: true,
+		capture_pageleave: true,
+		autocapture: true
+	})
+</script>
+</body>
+</html>

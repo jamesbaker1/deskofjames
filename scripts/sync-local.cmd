@@ -5,7 +5,10 @@ rem right in. Scheduled via Windows Task Scheduler ("deskofjim substack sync").
 cd /d "%~dp0.."
 git pull --rebase --quiet origin master || exit /b 1
 node scripts\fetch-substack.mjs || exit /b 1
-git diff --quiet -- blog/posts.json && exit /b 0
-git add blog/posts.json
+rem New essay pages arrive as untracked directories, so stage before testing. The quotes keep
+rem cmd's hands off the wildcard: git expands the pathspec, and only over what the generator
+rem writes — posts.json and the contents of the per-post directories.
+git add -- blog/posts.json "blog/*/*" || exit /b 1
+git diff --cached --quiet -- blog && exit /b 0
 git commit -q -m "sync substack posts"
 git push -q origin master

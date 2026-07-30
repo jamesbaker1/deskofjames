@@ -26,11 +26,14 @@ to black with depth, so the flock has no edges.
 ## substack sync
 
 `scripts/fetch-substack.mjs` (node 20, zero deps) pulls the feed, merges into
-`blog/posts.json` by url, sorts desc. two schedulers run it, because substack's
-cdn turns away github's datacenter ips on many days: the workflow tries daily
-at 09:17 utc (a 403 skips green and waits for a luckier day), and
-`scripts/sync-local.cmd` runs from an actual desk via windows task scheduler.
-either one commits only when the file changes. by hand:
+`blog/posts.json` by url, sorts desc. it also strips substack's editor
+scaffolding out of each post body and writes the essay as a page under
+`blog/<slug>/` from `scripts/post-template.html`, so the writing is read here.
+two schedulers run it, because substack's cdn turns away github's datacenter
+ips on many days: the workflow tries daily at 09:17 utc (a 403 skips green and
+waits for a luckier day), and `scripts/sync-local.cmd` runs from an actual desk
+via windows task scheduler. either one commits only when something changed. by
+hand:
 
     node scripts/fetch-substack.mjs
 

@@ -167,7 +167,7 @@ footer p { margin: 0 }
 <header>
 	<a class="home" href="/">James Baker</a>
 	<h1>Writing</h1>
-	<p class="intro">Essays on legal technology and AI — published on <a href="https://jamesfbaker.substack.com/" target="_blank" rel="noopener">Substack</a></p>
+	<p class="intro">Essays on legal technology and AI — <a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">subscribe</a> for new ones by email</p>
 </header>
 
 <main>
@@ -228,9 +228,14 @@ footer p { margin: 0 }
 		li.className = 'post';
 
 		var title = document.createElement('a');
-		title.href = post.url;
-		title.target = '_blank';
-		title.rel = 'noopener';
+		// the essays live here now; a post without a local page still points at substack
+		if (post.slug) {
+			title.href = '/blog/' + post.slug + '/';
+		} else {
+			title.href = post.url;
+			title.target = '_blank';
+			title.rel = 'noopener';
+		}
 		title.textContent = post.title;
 
 		var heading = document.createElement('h3');
