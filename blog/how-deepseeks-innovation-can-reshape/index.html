@@ -128,6 +128,11 @@ article code {
 
 article pre code { padding: 0; background: none; font-size: inherit }
 
+/* equations are MathML, rendered at build time: no math stylesheet, script or webfont ships
+   with the page, so this is only spacing and ink. A wide one scrolls instead of the phone. */
+article math { color: inherit }
+article math[display="block"] { margin: 1.6rem 0; overflow-x: auto }
+
 article figure { margin: 2rem 0 }
 article img { display: block; max-width: 100%; height: auto }
 

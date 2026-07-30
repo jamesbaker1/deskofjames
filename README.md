@@ -10,6 +10,8 @@ the repo root by github pages (`master`, custom domain via `CNAME`).
 - `puzzle/` — nine dots
 - `js/` — three.js r98, GPUComputationRenderer, WebGL detect, vendored. pinned
   at r98 on purpose; the shaders target that API
+- `scripts/vendor/` — katex 0.16.47, vendored the same way. build-time only: the
+  essays ship the MathML it renders, never katex itself
 - `fonts-web/` — newsreader, latin subset, self-hosted
 - `404.html`
 
@@ -25,10 +27,12 @@ to black with depth, so the flock has no edges.
 
 ## substack sync
 
-`scripts/fetch-substack.mjs` (node 20, zero deps) pulls the feed, merges into
-`blog/posts.json` by url, sorts desc. it also strips substack's editor
+`scripts/fetch-substack.mjs` (node 20, no npm install) pulls the feed, merges
+into `blog/posts.json` by url, sorts desc. it also strips substack's editor
 scaffolding out of each post body and writes the essay as a page under
 `blog/<slug>/` from `scripts/post-template.html`, so the writing is read here.
+equations arrive as raw tex in substack's markup and are rendered to mathml
+here, at build time, so a reader downloads no math library at all.
 two schedulers run it, because substack's cdn turns away github's datacenter
 ips on many days: the workflow tries daily at 09:17 utc (a 403 skips green and
 waits for a luckier day), and `scripts/sync-local.cmd` runs from an actual desk

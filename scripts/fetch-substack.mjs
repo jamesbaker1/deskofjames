@@ -1,9 +1,10 @@
 // Rebuilds blog/posts.json from the Substack RSS feed, and writes each public
 // post as a page under blog/<slug>/ so the essays are read here, not there.
-// Node 20+, zero dependencies (global fetch, AbortSignal.timeout).
+// Node 20+, no npm install: the only library is KaTeX, vendored under scripts/vendor/.
 // Run by .github/workflows/substack-sync.yml, or by hand: node scripts/fetch-substack.mjs
 
 import { readFile, writeFile, rename, unlink, mkdir, access } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
@@ -213,9 +214,43 @@ function figure(tokens, start, end) {
   ];
 }
 
-// Substack parks the expression in data-attrs and renders it client-side; there is no
-// client here, so the TeX itself is the honest thing to show.
-function latex(attrs) {
+// KaTeX is vendored under scripts/vendor/, the way three.js sits in js/: a build-time tool in
+// a repo with no package.json and no install step. It is UMD, so it arrives through require.
+const require = createRequire(import.meta.url);
+let katex; // loaded at the first equation — most posts have none and should not pay for it
+
+// TeX → the bare <math> element, or '' if KaTeX could not parse it. Only MathML is asked for
+// and only MathML is kept: the span.katex wrapper exists to be styled by a stylesheet that no
+// reader here loads, while the <math> inside needs every attribute it was given (xmlns, the
+// display mode, mathvariant, the annotation's encoding) to mean anything. On a parse error
+// KaTeX emits a span.katex-error holding the raw TeX and no <math> at all, which lands here
+// as '' and sends the caller to the fallback.
+function mathml(tex, display) {
+  // Deliberately outside the catch: a missing vendored KaTeX is a broken checkout, not a
+  // broken equation, and it has to stop the run rather than quietly rewrite every formula
+  // on the site as a block of TeX and commit that.
+  katex ??= require('./vendor/katex.min.js');
+  try {
+    const rendered = katex.renderToString(tex, { output: 'mathml', displayMode: display, throwOnError: false, strict: 'ignore' });
+    return /<math[\s>][\s\S]*<\/math>/.exec(rendered)?.[0] ?? '';
+  } catch (err) {
+    console.warn(`  katex: ${err.message}`);
+    return '';
+  }
+}
+
+// A rendered equation waits in the token stream as this: no entities and no tag syntax, so
+// passes 2–4 carry it through as ordinary text. The MathML replaces it only once those passes
+// are done — injected any earlier, the attribute strip would take the xmlns and the display
+// with it and leave a row of letters behind. The U+0001 delimiters are what stop an author's
+// own code block, if one ever reads `math:0`, from being swapped out for somebody's equation.
+const slot = (i) => `math:${i}`;
+const SLOTS = /<pre><code>math:(\d+)<\/code><\/pre>/g;
+
+// Substack parks the expression in data-attrs and renders it client-side; there is no client
+// here, so it is rendered here instead, at build time, into markup the browser draws on its
+// own. The TeX is the author's — it gets rendered, never corrected.
+function latex(attrs, maths) {
   let tex = '';
   try {
     tex = String(JSON.parse(decode(attrOf(attrs, 'data-attrs') ?? '{}')).persistentExpression ?? '');
@@ -223,12 +258,25 @@ function latex(attrs) {
     tex = '';
   }
   tex = tex.replace(/\r/g, '').replace(/\n{2,}/g, '\n').trim();
-  return tex ? [open('pre'), open('code'), { kind: 'text', raw: tex }, shut('code'), shut('pre')] : [];
+  if (!tex) return [];
+
+  // Everything Substack ships today is a block (data-component-name="LatexBlockToDOM"); an
+  // inline one, if it ever comes, sets itself apart by name and must not break the line.
+  const kind = `${attrOf(attrs, 'class') ?? ''} ${attrOf(attrs, 'data-component-name') ?? ''}`;
+  const math = mathml(tex, !/inline/i.test(kind));
+  if (!math) {
+    // Unrenderable: the TeX itself is still the honest thing to show, as it was before.
+    console.warn(`  equation left as TeX: ${JSON.stringify(tex.slice(0, 60))}`);
+    return [open('pre'), open('code'), { kind: 'text', raw: tex }, shut('code'), shut('pre')];
+  }
+  maths.push(math);
+  return [open('pre'), open('code'), { kind: 'text', raw: slot(maths.length - 1) }, shut('code'), shut('pre')];
 }
 
 function article(raw) {
   const src = tokenize(raw);
   const kept = [];
+  const maths = []; // rendered equations, held back until the escaping passes are over
 
   // pass 1 — drop furniture, rewrite images and formulas
   for (let i = 0; i < src.length;) {
@@ -245,7 +293,7 @@ function article(raw) {
     }
     if (/(^|[\s"])latex-rendered/.test(cls)) {
       const end = past(src, i);
-      kept.push(...latex(t.attrs));
+      kept.push(...latex(t.attrs, maths));
       i = end;
       continue;
     }
@@ -325,7 +373,9 @@ function article(raw) {
     .split(/(<pre>[\s\S]*?<\/pre>)/)
     .map((part, i) => (i % 2 ? part : part.replace(/\n{2,}/g, '\n')))
     .join('')
-    .trim();
+    .trim()
+    // pass 5 — the equations land last, past everything that would have sanitised them away.
+    .replace(SLOTS, (raw, i) => maths[i] ?? raw);
 }
 
 // index of the close tag matching the open token at `start`, or -1
