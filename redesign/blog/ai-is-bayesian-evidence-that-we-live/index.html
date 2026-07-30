@@ -128,6 +128,11 @@ article code {
 
 article pre code { padding: 0; background: none; font-size: inherit }
 
+/* equations are MathML, rendered at build time: no math stylesheet, script or webfont ships
+   with the page, so this is only spacing and ink. A wide one scrolls instead of the phone. */
+article math { color: inherit }
+article math[display="block"] { margin: 1.6rem 0; overflow-x: auto }
+
 article figure { margin: 2rem 0 }
 article img { display: block; max-width: 100%; height: auto }
 
@@ -185,36 +190,36 @@ footer p { margin: 0 }
 
 <article>
 <p>Let:</p>
-<pre><code>S=\text{we live in a simulation}</code></pre>
-<pre><code>B=\text{we live in base reality}</code></pre>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>S</mi><mo>=</mo><mtext>we live in a simulation</mtext></mrow><annotation encoding="application/x-tex">S=\text{we live in a simulation}</annotation></semantics></math>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>B</mi><mo>=</mo><mtext>we live in base reality</mtext></mrow><annotation encoding="application/x-tex">B=\text{we live in base reality}</annotation></semantics></math>
 <p>Bayes’ theorem gives:</p>
-<pre><code>\frac{P(S\mid E)}{P(B\mid E)}
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mfrac><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>S</mi><mo>∣</mo><mi>E</mi><mo stretchy="false">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>B</mi><mo>∣</mo><mi>E</mi><mo stretchy="false">)</mo></mrow></mfrac><mfrac><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>S</mi><mo stretchy="false">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>B</mi><mo stretchy="false">)</mo></mrow></mfrac><mo>⋅</mo><mfrac><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>E</mi><mo>∣</mo><mi>S</mi><mo stretchy="false">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>E</mi><mo>∣</mo><mi>B</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{P(S\mid E)}{P(B\mid E)}
 \frac{P(S)}{P(B)}
 \cdot
-\frac{P(E\mid S)}{P(E\mid B)}</code></pre>
+\frac{P(E\mid S)}{P(E\mid B)}</annotation></semantics></math>
 <p>AI matters because it shows that increasingly general intelligence can arise inside an artificial computational system.</p>
 <p>A language model begins by minimizing prediction error:</p>
-<pre><code>\mathcal{L}(\theta)
--\sum_t \log P_\theta(x_t\mid x_{&lt;t})</code></pre>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="script">L</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo><mo>−</mo><munder><mo>∑</mo><mi>t</mi></munder><mi>log</mi><mo>⁡</mo><msub><mi>P</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal{L}(\theta)
+-\sum_t \log P_\theta(x_t\mid x_{&lt;t})</annotation></semantics></math>
 <p>Adjust billions of numbers, repeat the process, and the result can write software, produce mathematical proofs, and model parts of the world. In 2025, <a href="https://deepmind.google/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/">Gemini Deep Think achieved gold-medal-level performance at the International Mathematical Olympiad</a>.</p>
 <p>This does not prove that AI is conscious. The relationship between computation and consciousness remains deeply disputed; the <a href="https://plato.stanford.edu/entries/computational-mind/">computational theory of mind</a> is a serious philosophical position, not an established fact.</p>
 <p>But AI still establishes something important: behavior that looks like intelligence can exist inside a world we constructed.</p>
 <p>We are also beginning to build AI <a href="https://worldmodels.github.io/">world models</a> in which artificial agents learn, predict, and act inside generated environments. Some agents can even be trained within a model’s imagined world and then transfer what they learned back into the external environment.</p>
 <p>The trajectory is increasingly clear:</p>
-<pre><code>\text{computation}
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>computation</mtext><mo>→</mo><mtext>world</mtext><mo>→</mo><mtext>intelligence within that world</mtext></mrow><annotation encoding="application/x-tex">\text{computation}
 \rightarrow
 \text{world}
 \rightarrow
-\text{intelligence within that world}</code></pre>
+\text{intelligence within that world}</annotation></semantics></math>
 <p>This strengthens <a href="https://ora.ox.ac.uk/objects/uuid%3A44c386c4-5d9e-4ecf-a47c-9631a2a59747/files/mb5d6febf23502ea79f57c9be3516c4d3">Nick Bostrom’s simulation argument</a>. If advanced civilizations eventually create large numbers of simulated worlds containing conscious observers, then simulated observers could vastly outnumber biological observers in base reality.</p>
-<pre><code>N_{\text{simulated}}\gg N_{\text{base}}</code></pre>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>N</mi><mtext>simulated</mtext></msub><mo>≫</mo><msub><mi>N</mi><mtext>base</mtext></msub></mrow><annotation encoding="application/x-tex">N_{\text{simulated}}\gg N_{\text{base}}</annotation></semantics></math>
 <p>Under ordinary assumptions about observer selection, we should then expect to be among the simulated majority.</p>
 <p>AI does not establish those assumptions. We do not know whether machines can be conscious, whether civilizations survive long enough to create ancestor simulations, or whether they would choose to run them.</p>
 <p>But AI makes the premises less speculative. We now know that minds can create artificial agents, generated environments, and agents that model the environments they inhabit.</p>
 <p>That evidence seems less surprising under a universe containing simulations than under one in which simulated minds are impossible:</p>
-<pre><code>P(E\mid S)&gt;P(E\mid B)</code></pre>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>E</mi><mo>∣</mo><mi>S</mi><mo stretchy="false">)</mo><mo>&gt;</mo><mi>P</mi><mo stretchy="false">(</mo><mi>E</mi><mo>∣</mo><mi>B</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(E\mid S)&gt;P(E\mid B)</annotation></semantics></math>
 <p>Therefore:</p>
-<pre><code>P(S\mid E)&gt;P(S)</code></pre>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>S</mi><mo>∣</mo><mi>E</mi><mo stretchy="false">)</mo><mo>&gt;</mo><mi>P</mi><mo stretchy="false">(</mo><mi>S</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(S\mid E)&gt;P(S)</annotation></semantics></math>
 <p>A simulation would not necessarily contain visible pixels or glitches. Its inhabitants would discover internally consistent laws and call them physics. As <a href="https://consc.net/papers/matrix.pdf">David Chalmers argues</a>, even a simulated world could still be a genuine reality to the beings living inside it. We are building minds inside machines and worlds inside computers. The provocative question is no longer whether a reality like ours could be simulated. It is why we are so confident that ours was not.</p>
 </article>
 
