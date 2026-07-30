@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Writing · James Baker</title>
 <meta name="description" content="Essays on legal technology and AI by James Baker.">
-<!-- preview build living under /redesign/ — not the canonical site -->
-<meta name="robots" content="noindex">
 
 <meta property="og:title" content="Writing · James Baker">
 <meta property="og:description" content="Essays on legal technology and AI by James Baker.">
@@ -14,11 +13,11 @@
 <meta property="og:url" content="https://deskofjim.com/redesign/blog/">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/redesign/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 
-<link rel="preload" href="../fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../fonts-web/fonts.css">
+<link rel="preload" href="/redesign/fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/redesign/fonts-web/fonts.css">
 
 <style>
 :root {
@@ -166,9 +165,9 @@ footer p { margin: 0 }
 <div class="column">
 
 <header>
-	<a class="home" href="../">James Baker</a>
+	<a class="home" href="/redesign/">James Baker</a>
 	<h1>Writing</h1>
-	<p class="intro">Essays on legal technology and AI — published on <a href="https://jamesfbaker.substack.com/" target="_blank" rel="noopener">Substack</a></p>
+	<p class="intro">Essays on legal technology and AI — <a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">subscribe</a> for new ones by email</p>
 </header>
 
 <main>
@@ -229,9 +228,14 @@ footer p { margin: 0 }
 		li.className = 'post';
 
 		var title = document.createElement('a');
-		title.href = post.url;
-		title.target = '_blank';
-		title.rel = 'noopener';
+		// the essays live here now; a post without a local page still points at substack
+		if (post.slug) {
+			title.href = '/redesign/blog/' + post.slug + '/';
+		} else {
+			title.href = post.url;
+			title.target = '_blank';
+			title.rel = 'noopener';
+		}
 		title.textContent = post.title;
 
 		var heading = document.createElement('h3');
@@ -297,7 +301,7 @@ footer p { margin: 0 }
 		archive.appendChild(p);
 	}
 
-	fetch('posts.json')
+	fetch('/redesign/blog/posts.json')
 		.then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
 		.then(function (data) {
 			if (data && data.posts && data.posts.length) render(data.posts);

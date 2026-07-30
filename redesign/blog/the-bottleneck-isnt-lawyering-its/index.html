@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The bottleneck isn’t lawyering. It’s intake. · James Baker</title>
+<meta name="description" content="Maria wasn’t short on evidence, she was short on structure.">
+
+<meta property="og:title" content="The bottleneck isn’t lawyering. It’s intake. · James Baker">
+<meta property="og:description" content="Maria wasn’t short on evidence, she was short on structure.">
+<meta property="og:image" content="https://deskofjim.com/redesign/og.png">
+<meta property="og:url" content="https://deskofjim.com/redesign/blog/the-bottleneck-isnt-lawyering-its/">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/redesign/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+
+<link rel="preload" href="/redesign/fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/redesign/fonts-web/fonts.css">
+
+<style>
+:root {
+	--bg: #f7f5f0;
+	--ink: #1a1917;
+	--muted: #706c63;
+	--accent: #0f52ba;
+	--rule: rgba(26, 25, 23, .13);
+	--tint: rgba(26, 25, 23, .045);
+	--serif: Newsreader, Georgia, "Times New Roman", serif;
+	--mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 17.5px/1.7 var(--serif);
+}
+
+.column {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 5.5rem 1.75rem 4rem;
+}
+
+a { color: inherit; text-decoration: none; transition: color 120ms ease }
+a:hover { color: var(--accent) }
+
+/* --- masthead: the breadcrumb is the whole nav --- */
+
+.crumb {
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+header {
+	padding-bottom: 2.5rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+h1 {
+	margin: 1.9rem 0 0;
+	font: 500 30px/1.2 var(--serif);
+	letter-spacing: -.005em;
+}
+
+.subtitle {
+	margin: .55rem 0 0;
+	font-size: 16.5px;
+	font-style: italic;
+	color: var(--muted);
+}
+
+.date {
+	margin: 1rem 0 0;
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+/* --- body --- */
+
+article { margin-top: 2.5rem }
+
+article p { margin: 0 0 1.35rem }
+
+/* substack exports section heads as h3, so h3 has to read as a section head, not as bold body */
+article h2 { margin: 2.9rem 0 .9rem; font: 500 22px/1.35 var(--serif) }
+article h3 { margin: 2.6rem 0 .8rem; font: 500 20px/1.35 var(--serif) }
+article h4 { margin: 2rem 0 .6rem; font: 500 17.5px/1.4 var(--serif) }
+
+article a {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+article ul, article ol { margin: 0 0 1.35rem; padding-left: 1.35rem }
+article li { margin-bottom: .55rem }
+/* substack wraps list text in its own <p>, so those must not carry block spacing */
+article li p { margin: 0 0 .4rem }
+article li p:last-child { margin-bottom: 0 }
+
+article blockquote {
+	margin: 1.8rem 0;
+	padding-left: 1.25rem;
+	border-left: 3px solid var(--rule);
+	font-style: italic;
+	color: var(--muted);
+}
+
+article pre {
+	margin: 1.8rem 0;
+	padding: 1rem;
+	background: var(--tint);
+	font: 400 13px/1.6 var(--mono);
+	overflow-x: auto;
+}
+
+article code {
+	padding: 1px 4px;
+	background: var(--tint);
+	font-family: var(--mono);
+	font-size: .88em;
+}
+
+article pre code { padding: 0; background: none; font-size: inherit }
+
+article figure { margin: 2rem 0 }
+article img { display: block; max-width: 100%; height: auto }
+
+article figcaption {
+	margin-top: .6rem;
+	font: 400 12px/1.5 var(--mono);
+	color: var(--muted);
+	text-align: center;
+}
+
+article hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--rule) }
+
+article table {
+	width: 100%;
+	margin: 1.8rem 0;
+	border-collapse: collapse;
+	font-size: 15.5px;
+}
+
+article th, article td {
+	padding: .45rem .7rem .45rem 0;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+/* --- footer --- */
+
+footer {
+	margin-top: 4.5rem;
+	padding-top: 1.4rem;
+	border-top: 1px solid var(--rule);
+	font: 400 12.5px/2 var(--mono);
+	color: var(--muted);
+}
+
+footer p { margin: 0 }
+
+@media (max-width: 560px) {
+	.column { padding: 3.5rem 1.4rem 3rem }
+	body { font-size: 17px }
+}
+</style>
+</head>
+
+<body>
+<div class="column">
+
+<header>
+	<p class="crumb"><a href="/redesign/">James Baker</a> · <a href="/redesign/blog/">writing</a></p>
+	<h1>The bottleneck isn’t lawyering. It’s intake.</h1>
+	<p class="subtitle">Maria wasn’t short on evidence, she was short on structure.</p>
+	<p class="date"><time datetime="2025-08-10">aug 10, 2025</time></p>
+</header>
+
+<article>
+<p>Maria wasn’t short on evidence, she was short on structure.</p>
+<p>She had a lease saved as a photo, a string of texts from her landlord, bank statements, a letter taped to her door, and three frantic voice notes describing what happened. Every legal aid site she visited asked for “the basics,” but nothing accepted what she actually had: a messy bundle of real life. Two weeks later, she still didn’t have a filed answer. Not because the law was too hard. Because the intake was.</p>
+<p>Here’s the uncomfortable truth: legal work has rarely been the rate-limiter for access to justice. Most day-to-day matters (evictions, benefits denials, consumer debt, minor torts, protective orders) run on patterns. The pleadings are mostly templated. The standards are well-traveled. Truly novel, fact-intensive litigation exists, but it’s not what jams the system. What jams the system is getting a person’s story, documents, and timeline into a structured shape that both (a) a forms engine can populate and (b) a court e-filing system will accept without bouncing.</p>
+<p>In other words, this is a data problem.</p>
+<p><strong>Intake is the narrowest point in the funnel</strong></p>
+<p>Think about what a lawyer, or a court, actually needs to move a case:</p>
+<ul>
+<li>
+<p>For a negligence claim: duty, breach, causation, damages plus dates, places, witnesses, and proof.</p>
+</li>
+<li>
+<p>For housing: the lease, notices, payment history, conditions complaints, photos, and a few key dates.</p>
+</li>
+<li>
+<p>For domestic violence: incident timeline, police reports, medical records, and an affidavit that satisfies statutory elements.</p>
+</li>
+</ul>
+<p>It’s… not that many pieces. But they never arrive neatly. They come as PDFs without text layers, screenshots, voicemails, email threads, photos of mail, and half-finished web forms. People don’t speak “elements.” They speak events. Intake’s job is translating events into elements, reliably, quickly, and in a format downstream tools and courts can consume.</p>
+<p>Today, that translation is fragile. Web forms time out. Uploaders reject file types. Phone trees lose people. Staff rebuild the same timeline three times in three systems. And even when data gets in, it’s often unstructured notes that can’t safely auto-populate a pleading or map onto a court’s rigid e-filing schema.</p>
+<p><strong>Why AI changes the intake equation</strong></p>
+<p>Large language models, used carefully, excel at turning unstructured information into structured records. That’s not hype; it’s the core competency:</p>
+<ul>
+<li>
+<p>Entity and fact extraction: names, dates, amounts, addresses, counterparties.</p>
+</li>
+<li>
+<p>Normalization: “last spring” → April 2025; “my landlord” → legal name from lease; “the blue Subaru” → VIN from photo metadata.</p>
+</li>
+<li>
+<p>Schema mapping: free-text narrative → fields that match court form sections and statutory elements.</p>
+</li>
+<li>
+<p>Document digestion: lease PDFs → key terms (rent, duration, cure periods); policy PDFs → coverage limits; photos → labeled exhibits.</p>
+</li>
+<li>
+<p>Timeline building: stitching texts, emails, notes, and receipts into a single, ordered chain of events, with provenance.</p>
+</li>
+</ul>
+<p>When you add guardrails, this becomes dependable: every extracted fact links back to its source; uncertain fields are flagged for confirmation; sensitive info is redacted according to court rules; outputs are produced in exactly the formats e-filing portals accept (XML/JSON for APIs, tagged PDFs for uploads, barcode cover sheets where required).</p>
+<p>The magic isn’t “AI writes your lawsuit.” It’s AI reads your life and returns a case-ready record.</p>
+<p><strong>What good intake looks like</strong></p>
+<p>A modern intake flow should feel less like a form and more like a conversation that accepts anything:</p>
+<ol>
+<li>
+<p>Capture on any channel. Open a door for voice, SMS/MMS, email, web, and in-person scanning. If all someone has is a shoebox of receipts and a camera roll, that’s enough.</p>
+</li>
+<li>
+<p>Ingest and structure. Convert everything into a unified case file: a timeline, a cast of entities, a set of issues, and a document bundle, each item linked to its source.</p>
+</li>
+<li>
+<p>Element check. Automatically map facts to elements (e.g., duty/breach/causation/damages) or statutory criteria, and show what’s missing, in plain language.</p>
+</li>
+<li>
+<p>Targeted follow-ups. Ask only the questions needed to fill gaps, not a 50-question intake. “I’m missing the lease end date; can you upload or state it?”</p>
+</li>
+<li>
+<p>Filing-ready exports. Generate the exact court packets with forms, affidavits, exhibits, indices, plus machine-readable data for e-filing APIs or portals.</p>
+</li>
+<li>
+<p>Audit and provenance. Every field is traceable to a source. Change history is logged. Confidence scores and redaction rules are explicit.</p>
+</li>
+</ol>
+<p>Do that, and everything downstream speeds up. Templates stay templates. Lawyers spend time on judgment calls, not data wrangling. Pro se litigants get farther with fewer dead ends. Legal aid triage becomes smarter because every case arrives in a standard shape.</p>
+<p><strong>“But won’t AI hallucinate?”</strong></p>
+<p>Not if we judge it by the right job. The job here isn’t creative writing; it’s grounded extraction. The system should be engineered to prefer omission over fabrication, to always cite the source for each extracted datum, and to require human confirmation when confidence is low or consequences are high. Think of it as a compiler for legal facts, not an author.</p>
+<p><strong>The payoff: more justice per minute</strong></p>
+<p>When intake unlocks clean data, everything else compounds:</p>
+<ul>
+<li>
+<p>Faster triage: clear eligibility screens, referrals, and conflicts checks.</p>
+</li>
+<li>
+<p>Higher filing success: fewer rejections for format or completeness.</p>
+</li>
+<li>
+<p>Better outcomes: stronger, consistent theories mapped to facts from day one.</p>
+</li>
+<li>
+<p>Lower cost per matter: staff shift from re-keying to resolving.</p>
+</li>
+</ul>
+<p>If we’re serious about access to justice, we shouldn’t ask, “How do we automate lawyers?” We should ask, “How do we eliminate the friction between a person’s messy reality and a court’s rigid requirements?” Intake is that friction.</p>
+<p>Maria eventually filed on time, not because a wizard lawyer wrote a brilliant new motion template, but because someone finally took her photos, texts, and voice notes and turned them into a structured case file that a forms engine and a court could understand.</p>
+<p>Scale that moment, and you scale justice.</p>
+</article>
+
+<footer>
+	<!-- FE0E after the arrow: text presentation, so Windows doesn't swap in a colour emoji glyph -->
+	<p><a href="/redesign/blog/">← writing</a></p>
+	<p><a href="https://jamesfbaker.substack.com/p/the-bottleneck-isnt-lawyering-its" target="_blank" rel="noopener">discuss on substack ↗&#xFE0E;</a></p>
+	<p><a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">get new essays by email ↗&#xFE0E;</a></p>
+</footer>
+
+</div>
+
+<script>
+	!function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Xr es pi Zr rs Kr Qr capture Ni calculateEventProperties os register register_once register_for_session unregister unregister_for_session ds getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty us ns createPersonProfile hs Vr vs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing ss debug O ls getPageViewId captureTraceFeedback captureTraceMetric qr".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+	posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj', {
+		api_host: 'https://us.i.posthog.com',
+		person_profiles: 'identified_only',
+		capture_pageview: true,
+		capture_pageleave: true,
+		autocapture: true
+	})
+</script>
+</body>
+</html>
