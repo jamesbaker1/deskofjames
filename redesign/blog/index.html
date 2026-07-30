@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing · James Baker</title>
+<meta name="description" content="Essays on legal technology and AI by James Baker.">
+<!-- preview build living under /redesign/ — not the canonical site -->
+<meta name="robots" content="noindex">
+
+<meta property="og:title" content="Writing · James Baker">
+<meta property="og:description" content="Essays on legal technology and AI by James Baker.">
+<meta property="og:image" content="https://deskofjim.com/redesign/og.png">
+<meta property="og:url" content="https://deskofjim.com/redesign/blog/">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+
+<link rel="preload" href="../fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../fonts-web/fonts.css">
+
+<style>
+:root {
+	--bg: #f7f5f0;
+	--ink: #1a1917;
+	--muted: #706c63;
+	--accent: #0f52ba;
+	--rule: rgba(26, 25, 23, .13);
+	--serif: Newsreader, Georgia, "Times New Roman", serif;
+	--mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 17px/1.65 var(--serif);
+}
+
+.column {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 5.5rem 1.75rem 4rem;
+}
+
+a { color: inherit; text-decoration: none; transition: color 120ms ease }
+a:hover { color: var(--accent) }
+
+/* --- header --- */
+
+.home {
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+h1 {
+	margin: 1.9rem 0 0;
+	font: 500 30px/1.2 var(--serif);
+	letter-spacing: -.005em;
+}
+
+.intro {
+	margin: .55rem 0 0;
+	font-size: 16.5px;
+	font-style: italic;
+	color: var(--muted);
+}
+
+.intro a {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+/* --- year and section labels --- */
+
+.year {
+	margin: 4.25rem 0 1.5rem;
+	padding-bottom: .5rem;
+	border-bottom: 1px solid var(--rule);
+	font: 400 12.5px var(--mono);
+	letter-spacing: .19em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+/* --- entries --- */
+
+.posts { margin: 0; padding: 0; list-style: none }
+
+.post {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: baseline;
+	column-gap: 2rem;
+	margin-bottom: 1.9rem;
+}
+
+.post h3 {
+	margin: 0;
+	font: 400 19px/1.4 var(--serif);
+}
+
+.post h3 a:hover {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+
+.post time {
+	grid-area: 1 / 2;
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+	white-space: nowrap;
+}
+
+.post p {
+	grid-column: 1 / -1;
+	margin: .28rem 0 0;
+	font-size: 14.5px;
+	line-height: 1.5;
+	color: var(--muted);
+	/* subtitles come from the feed and are occasionally long — hold them to two lines */
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+
+.note {
+	margin: 0;
+	font-size: 15.5px;
+	color: var(--muted);
+}
+
+.note a {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+/* --- footer --- */
+
+footer {
+	margin-top: 4.5rem;
+	padding-top: 1.4rem;
+	border-top: 1px solid var(--rule);
+	font: 400 12.5px/2 var(--mono);
+	color: var(--muted);
+}
+
+footer p { margin: 0 }
+
+@media (max-width: 560px) {
+	.column { padding: 3.5rem 1.4rem 3rem }
+	.post { grid-template-columns: 1fr; margin-bottom: 2.1rem }
+	.post time { grid-area: auto; margin-top: .3rem }
+}
+</style>
+</head>
+
+<body>
+<div class="column">
+
+<header>
+	<a class="home" href="../">James Baker</a>
+	<h1>Writing</h1>
+	<p class="intro">Essays on legal technology and AI — published on <a href="https://jamesfbaker.substack.com/" target="_blank" rel="noopener">Substack</a></p>
+</header>
+
+<main>
+	<div id="archive">
+		<noscript>
+			<h2 class="year">Posts</h2>
+			<p class="note">The list is assembled from a feed at load time. Without JavaScript, everything is on the <a href="https://jamesfbaker.substack.com/archive" target="_blank" rel="noopener">Substack archive</a>.</p>
+		</noscript>
+	</div>
+
+	<h2 class="year">Papers</h2>
+	<ol class="posts">
+		<li class="post">
+			<h3><a href="https://scholar.google.com/citations?user=mYkMGl8AAAAJ&amp;hl=en" target="_blank" rel="noopener">Improving graph neural network expressivity via subgraph isomorphism counting</a></h3>
+			<p>IEEE Trans. Pattern Analysis &amp; Machine Intelligence, 2022 · cited 734×</p>
+		</li>
+		<li class="post">
+			<h3><a href="https://scholar.google.com/citations?user=mYkMGl8AAAAJ&amp;hl=en" target="_blank" rel="noopener">Deep hybrid: multi-graph neural network collaboration for hyperspectral image classification</a></h3>
+			<p>Defence Technology, 2022 · cited 204×</p>
+		</li>
+		<li class="post">
+			<h3><a href="/infinite-jest.pdf">InfiniteContext: zero-pretrained memory transformers</a></h3>
+			<p>preprint, pdf</p>
+		</li>
+	</ol>
+</main>
+
+<footer>
+	<!-- FE0E after the arrow: text presentation, so Windows doesn't swap in a colour emoji glyph -->
+	<p><a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">subscribe on substack ↗&#xFE0E;</a></p>
+	<p>no framework, no build step · © james baker</p>
+</footer>
+
+</div>
+
+<script>
+(function () {
+	var MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+	var THIS_YEAR = String(new Date().getFullYear());
+	var archive = document.getElementById('archive');
+
+	// dates are plain ISO strings; split them by hand so no timezone can shift the month
+	function stamp(iso) {
+		var part = iso.split('-');
+		return MONTHS[+part[1] - 1] + ' ' + part[0];
+	}
+
+	function label(year) {
+		var h = document.createElement('h2');
+		h.className = 'year';
+		// the running year is an open range, so it reads "2026 —"
+		h.textContent = year === THIS_YEAR ? year + ' —' : year;
+		return h;
+	}
+
+	function entry(post) {
+		var li = document.createElement('li');
+		li.className = 'post';
+
+		var title = document.createElement('a');
+		title.href = post.url;
+		title.target = '_blank';
+		title.rel = 'noopener';
+		title.textContent = post.title;
+
+		var heading = document.createElement('h3');
+		heading.appendChild(title);
+
+		var when = document.createElement('time');
+		when.dateTime = post.date;
+		when.textContent = stamp(post.date);
+
+		li.appendChild(heading);
+		li.appendChild(when);
+
+		if (post.subtitle) {
+			var sub = document.createElement('p');
+			sub.textContent = post.subtitle;
+			li.appendChild(sub);
+		}
+		return li;
+	}
+
+	function render(posts) {
+		var out = document.createDocumentFragment();
+		var list = null;
+		var year = null;
+
+		posts.slice().sort(function (a, b) {
+			return b.date.localeCompare(a.date);
+		}).forEach(function (post) {
+			var y = post.date.slice(0, 4);
+			if (y !== year) {
+				year = y;
+				list = document.createElement('ol');
+				list.className = 'posts';
+				out.appendChild(label(y));
+				out.appendChild(list);
+			}
+			list.appendChild(entry(post));
+		});
+
+		archive.textContent = '';
+		archive.appendChild(out);
+	}
+
+	function offline() {
+		archive.textContent = '';
+		var h = document.createElement('h2');
+		h.className = 'year';
+		h.textContent = 'Posts';
+
+		var p = document.createElement('p');
+		p.className = 'note';
+		p.appendChild(document.createTextNode('The list didn’t load. Everything is on the '));
+
+		var a = document.createElement('a');
+		a.href = 'https://jamesfbaker.substack.com/archive';
+		a.target = '_blank';
+		a.rel = 'noopener';
+		a.textContent = 'Substack archive';
+		p.appendChild(a);
+		p.appendChild(document.createTextNode('.'));
+
+		archive.appendChild(h);
+		archive.appendChild(p);
+	}
+
+	fetch('posts.json')
+		.then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+		.then(function (data) {
+			if (data && data.posts && data.posts.length) render(data.posts);
+			else offline();
+		})
+		.catch(offline);
+})();
+</script>
+
+<script>
+	!function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Xr es pi Zr rs Kr Qr capture Ni calculateEventProperties os register register_once register_for_session unregister unregister_for_session ds getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty us ns createPersonProfile hs Vr vs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing ss debug O ls getPageViewId captureTraceFeedback captureTraceMetric qr".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+	posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj', {
+		api_host: 'https://us.i.posthog.com',
+		person_profiles: 'identified_only',
+		capture_pageview: true,
+		capture_pageleave: true,
+		autocapture: true
+	})
+</script>
+</body>
+</html>

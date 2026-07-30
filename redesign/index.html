@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>James Baker</title>
+<meta name="description" content="James Baker — engineer and attorney in New York.">
+<!-- preview build living under /redesign/ — not the canonical site -->
+<meta name="robots" content="noindex">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="James Baker">
+<meta property="og:description" content="James Baker — engineer and attorney in New York.">
+<meta property="og:url" content="https://deskofjim.com/redesign/">
+<meta property="og:image" content="https://deskofjim.com/redesign/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="fonts-web/fonts.css">
+
+<style>
+	html, body {
+		height: 100%;
+		margin: 0;
+		overflow: hidden;
+		background: #000;
+		color: #f2f0e9;
+		overscroll-behavior: none;
+	}
+
+	#sky, #sky canvas {
+		touch-action: none;
+	}
+
+	#sky {
+		position: fixed;
+		inset: 0;
+	}
+
+	#sky canvas { display: block; }
+
+	main {
+		position: fixed;
+		inset: 0;
+		z-index: 2;
+		height: 100dvh;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		pointer-events: none;
+		padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+	}
+
+	h1 {
+		margin: 0;
+		font: 400 clamp(20px, 4.5vw, 34px)/1 Newsreader, Georgia, serif;
+		text-transform: uppercase;
+		letter-spacing: 0.42em;
+		/* letter-spacing also trails the last glyph; pull it back so the word sits on the true centre */
+		margin-right: -0.42em;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	nav {
+		margin-top: 28px;
+		font: 12.5px/1 ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+		color: #8a877f;
+	}
+
+	nav a {
+		color: inherit;
+		text-decoration: none;
+		padding-bottom: 3px;
+		border-bottom: 1px solid transparent;
+		pointer-events: auto;
+		transition: color 120ms ease, border-color 120ms ease;
+	}
+
+	nav a:hover, nav a:focus-visible { color: #fff; border-bottom-color: #fff; }
+
+	nav span { opacity: 0.4; }
+
+	#dots {
+		position: fixed;
+		z-index: 3;
+		right: calc(20px + env(safe-area-inset-right));
+		bottom: calc(20px + env(safe-area-inset-bottom));
+		line-height: 0;
+		opacity: 0.22;
+		transition: opacity 120ms ease;
+	}
+
+	#dots:hover, #dots:focus-visible { opacity: 0.6; }
+
+	/* Entrance only exists when the sim does — no script, no hiding. */
+	.js h1, .js nav { opacity: 0; }
+	.js h1 { transition: opacity 1.2s ease; }
+	.js nav { transition: opacity 1.2s ease 250ms; }
+	.ready h1, .ready nav { opacity: 1; }
+
+	@media (prefers-reduced-motion: reduce) {
+		.js h1, .js nav { transition: none; }
+	}
+</style>
+<script>document.documentElement.className = "js";</script>
+</head>
+
+<body>
+
+<div id="sky"></div>
+
+<main>
+	<h1>James Baker</h1>
+	<nav>
+		<a href="blog/">writing</a>
+		<span>·</span>
+		<a href="https://github.com/jamesbaker1" target="_blank" rel="noopener">github</a>
+		<span>·</span>
+		<a href="https://www.linkedin.com/in/jamesfrancisbaker/" target="_blank" rel="noopener">linkedin</a>
+		<span>·</span>
+		<a href="https://scholar.google.com/citations?user=mYkMGl8AAAAJ&amp;hl=en" target="_blank" rel="noopener">scholar</a>
+	</nav>
+</main>
+
+<a id="dots" href="puzzle/" aria-label="nine dots">
+	<svg width="16" height="16" viewBox="0 0 16 16" fill="#f2f0e9" aria-hidden="true">
+		<circle cx="1" cy="1" r="1"/><circle cx="8" cy="1" r="1"/><circle cx="15" cy="1" r="1"/>
+		<circle cx="1" cy="8" r="1"/><circle cx="8" cy="8" r="1"/><circle cx="15" cy="8" r="1"/>
+		<circle cx="1" cy="15" r="1"/><circle cx="8" cy="15" r="1"/><circle cx="15" cy="15" r="1"/>
+	</svg>
+</a>
+
+<!-- the vendored three.js r98 at the site root is byte-identical; no need to carry a second copy -->
+<script src="../js/three.js"></script>
+<script src="../js/WebGL.js"></script>
+<script src="../js/GPUComputationRenderer.js"></script>
+
+<!--
+TODO: If you're reading this, you may wish to improve this by
+	- creating a better shading for the birds?
+
+	update, jul 2026: finally did. only took seven years.
+-->
+
+<!-- shader for bird's position -->
+<script id="fragmentShaderPosition" type="x-shader/x-fragment">
+
+	uniform float time;
+	uniform float delta;
+
+	void main()	{
+
+		vec2 uv = gl_FragCoord.xy / resolution.xy;
+		vec4 tmpPos = texture2D( texturePosition, uv );
+		vec3 position = tmpPos.xyz;
+		vec3 velocity = texture2D( textureVelocity, uv ).xyz;
+
+		float phase = tmpPos.w;
+
+		phase = mod( ( phase + delta +
+			length( velocity.xz ) * delta * 3. +
+			max( velocity.y, 0.0 ) * delta * 6. ), 62.83 );
+
+		gl_FragColor = vec4( position + velocity * delta * 15. , phase );
+
+	}
+
+</script>
+
+<!-- shader for bird's velocity -->
+<script id="fragmentShaderVelocity" type="x-shader/x-fragment">
+
+	uniform float time;
+	uniform float testing;
+	uniform float delta; // about 0.016
+	uniform float seperationDistance; // 20
+	uniform float alignmentDistance; // 40
+	uniform float cohesionDistance; //
+	uniform float freedomFactor;
+	uniform vec3 predator;
+	uniform float predatorSign;  // +1 flee, -1 gather (pointer held, or a link under the cursor)
+	uniform float predatorForce; // 0..1, fades a parked cursor out so the flock re-centres
+
+	const float width = resolution.x;
+	const float height = resolution.y;
+
+	const float PI = 3.141592653589793;
+	const float PI_2 = PI * 2.0;
+	// const float VISION = PI * 0.55;
+
+	float zoneRadius = 40.0;
+	float zoneRadiusSquared = 1600.0;
+
+	float separationThresh = 0.45;
+	float alignmentThresh = 0.65;
+
+	const float UPPER_BOUNDS = BOUNDS;
+	const float LOWER_BOUNDS = -UPPER_BOUNDS;
+
+	const float SPEED_LIMIT = 9.0;
+
+	float rand(vec2 co){
+		return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+	}
+
+	void main() {
+
+		zoneRadius = seperationDistance + alignmentDistance + cohesionDistance;
+		separationThresh = seperationDistance / zoneRadius;
+		alignmentThresh = ( seperationDistance + alignmentDistance ) / zoneRadius;
+		zoneRadiusSquared = zoneRadius * zoneRadius;
+
+
+		vec2 uv = gl_FragCoord.xy / resolution.xy;
+		vec3 birdPosition, birdVelocity;
+
+		vec3 selfPosition = texture2D( texturePosition, uv ).xyz;
+		vec3 selfVelocity = texture2D( textureVelocity, uv ).xyz;
+
+		float dist;
+		vec3 dir; // direction
+		float distSquared;
+
+		float seperationSquared = seperationDistance * seperationDistance;
+		float cohesionSquared = cohesionDistance * cohesionDistance;
+
+		float f;
+		float percent;
+
+		vec3 velocity = selfVelocity;
+
+		float limit = SPEED_LIMIT;
+
+		dir = predator * UPPER_BOUNDS - selfPosition;
+		dir.z = 0.;
+		// dir.z *= 0.6;
+		dist = length( dir );
+		distSquared = dist * dist;
+
+		// gathering reaches further and pulls softer than fleeing, or it collapses into a knot
+		float preyRadius = predatorSign > 0.0 ? 150.0 : 200.0;
+		float preyGain = predatorSign > 0.0 ? 100.0 : 55.0;
+		float preyRadiusSq = preyRadius * preyRadius;
+
+
+		// move birds away from predator
+		if (dist < preyRadius) {
+
+			f = ( distSquared / preyRadiusSq - 1.0 ) * delta * preyGain;
+			velocity += normalize( dir ) * f * predatorSign * predatorForce;
+			limit += 5.0 * predatorForce;
+
+		}
+
+
+		// if (testing == 0.0) {}
+		// if ( rand( uv + time ) < freedomFactor ) {}
+
+
+		// Attract flocks to the center
+		vec3 central = vec3( 0., 0., 0. );
+		dir = selfPosition - central;
+		dist = length( dir );
+
+		dir.y *= 2.5;
+		velocity -= normalize( dir ) * delta * 5.;
+
+		for (float y=0.0;y<height;y++) {
+			for (float x=0.0;x<width;x++) {
+
+				vec2 ref = vec2( x + 0.5, y + 0.5 ) / resolution.xy;
+				birdPosition = texture2D( texturePosition, ref ).xyz;
+
+				dir = birdPosition - selfPosition;
+				dist = length(dir);
+
+				if (dist < 0.0001) continue;
+
+				distSquared = dist * dist;
+
+				if (distSquared > zoneRadiusSquared ) continue;
+
+				percent = distSquared / zoneRadiusSquared;
+
+				if ( percent < separationThresh ) { // low
+
+					// Separation - Move apart for comfort
+					f = (separationThresh / percent - 1.0) * delta;
+					velocity -= normalize(dir) * f;
+
+				} else if ( percent < alignmentThresh ) { // high
+
+					// Alignment - fly the same direction
+					float threshDelta = alignmentThresh - separationThresh;
+					float adjustedPercent = ( percent - separationThresh ) / threshDelta;
+
+					birdVelocity = texture2D( textureVelocity, ref ).xyz;
+
+					f = ( 0.5 - cos( adjustedPercent * PI_2 ) * 0.5 + 0.5 ) * delta;
+					velocity += normalize(birdVelocity) * f;
+
+				} else {
+
+					// Attraction / Cohesion - move closer
+					float threshDelta = 1.0 - alignmentThresh;
+					float adjustedPercent = ( percent - alignmentThresh ) / threshDelta;
+
+					f = ( 0.5 - ( cos( adjustedPercent * PI_2 ) * -0.5 + 0.5 ) ) * delta;
+
+					velocity += normalize(dir) * f;
+
+				}
+
+			}
+
+		}
+
+
+
+		// this make tends to fly around than down or up
+		// if (velocity.y > 0.) velocity.y *= (1. - 0.2 * delta);
+
+		// Speed Limits
+		if ( length( velocity ) > limit ) {
+			velocity = normalize( velocity ) * limit;
+		}
+
+		gl_FragColor = vec4( velocity, 1.0 );
+
+	}
+
+</script>
+
+<script type="x-shader/x-vertex" id="birdVS">
+
+	attribute vec2 reference;
+	attribute float birdVertex;
+
+	attribute vec3 birdColor;
+
+	uniform sampler2D texturePosition;
+	uniform sampler2D textureVelocity;
+
+	varying vec3 vColor;
+	varying float vSheen;
+	varying float vDepth;
+
+	uniform float time;
+
+	// one fixed light, high and slightly behind: birds flash as they bank into it
+	const vec3 KEY = vec3( 0.35, 0.9, 0.2 );
+
+	void main() {
+
+		vec4 tmpPos = texture2D( texturePosition, reference );
+		vec3 pos = tmpPos.xyz;
+		vec3 velocity = normalize(texture2D( textureVelocity, reference ).xyz);
+
+		vSheen = 0.5 + 0.5 * dot( velocity, normalize( KEY ) );
+
+		vec3 newPosition = position;
+
+		if ( birdVertex == 4.0 || birdVertex == 7.0 ) {
+			// flap wings
+			newPosition.y = sin( tmpPos.w ) * 5.;
+		}
+
+		newPosition = mat3( modelMatrix ) * newPosition;
+
+
+		velocity.z *= -1.;
+		float xz = length( velocity.xz );
+		float xyz = 1.;
+		float x = sqrt( 1. - velocity.y * velocity.y );
+
+		float cosry = velocity.x / xz;
+		float sinry = velocity.z / xz;
+
+		float cosrz = x / xyz;
+		float sinrz = velocity.y / xyz;
+
+		mat3 maty =  mat3(
+			cosry, 0, -sinry,
+			0    , 1, 0     ,
+			sinry, 0, cosry
+
+		);
+
+		mat3 matz =  mat3(
+			cosrz , sinrz, 0,
+			-sinrz, cosrz, 0,
+			0     , 0    , 1
+		);
+
+		newPosition =  maty * matz * newPosition;
+		newPosition += pos;
+
+		vColor = birdColor;
+
+		vec4 viewPosition = viewMatrix * vec4( newPosition, 1.0 );
+		vDepth = -viewPosition.z;
+
+		gl_Position = projectionMatrix * viewPosition;
+	}
+
+</script>
+
+<!-- bird geometry shader -->
+<script type="x-shader/x-fragment" id="birdFS">
+
+	varying vec3 vColor;
+	varying float vSheen;
+	varying float vDepth;
+
+	const vec3 BODY = vec3( 0.847, 0.831, 0.784 );
+
+	void main() {
+
+		// birdColor still carries the old per-bird ramp (0.27..0.67); re-centre it as a tone variance
+		float tone = 0.72 + 0.42 * vColor.x;
+
+		vec3 body = BODY * tone * ( 0.62 + 0.78 * vSheen );
+
+		// the flock has no edge: distance dissolves it into the page
+		float fade = 1.0 - smoothstep( 480.0, 1250.0, vDepth );
+
+		gl_FragColor = vec4( body * fade, 1.0 );
+
+	}
+
+</script>
+
+
+<script>
+
+	var BOUNDS = 800, BOUNDS_HALF = BOUNDS / 2;
+
+	var small = window.matchMedia( '(pointer: coarse)' ).matches || window.innerWidth < 700;
+	var hoverable = window.matchMedia( '(hover: hover)' ).matches;
+	var slowly = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+
+	// texture width, so bird count is WIDTH squared. ?birds=N overrides and disables the auto-downgrade.
+	var ladder = small ? [ 24, 16 ] : [ 64, 32, 22, 14 ];
+	var rung = 0;
+	var asked = parseInt( new URLSearchParams( location.search ).get( 'birds' ), 10 );
+	var pinned = isFinite( asked );
+	var WIDTH = pinned ? Math.min( 64, Math.max( 8, asked ) ) : ladder[ rung ];
+	// the reference attribute aliases through the sim texture by triangle index, which only
+	// resolves to whole birds when WIDTH² % 3 != 0 — widths divisible by 3 shred the flock
+	if ( WIDTH % 3 === 0 ) WIDTH += 1;
+
+	var container = document.getElementById( 'sky' );
+	var camera, scene, renderer;
+	var gpuCompute, positionVariable, velocityVariable, positionUniforms, velocityUniforms, birdUniforms, birdMesh;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	// predator target lives in the same space as the cursor: pixels offset from the viewport centre
+	var mouseX = 0, mouseY = 0;
+	var moved = -1e9;      // timestamp of the last real pointer movement
+	var held = false;      // pointer down anywhere
+	var leaning = null;    // { x, y } centre of the link under the cursor
+
+	// mobile tilt
+	var tiltX = 0, tiltY = 0;
+	var useGyroscope = false;
+	var gyroscopeAvailable = false;
+	var iosPermissionRequested = false;
+	var touchOverride = false, touchOverrideTimeout;
+	var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent );
+
+	var raf = 0, last = 0, ready = false;
+	var watching = ! pinned && ladder.length > 1;
+	var fpsSince = 0, fpsFrames = 0;
+
+	if ( WEBGL.isWebGLAvailable() ) {
+
+		try {
+
+			init();
+			build();
+			start();
+			note();
+
+		} catch ( e ) {
+
+			grounded( e );
+
+		}
+
+	} else {
+
+		document.documentElement.classList.add( 'ready' );
+
+	}
+
+	// some GPUs pass the WebGL check but can't run the sim (no float textures, no vertex
+	// texture fetch). the page must never be blank because the birds stayed home.
+	function grounded( e ) {
+
+		cancelAnimationFrame( raf );
+		raf = 0;
+		document.documentElement.classList.add( 'ready' );
+		if ( container.parentNode ) container.parentNode.removeChild( container );
+		console.error( 'the birds stayed home:', e );
+
+	}
+
+	function init() {
+
+		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 );
+		camera.position.z = 350;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.WebGLRenderer( { antialias: window.devicePixelRatio < 2 } );
+		renderer.setClearColor( 0x000000, 1 );
+		renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		container.appendChild( renderer.domElement );
+
+		window.addEventListener( 'resize', onWindowResize, false );
+		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+		document.addEventListener( 'touchstart', onDocumentTouchStart, { passive: true } );
+		document.addEventListener( 'touchmove', onDocumentTouchMove, { passive: true } );
+		document.addEventListener( 'touchend', onDocumentTouchEnd, false );
+		window.addEventListener( 'pointerdown', function ( event ) {
+
+			// right-click opens a context menu whose pointerup never arrives; only the
+			// primary button may gather the flock
+			if ( event.button === 0 ) held = true;
+
+		}, false );
+		[ 'pointerup', 'pointercancel', 'blur', 'contextmenu' ].forEach( function ( name ) {
+
+			window.addEventListener( name, function () { held = false; }, false );
+
+		} );
+		document.addEventListener( 'visibilitychange', onVisibilityChange, false );
+
+		if ( hoverable ) {
+
+			var links = document.querySelectorAll( 'nav a' );
+
+			for ( var i = 0; i < links.length; i ++ ) {
+
+				links[ i ].addEventListener( 'mouseenter', onLinkEnter, false );
+				links[ i ].addEventListener( 'mouseleave', onLinkLeave, false );
+
+			}
+
+		}
+
+		if ( isMobile ) initGyroscope();
+
+	}
+
+	function build() {
+
+		gpuCompute = new GPUComputationRenderer( WIDTH, WIDTH, renderer );
+
+		var dtPosition = gpuCompute.createTexture();
+		var dtVelocity = gpuCompute.createTexture();
+		fillPositionTexture( dtPosition );
+		fillVelocityTexture( dtVelocity );
+
+		velocityVariable = gpuCompute.addVariable( "textureVelocity", document.getElementById( 'fragmentShaderVelocity' ).textContent, dtVelocity );
+		positionVariable = gpuCompute.addVariable( "texturePosition", document.getElementById( 'fragmentShaderPosition' ).textContent, dtPosition );
+
+		gpuCompute.setVariableDependencies( velocityVariable, [ positionVariable, velocityVariable ] );
+		gpuCompute.setVariableDependencies( positionVariable, [ positionVariable, velocityVariable ] );
+
+		positionUniforms = positionVariable.material.uniforms;
+		velocityUniforms = velocityVariable.material.uniforms;
+
+		positionUniforms.time = { value: 0.0 };
+		positionUniforms.delta = { value: 0.0 };
+		velocityUniforms.time = { value: 1.0 };
+		velocityUniforms.delta = { value: 0.0 };
+		velocityUniforms.testing = { value: 1.0 };
+		velocityUniforms.seperationDistance = { value: 20.0 };
+		velocityUniforms.alignmentDistance = { value: 20.0 };
+		velocityUniforms.cohesionDistance = { value: 20.0 };
+		velocityUniforms.freedomFactor = { value: 0.75 };
+		velocityUniforms.predator = { value: new THREE.Vector3() };
+		velocityUniforms.predatorSign = { value: 1.0 };
+		velocityUniforms.predatorForce = { value: 0.0 };
+		velocityVariable.material.defines.BOUNDS = BOUNDS.toFixed( 2 );
+
+		velocityVariable.wrapS = THREE.RepeatWrapping;
+		velocityVariable.wrapT = THREE.RepeatWrapping;
+		positionVariable.wrapS = THREE.RepeatWrapping;
+		positionVariable.wrapT = THREE.RepeatWrapping;
+
+		var error = gpuCompute.init();
+		if ( error !== null ) throw new Error( error );
+
+		birdUniforms = {
+			texturePosition: { value: null },
+			textureVelocity: { value: null },
+			time: { value: 1.0 },
+			delta: { value: 0.0 }
+		};
+
+		birdMesh = new THREE.Mesh( birdGeometry( WIDTH ), new THREE.ShaderMaterial( {
+			uniforms: birdUniforms,
+			vertexShader: document.getElementById( 'birdVS' ).textContent,
+			fragmentShader: document.getElementById( 'birdFS' ).textContent,
+			side: THREE.DoubleSide
+		} ) );
+
+		birdMesh.rotation.y = Math.PI / 2;
+		birdMesh.matrixAutoUpdate = false;
+		birdMesh.updateMatrix();
+
+		scene.add( birdMesh );
+
+	}
+
+	function teardown() {
+
+		scene.remove( birdMesh );
+		birdMesh.geometry.dispose();
+		birdMesh.material.dispose();
+
+		for ( var i = 0; i < gpuCompute.variables.length; i ++ ) {
+
+			var v = gpuCompute.variables[ i ];
+			v.renderTargets[ 0 ].dispose();
+			v.renderTargets[ 1 ].dispose();
+			v.initialValueTexture.dispose();
+			v.material.dispose();
+
+		}
+
+	}
+
+	// Custom Geometry - using 3 triangles each. No UVs, no normals currently.
+	function birdGeometry( width ) {
+
+		var birds = width * width;
+		var triangles = birds * 3;
+		var points = triangles * 3;
+
+		var geometry = new THREE.BufferGeometry();
+
+		var vertices = new THREE.BufferAttribute( new Float32Array( points * 3 ), 3 );
+		var birdColors = new THREE.BufferAttribute( new Float32Array( points * 3 ), 3 );
+		var references = new THREE.BufferAttribute( new Float32Array( points * 2 ), 2 );
+		var birdVertex = new THREE.BufferAttribute( new Float32Array( points ), 1 );
+
+		geometry.addAttribute( 'position', vertices );
+		geometry.addAttribute( 'birdColor', birdColors );
+		geometry.addAttribute( 'reference', references );
+		geometry.addAttribute( 'birdVertex', birdVertex );
+
+		var v = 0;
+
+		function verts_push() {
+
+			for ( var i = 0; i < arguments.length; i ++ ) vertices.array[ v ++ ] = arguments[ i ];
+
+		}
+
+		var wingsSpan = 20;
+
+		for ( var f = 0; f < birds; f ++ ) {
+
+			// Body
+			verts_push(
+				0, - 0, - 20,
+				0, 4, - 20,
+				0, 0, 30
+			);
+
+			// Left Wing
+			verts_push(
+				0, 0, - 15,
+				- wingsSpan, 0, 0,
+				0, 0, 15
+			);
+
+			// Right Wing
+			verts_push(
+				0, 0, 15,
+				wingsSpan, 0, 0,
+				0, 0, - 15
+			);
+
+		}
+
+		for ( var w = 0; w < triangles * 3; w ++ ) {
+
+			var i = ~ ~ ( w / 3 );
+			var x = ( i % width ) / width;
+			var y = ~ ~ ( i / width ) / width;
+
+			var c = new THREE.Color(
+				0x444444 +
+				~ ~ ( w / 9 ) / birds * 0x666666
+			);
+
+			birdColors.array[ w * 3 + 0 ] = c.r;
+			birdColors.array[ w * 3 + 1 ] = c.g;
+			birdColors.array[ w * 3 + 2 ] = c.b;
+
+			references.array[ w * 2 ] = x;
+			references.array[ w * 2 + 1 ] = y;
+
+			birdVertex.array[ w ] = w % 9;
+
+		}
+
+		geometry.scale( 0.24, 0.24, 0.24 );
+
+		return geometry;
+
+	}
+
+	function fillPositionTexture( texture ) {
+
+		var theArray = texture.image.data;
+
+		for ( var k = 0, kl = theArray.length; k < kl; k += 4 ) {
+
+			theArray[ k + 0 ] = Math.random() * BOUNDS - BOUNDS_HALF;
+			theArray[ k + 1 ] = Math.random() * BOUNDS - BOUNDS_HALF;
+			theArray[ k + 2 ] = Math.random() * BOUNDS - BOUNDS_HALF;
+			theArray[ k + 3 ] = 1;
+
+		}
+
+	}
+
+	function fillVelocityTexture( texture ) {
+
+		var theArray = texture.image.data;
+
+		for ( var k = 0, kl = theArray.length; k < kl; k += 4 ) {
+
+			theArray[ k + 0 ] = ( Math.random() - 0.5 ) * 10;
+			theArray[ k + 1 ] = ( Math.random() - 0.5 ) * 10;
+			theArray[ k + 2 ] = ( Math.random() - 0.5 ) * 10;
+			theArray[ k + 3 ] = 1;
+
+		}
+
+	}
+
+	function onWindowResize() {
+
+		windowHalfX = window.innerWidth / 2;
+		windowHalfY = window.innerHeight / 2;
+
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+
+		renderer.setSize( window.innerWidth, window.innerHeight );
+
+		leaning = null;
+
+	}
+
+	function onDocumentMouseMove( event ) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+		moved = performance.now();
+
+	}
+
+	function onDocumentTouchStart( event ) {
+
+		if ( event.touches.length === 1 ) {
+
+			mouseX = event.touches[ 0 ].pageX - windowHalfX;
+			mouseY = event.touches[ 0 ].pageY - windowHalfY;
+			moved = performance.now();
+
+			// Temporarily override gyroscope with touch
+			if ( gyroscopeAvailable ) {
+
+				touchOverride = true;
+				clearTimeout( touchOverrideTimeout );
+
+			}
+
+		}
+
+	}
+
+	function onDocumentTouchMove( event ) {
+
+		if ( event.touches.length === 1 ) {
+
+			mouseX = event.touches[ 0 ].pageX - windowHalfX;
+			mouseY = event.touches[ 0 ].pageY - windowHalfY;
+			moved = performance.now();
+
+		}
+
+	}
+
+	function onDocumentTouchEnd() {
+
+		// Return to gyroscope control after touch ends (with small delay)
+		if ( gyroscopeAvailable && touchOverride ) {
+
+			touchOverrideTimeout = setTimeout( function () { touchOverride = false; }, 500 );
+
+		}
+
+	}
+
+	function onLinkEnter( event ) {
+
+		var r = event.currentTarget.getBoundingClientRect();
+		leaning = { x: r.left + r.width / 2 - windowHalfX, y: r.top + r.height / 2 - windowHalfY };
+
+	}
+
+	function onLinkLeave() {
+
+		leaning = null;
+
+	}
+
+	function onVisibilityChange() {
+
+		if ( document.hidden ) {
+
+			cancelAnimationFrame( raf );
+			raf = 0;
+
+		} else if ( raf === 0 ) {
+
+			start();
+
+		}
+
+	}
+
+	// Gyroscope functions for mobile
+	function initGyroscope() {
+
+		if ( typeof DeviceOrientationEvent === 'undefined' ) return;
+
+		if ( typeof DeviceOrientationEvent.requestPermission === 'function' ) {
+
+			// iOS 13+ asks on the first tap anywhere
+			document.addEventListener( 'touchstart', requestIOSPermission, { once: true } );
+
+		} else {
+
+			enableGyroscope();
+
+		}
+
+	}
+
+	function requestIOSPermission() {
+
+		if ( iosPermissionRequested ) return;
+		iosPermissionRequested = true;
+
+		DeviceOrientationEvent.requestPermission()
+			.then( function ( response ) {
+
+				if ( response === 'granted' ) enableGyroscope();
+
+			} )
+			.catch( function () {} );
+
+	}
+
+	function enableGyroscope() {
+
+		window.addEventListener( 'deviceorientation', handleDeviceOrientation, true );
+		gyroscopeAvailable = true;
+		useGyroscope = true;
+
+	}
+
+	function handleDeviceOrientation( event ) {
+
+		if ( ! useGyroscope ) return;
+
+		var gamma = event.gamma || 0; // left-right
+		var beta = event.beta || 0;   // front-back
+
+		gamma = Math.max( - 45, Math.min( 45, gamma ) );
+		beta = Math.max( - 45, Math.min( 45, beta - 45 ) ); // held at an angle, so recentre
+
+		tiltX = ( gamma / 45 ) * windowHalfX * 1.5;
+		tiltY = ( beta / 45 ) * windowHalfY * 1.5;
+
+	}
+
+	function start() {
+
+		last = performance.now();
+		fpsSince = 0;
+		fpsFrames = 0;
+		raf = requestAnimationFrame( loop );
+
+	}
+
+	function loop() {
+
+		raf = requestAnimationFrame( loop );
+
+		if ( ready ) {
+
+			render();
+
+		} else {
+
+			// r98 swallows some context failures until the first real frame
+			try { render(); } catch ( e ) { grounded( e ); }
+
+		}
+
+	}
+
+	function render() {
+
+		var now = performance.now();
+		var delta = ( now - last ) / 1000;
+
+		if ( delta > 1 ) delta = 1; // safety cap on large deltas
+		last = now;
+
+		if ( slowly ) delta *= 0.12;
+
+		// a slow drift — a minute-long breath, just enough parallax to feel the depth
+		if ( ! slowly ) {
+
+			camera.position.x = 40 * Math.sin( now * 0.00008 );
+			camera.position.y = 24 * Math.sin( now * 0.00005 );
+			camera.lookAt( scene.position );
+
+		}
+
+		positionUniforms.time.value = now;
+		positionUniforms.delta.value = delta;
+		velocityUniforms.time.value = now;
+		velocityUniforms.delta.value = delta;
+		birdUniforms.time.value = now;
+		birdUniforms.delta.value = delta;
+
+		aim( now );
+
+		gpuCompute.compute();
+
+		birdUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
+		birdUniforms.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
+
+		renderer.render( scene, camera );
+
+		if ( ! ready ) {
+
+			ready = true;
+			document.documentElement.classList.add( 'ready' );
+
+		}
+
+		if ( watching ) watchFrameRate( now );
+
+	}
+
+	// Where the flock is pushed from, or pulled toward, this frame.
+	function aim( now ) {
+
+		var x, y, sign = 1, force;
+
+		if ( leaning ) {
+
+			x = leaning.x;
+			y = leaning.y;
+			sign = - 1;
+			force = 0.45; // a lean toward the word, not a swarm
+
+		} else if ( useGyroscope && gyroscopeAvailable && ! touchOverride ) {
+
+			x = tiltX;
+			y = tiltY;
+			force = 1;
+
+		} else {
+
+			x = mouseX;
+			y = mouseY;
+			// a cursor left sitting stops mattering after ~3s, so the flock drifts back to centre
+			force = 1 - Math.min( 1, Math.max( 0, ( ( now - moved ) / 1000 - 1.5 ) / 1.5 ) );
+			if ( held ) { sign = - 1; force = 1; }
+
+		}
+
+		velocityUniforms.predator.value.set( 0.5 * x / windowHalfX, - 0.5 * y / windowHalfY, 0 );
+		velocityUniforms.predatorSign.value = sign;
+		velocityUniforms.predatorForce.value = force;
+
+	}
+
+	// Four seconds of honest measurement; anything under 38fps drops a tier and starts over.
+	function watchFrameRate( now ) {
+
+		if ( fpsSince === 0 ) {
+
+			fpsSince = now;
+			return;
+
+		}
+
+		fpsFrames ++;
+
+		if ( now - fpsSince < 4000 ) return;
+
+		if ( fpsFrames * 1000 / ( now - fpsSince ) < 38 ) {
+
+			WIDTH = ladder[ ++ rung ];
+			watching = rung < ladder.length - 1;
+			cancelAnimationFrame( raf );
+			teardown();
+			build();
+			start();
+			return;
+
+		}
+
+		watching = false; // fast enough
+
+	}
+
+	function note() {
+
+		console.log(
+			'   \\\n' +
+			'   (o>\n' +
+			'   //\\\n' +
+			'   V_/_\n' +
+			'every bird here is computed on your GPU — two fragment shaders\n' +
+			'(position + velocity), zero physics on the CPU.\n' +
+			'the flock sizes itself to your framerate; ?birds=N (8–64) pins it.\n' +
+			'source: github.com/jamesbaker1/deskofjames\n' +
+			'p.s. the nine dots in the corner go somewhere.'
+		);
+
+	}
+
+</script>
+
+<!-- PostHog -->
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Xr es pi Zr rs Kr Qr capture Ni calculateEventProperties os register register_once register_for_session unregister unregister_for_session ds getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty us ns createPersonProfile hs Vr vs opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing ss debug O ls getPageViewId captureTraceFeedback captureTraceMetric qr".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj', {
+        api_host: 'https://us.i.posthog.com',
+        person_profiles: 'identified_only',
+        capture_pageview: true,
+        capture_pageleave: true,
+        autocapture: true
+    })
+</script>
+
+</body>
+</html>

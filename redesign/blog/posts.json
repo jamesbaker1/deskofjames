@@ -1,0 +1,66 @@
+{
+  "source": "https://jamesfbaker.substack.com/feed",
+  "generated": "2026-07-29T00:00:00Z",
+  "posts": [
+    {
+      "title": "AI Is Bayesian Evidence That We Live in a Simulation",
+      "url": "https://jamesfbaker.substack.com/p/ai-is-bayesian-evidence-that-we-live",
+      "date": "2026-07-15",
+      "subtitle": "Artificial intelligence does not prove that we live in a simulation. But it should update our priors."
+    },
+    {
+      "title": "Why the AI Renaissance Keeps Not Arriving (and why it won’t under the current post-training regime)",
+      "url": "https://jamesfbaker.substack.com/p/why-the-ai-renaissance-keeps-not",
+      "date": "2026-06-12",
+      "subtitle": "The subtle and frustrating nature of manifold collapse"
+    },
+    {
+      "title": "The bottleneck isn’t lawyering. It’s intake.",
+      "url": "https://jamesfbaker.substack.com/p/the-bottleneck-isnt-lawyering-its",
+      "date": "2025-08-10",
+      "subtitle": "Maria wasn’t short on evidence, she was short on structure."
+    },
+    {
+      "title": "The Overlooked Primitive in Legal Technology: Client Experience",
+      "url": "https://jamesfbaker.substack.com/p/the-overlooked-primitive-in-legal",
+      "date": "2025-07-28",
+      "subtitle": "Legal tech has come a long way."
+    },
+    {
+      "title": "Infinite Context",
+      "url": "https://jamesfbaker.substack.com/p/infinite-context",
+      "date": "2025-07-05",
+      "subtitle": "Why Your Future Chatbot Won’t Need a Memory Palace of Text"
+    },
+    {
+      "title": "Leveraging Technical Debt Like Financial Debt",
+      "url": "https://jamesfbaker.substack.com/p/leveraging-technical-debt-like-financial",
+      "date": "2025-04-28",
+      "subtitle": "Early-stage startups live in a strange limbo:"
+    },
+    {
+      "title": "Voice Agent for Law",
+      "url": "https://jamesfbaker.substack.com/p/voice-agent-for-law",
+      "date": "2025-04-19",
+      "subtitle": "Is voice the ideal method to interact with AI tools?"
+    },
+    {
+      "title": "Some Musings on the Rise of Agentic Legal AI",
+      "url": "https://jamesfbaker.substack.com/p/some-musings-on-the-rise-of-agentic",
+      "date": "2025-04-11",
+      "subtitle": "Lawyers will revert to their stated purpose - a counselor"
+    },
+    {
+      "title": "How DeepSeek’s Innovation can Reshape Legal Technology",
+      "url": "https://jamesfbaker.substack.com/p/how-deepseeks-innovation-can-reshape",
+      "date": "2025-01-29",
+      "subtitle": "DeepSeek is built on a straightforward but powerful idea: teach a large language model to reason thoroughly before returning its final answer."
+    },
+    {
+      "title": "Building an AI Assistant for Legal Citations",
+      "url": "https://jamesfbaker.substack.com/p/how-i-made-bluey-bot",
+      "date": "2024-12-16",
+      "subtitle": "BlueyBot"
+    }
+  ]
+}
