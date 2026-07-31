@@ -3,10 +3,10 @@
   "generated": "2026-07-30T04:05:25Z",
   "posts": [
     {
-      "title": "SWAG: what happened when I let every token choose its own positional scales",
+      "title": "SWAG: scale-wise adaptive gating for rotary position embeddings",
       "url": "https://deskofjim.com/blog/swag/",
       "date": "2026-07-31",
-      "subtitle": "gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time",
+      "subtitle": "an interactive tour of what each token learned about position — best in-distribution loss of six variants, one real trade-off, ~$6 of GPU",
       "slug": "swag",
       "local": true
     },

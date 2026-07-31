@@ -1,221 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- the dials below run on the actual gate values from the trained checkpoint.
+     nothing on this page is mocked. results/gate_profile_enwik8_gated_seed1.json -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SWAG: what happened when I let every token choose its own positional scales · James Baker</title>
-<meta name="description" content="gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time">
-<link rel="canonical" href="https://deskofjim.com/blog/swag/">
-
-<meta property="og:title" content="SWAG: what happened when I let every token choose its own positional scales · James Baker">
-<meta property="og:description" content="gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time">
-<meta property="og:image" content="https://deskofjim.com/og.png">
-<meta property="og:url" content="https://deskofjim.com/blog/swag/">
-<meta name="twitter:card" content="summary">
-
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon.ico" sizes="any">
-
-<link rel="preload" href="/fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/fonts-web/fonts.css">
-
+<title>swag — scale-wise adaptive gating for rotary position embeddings</title>
 <style>
-:root {
-	--bg: #f7f5f0;
-	--ink: #1a1917;
-	--muted: #706c63;
-	--accent: #0f52ba;
-	--rule: rgba(26, 25, 23, .13);
-	--tint: rgba(26, 25, 23, .045);
-	--serif: Newsreader, Georgia, "Times New Roman", serif;
-	--mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
-}
+  :root {
+    --ink: #1a1916;
+    --paper: #f7f5f0;
+    --faint: #8a857a;
+    --rule: #d8d4ca;
+    --accent: #b3372c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, monospace;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 4.5rem 1.25rem 6rem; }
+  h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; }
+  .sub { color: var(--faint); margin-top: 0.3rem; }
+  section { margin-top: 3.2rem; }
+  h2 { font-size: 0.85rem; font-weight: 600; color: var(--faint); margin-bottom: 1rem; }
+  p { margin-bottom: 0.9rem; max-width: 40rem; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+  code { font-size: 0.92em; }
+  .eq {
+    padding: 1rem 0 1.1rem;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 1.4rem 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+  .eq b { color: var(--accent); font-weight: 600; }
 
-*, *::before, *::after { box-sizing: border-box }
+  /* dials */
+  #rig { margin-top: 1.2rem; }
+  #dials { display: block; width: 100%; height: auto; cursor: ew-resize; touch-action: none; }
+  .rigrow { display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.7rem; flex-wrap: wrap; gap: 0.5rem; }
+  .picks button {
+    font: inherit; font-size: 0.85rem; background: none; border: none;
+    color: var(--faint); cursor: pointer; padding: 0.1rem 0.35rem;
+  }
+  .picks button.on { color: var(--accent); }
+  .picks button:hover { color: var(--ink); }
+  #delta { color: var(--faint); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
 
-body {
-	margin: 0;
-	background: var(--bg);
-	color: var(--ink);
-	font: 400 17.5px/1.7 var(--serif);
-}
+  table { border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; margin: 0.4rem 0 0.9rem; }
+  th, td { text-align: left; padding: 0.28rem 1.4rem 0.28rem 0; font-weight: 400; }
+  thead th { color: var(--faint); border-bottom: 1px solid var(--rule); }
+  td.win { color: var(--accent); }
+  tr.us td:first-child { color: var(--accent); }
 
-.column {
-	max-width: 640px;
-	margin: 0 auto;
-	padding: 5.5rem 1.75rem 4rem;
-}
-
-a { color: inherit; text-decoration: none; transition: color 120ms ease }
-a:hover { color: var(--accent) }
-
-/* --- masthead: the breadcrumb is the whole nav --- */
-
-.crumb {
-	font: 400 12.5px var(--mono);
-	color: var(--muted);
-}
-
-header {
-	padding-bottom: 2.5rem;
-	border-bottom: 1px solid var(--rule);
-}
-
-h1 {
-	margin: 1.9rem 0 0;
-	font: 500 30px/1.2 var(--serif);
-	letter-spacing: -.005em;
-}
-
-.subtitle {
-	margin: .55rem 0 0;
-	font-size: 16.5px;
-	font-style: italic;
-	color: var(--muted);
-}
-
-.date {
-	margin: 1rem 0 0;
-	font: 400 12.5px var(--mono);
-	color: var(--muted);
-}
-
-/* --- body --- */
-
-article { margin-top: 2.5rem }
-
-article p { margin: 0 0 1.35rem }
-
-/* substack exports section heads as h3, so h3 has to read as a section head, not as bold body */
-article h2 { margin: 2.9rem 0 .9rem; font: 500 22px/1.35 var(--serif) }
-article h3 { margin: 2.6rem 0 .8rem; font: 500 20px/1.35 var(--serif) }
-article h4 { margin: 2rem 0 .6rem; font: 500 17.5px/1.4 var(--serif) }
-
-article a {
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 2px;
-}
-
-article ul, article ol { margin: 0 0 1.35rem; padding-left: 1.35rem }
-article li { margin-bottom: .55rem }
-/* substack wraps list text in its own <p>, so those must not carry block spacing */
-article li p { margin: 0 0 .4rem }
-article li p:last-child { margin-bottom: 0 }
-
-article blockquote {
-	margin: 1.8rem 0;
-	padding-left: 1.25rem;
-	border-left: 3px solid var(--rule);
-	font-style: italic;
-	color: var(--muted);
-}
-
-article pre {
-	margin: 1.8rem 0;
-	padding: 1rem;
-	background: var(--tint);
-	font: 400 13px/1.6 var(--mono);
-	overflow-x: auto;
-}
-
-article code {
-	padding: 1px 4px;
-	background: var(--tint);
-	font-family: var(--mono);
-	font-size: .88em;
-}
-
-article pre code { padding: 0; background: none; font-size: inherit }
-
-/* equations are MathML, rendered at build time: no math stylesheet, script or webfont ships
-   with the page, so this is only spacing and ink. A wide one scrolls instead of the phone. */
-article math { color: inherit }
-article math[display="block"] { margin: 1.6rem 0; overflow-x: auto }
-
-article figure { margin: 2rem 0 }
-article img { display: block; max-width: 100%; height: auto }
-
-article figcaption {
-	margin-top: .6rem;
-	font: 400 12px/1.5 var(--mono);
-	color: var(--muted);
-	text-align: center;
-}
-
-article hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--rule) }
-
-article table {
-	width: 100%;
-	margin: 1.8rem 0;
-	border-collapse: collapse;
-	font-size: 15.5px;
-}
-
-article th, article td {
-	padding: .45rem .7rem .45rem 0;
-	border-bottom: 1px solid var(--rule);
-	text-align: left;
-	vertical-align: top;
-}
-
-/* --- footer --- */
-
-footer {
-	margin-top: 4.5rem;
-	padding-top: 1.4rem;
-	border-top: 1px solid var(--rule);
-	font: 400 12.5px/2 var(--mono);
-	color: var(--muted);
-}
-
-footer p { margin: 0 }
-
-@media (max-width: 560px) {
-	.column { padding: 3.5rem 1.4rem 3rem }
-	body { font-size: 17px }
-}
+  ul { list-style: none; }
+  li { margin-bottom: 0.45rem; }
+  li::before { content: "— "; color: var(--faint); }
+  .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+  @media (prefers-reduced-motion: reduce) { /* dials still scrub by hand; they just don't drift */ }
 </style>
 </head>
-
 <body>
-<div class="column">
+<main>
+  <p class="note"><a href="/blog/">← blog</a></p>
+  <h1>swag</h1>
+  <p class="sub">scale-wise adaptive gating for rotary position embeddings</p>
 
-<header>
-	<p class="crumb"><a href="/">James Baker</a> · <a href="/blog/">writing</a></p>
-	<h1>SWAG: what happened when I let every token choose its own positional scales</h1>
-	<p class="subtitle">gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time</p>
-	<p class="date"><time datetime="2026-07-31">jul 31, 2026</time></p>
-</header>
+  <section>
+    <p>rope hands every token the same fixed bank of positional frequency channels.
+    swag lets each query token emit a gate per channel that scales only that channel's
+    positional correction — which scales of "how far apart are we" this token cares
+    about. the geometry itself never moves, so attention still depends on relative
+    offset alone, exactly like rope. gates at 1 recover rope; gates at 0 ignore
+    position; the whole thing computes exactly as one inner product in a doubled head
+    dimension.</p>
+    <div class="eq">score = q·k &nbsp;+&nbsp; λ<sub>h</sub> Σ<sub>i</sub> <b>g<sub>i</sub>(x<sub>m</sub>)</b> ( q<sub>i</sub>ᵀR((n−m)θ<sub>i</sub>)k<sub>i</sub> − q<sub>i</sub>ᵀk<sub>i</sub> )</div>
+  </section>
 
-<article>
-<p>I had an idea on my clipboard for about a week: in a transformer with rotary position embeddings, every token gets the same fixed bank of positional frequency channels. A comma resolving local syntax and a pronoun hunting for its antecedent three paragraphs back are handed identical positional geometry. What if each token could choose which scales matter to it?</p>
-<p>The trick is doing that without breaking the thing that makes RoPE good. RoPE's whole value is that attention scores depend only on the <em>distance</em> between tokens — shift a passage left or right and nothing changes. Recent papers get flexibility by making the rotations themselves input-dependent, but then two identical relationships at different absolute positions stop behaving identically. I wanted the opposite: keep the geometry fixed, and let each token gate how much it <em>uses</em> each channel.</p>
-<p>The mechanism ended up clean. Each RoPE channel's contribution to an attention score splits into a content part and a purely positional correction. SWAG (Scale-Wise Adaptive Gating) has every query token emit a sigmoid gate per channel that scales only the correction. Gates at 1: exactly standard RoPE. Gates at 0: position ignored, content kept. And the whole thing computes exactly — no approximation — as one inner product in a doubled head dimension, so it runs on normal fused attention kernels. There's a test in the repo verifying the fast form against the naive formula at 1e-10.</p>
-<h2>The experiment</h2>
-<p>Six variants, matched at ~5M parameters, trained under identical budgets on byte-level enwik8 (plus synthetic positional probes), 2–3 seeds each, evaluated at the training context and at 2× and 4× that length: no positions at all, standard RoPE, learned per-head frequencies, a reimplementation of token-conditioned frequencies (CARoPE-style), SWAG, and an ablation that gates whole channels instead of just the positional correction. Everything ran on Modal — about 3 GPU-hours total, roughly six dollars.</p>
-<h2>What happened</h2>
-<p><strong>SWAG got the best language-modeling number.</strong> 1.479 bits/char vs 1.499 for standard RoPE, best of all six, consistent across seeds — but the margin is about the size of RoPE's own seed-to-seed noise, so I'd call it &quot;reliably slightly better,&quot; not a breakthrough. It also degraded less than RoPE at every longer context.</p>
-<p><strong>But the interesting result is a trade-off, not a victory.</strong> The best extrapolator on natural text was the boring variant: just make the frequency values learnable. It crushed everyone at 4× context (2.31 vs SWAG's 3.25 vs RoPE's 3.58). So why bother with gating? Because the synthetic probes show what learned frequencies quietly give up. On a task that requires attending <em>exactly k positions back</em>, every variant scores 100% at the training length — but at 4× length, learned frequencies collapse to 54–73% on two of three seeds, and token-conditioned frequencies fall as low as 50%. SWAG stays at 100% on every seed, exactly like standard RoPE, because it never touched the geometry. Moving the frequency bank helps you extrapolate prose and breaks your ruler. SWAG keeps the ruler.</p>
-<p><strong>The ablation earned its slot.</strong> Gating whole channels (content and position together) matched SWAG in-distribution but lost the entire long-context advantage — same parameters, same inputs, different multiplication target. Gating <em>the positional correction specifically</em> is the operative choice. That's the kind of result that makes me trust the mechanism more than any headline number.</p>
-<p><strong>And the gates learned something legible.</strong> This was the long-shot hope, and it showed up. Digits suppress the most-local channels hard (position <em>within</em> &quot;1847&quot; barely matters). Whitespace keeps nearly everything open in layer 0. By layer 3, every character class converges on one shared mid-band scale with long wavelengths pruned. Deeper layers shed positional correction overall — fastest for newlines and whitespace. Meanwhile the per-head strength parameter λ drifted <em>up</em> almost everywhere (~1.3): the model turns position up globally and prunes it per token. None of that was supervised.</p>
-<h2>What didn't work</h2>
-<p>My CARoPE reimplementation trained badly — 2.79 bits/char, worse than a model with no positional information at all. I'm reporting that as a fact about my approximation at this scale, not about the original paper, whose configuration differs in details I didn't replicate. SWAG also costs 1.29× RoPE's wall-clock in my unfused implementation. And on a tiny corpus (character-level Shakespeare), SWAG's in-distribution edge disappeared entirely — the gate network plausibly needs more data than 1.1M characters to learn its structure. Copy-task length generalization failed for every variant, including SWAG; positional encodings alone don't buy you that.</p>
-<p>All of this is at ~5M parameters. Effects that appear here may vanish at scale; effects that matter at scale may be invisible here. What the setup does support is the controlled within-study comparison — same budgets, same data, same seeds.</p>
-<h2>Where it lands</h2>
-<p>Standard RoPE: robust geometry, worst prose extrapolation. Learned frequencies: best prose extrapolation, broken ruler. SWAG: best in-distribution, better-than-RoPE extrapolation, ruler intact. Nobody wins everything, and I think the honest framing is that input-dependent positional <em>flexibility isn't free</em> — the papers making rotations input-dependent are trading away a property whose absence only shows up on tasks that measure it directly.</p>
-<p>Code, paper, all 78 run records, and the gate heatmaps: <a href="https://github.com/jamesbaker1/swag-rope">github.com/jamesbaker1/swag-rope</a>. The whole thing — implementation, tests, training, analysis, paper — ran in about a day, with the GPU work costing less than lunch.</p>
-</article>
+  <section id="rig">
+    <h2>the learned gates, live</h2>
+    <canvas id="dials" width="1320" height="240"></canvas>
+    <div class="rigrow">
+      <span class="picks" id="classpicks"></span>
+      <span class="picks" id="layerpicks"></span>
+      <span id="delta"></span>
+    </div>
+    <p class="note" style="margin-top:0.8rem">sixteen rope channels, fast on the left, slow on the
+    right, spinning at their true rates θ<sub>i</sub> = 10000<sup>−i/16</sup>. drag
+    horizontally to scrub the relative offset. each dial's weight is the mean learned
+    gate for that channel, measured from the trained model on 81,920 validation bytes —
+    pick a token class and a layer. digits mute the local channels in layer&nbsp;0;
+    layer&nbsp;3 converges on one shared mid-band scale; by layer&nbsp;5 whitespace has
+    mostly stopped caring about position.</p>
+  </section>
 
-<footer>
-	<!-- FE0E after the arrow: text presentation, so Windows doesn't swap in a colour emoji glyph -->
-	<p><a href="/blog/">← writing</a></p>
-	<p><a href="https://github.com/jamesbaker1/swag-rope" target="_blank" rel="noopener">code on github ↗&#xFE0E;</a></p>
-	<p><a href="https://jamesbaker1.github.io/swag-rope/swag.pdf" target="_blank" rel="noopener">read the paper (pdf) ↗&#xFE0E;</a></p>
-	<p><a href="https://jamesbaker1.github.io/swag-rope/" target="_blank" rel="noopener">project site ↗&#xFE0E;</a></p>
-</footer>
+  <section>
+    <h2>results — byte-level enwik8, six matched ~5m-param variants, 2 seeds</h2>
+    <table>
+      <thead><tr><th>variant</th><th>bpc @512</th><th>@1024</th><th>@2048</th><th>offset recall @4×</th></tr></thead>
+      <tbody>
+        <tr class="us"><td>swag</td><td class="win">1.479</td><td>2.10</td><td>3.25</td><td class="win">1.000</td></tr>
+        <tr><td>gated-simple</td><td>1.488</td><td>2.48</td><td>3.68</td><td>0.999</td></tr>
+        <tr><td>rope</td><td>1.499</td><td>2.34</td><td>3.58</td><td>0.997</td></tr>
+        <tr><td>learned-freq</td><td>1.500</td><td class="win">1.75</td><td class="win">2.31</td><td>0.865</td></tr>
+        <tr><td>nope</td><td>1.627</td><td>2.04</td><td>3.53</td><td>0.036</td></tr>
+        <tr><td>carope (reimpl.)</td><td>2.794</td><td>3.69</td><td>4.63</td><td>0.653</td></tr>
+      </tbody>
+    </table>
+    <p>the finding is a trade, not a trophy. learning the frequencies extrapolates prose
+    best and quietly breaks the ruler — exact-offset recall collapses past the training
+    length. swag is the only variant that improves on rope (best in-distribution number,
+    both seeds, smaller degradation at every longer context) while keeping rope's
+    relative-position robustness to the last decimal. costs 1.29× rope's wall-clock
+    unfused. the in-distribution margin is about the size of rope's seed spread — the
+    paper says so, in those words.</p>
+  </section>
 
-</div>
+  <section>
+    <h2>artifacts</h2>
+    <ul>
+      <li><a href="swag.pdf">paper</a> — 12 pages, every number traceable to a committed run record</li>
+      <li><a href="https://github.com/jamesbaker1/swag-rope">code</a> — pytorch, 44 tests, the gated form verified against the naive formula at 1e-10</li>
+      <li><a href="https://github.com/jamesbaker1/swag-rope/tree/main/results">78 run records</a> — configs, curves, wall-clock, all of it</li>
+      <li><a href="https://github.com/jamesbaker1/swag-rope/blob/main/blog/post.md">notes</a> — what worked, what didn't, what it cost</li>
+    </ul>
+  </section>
 
+  <p class="foot">james baker, july 2026 · trained for ~3 gpu-hours on modal · the dials are the real weights</p>
+</main>
+<script>
+(() => {
+  // head-averaged mean gate values, seed-1 enwik8 checkpoint. layers 0/3/5.
+  const GATES = {"0":{"letter":[0.951,0.91,0.963,0.962,0.952,0.953,0.961,0.936,0.972,0.942,0.849,0.757,0.7,0.668,0.672,0.699],"digit":[0.422,0.648,0.669,0.551,0.762,0.765,0.808,0.745,0.726,0.737,0.868,0.868,0.736,0.938,0.873,0.889],"whitespace":[0.823,0.841,0.907,0.905,0.941,0.919,0.974,0.977,0.988,0.993,0.862,0.95,0.824,0.891,0.877,0.87],"punctuation":[0.714,0.761,0.828,0.816,0.824,0.822,0.863,0.838,0.898,0.877,0.863,0.858,0.82,0.879,0.725,0.856],"newline":[0.604,0.656,0.76,0.758,0.787,0.617,0.825,0.75,0.844,0.936,0.629,0.834,0.93,0.936,0.582,0.933]},"3":{"letter":[0.657,0.714,0.749,0.8,0.888,0.852,0.906,0.875,0.889,0.979,0.646,0.747,0.678,0.686,0.612,0.63],"digit":[0.702,0.816,0.828,0.77,0.892,0.867,0.946,0.914,0.881,0.99,0.725,0.795,0.713,0.718,0.571,0.579],"whitespace":[0.564,0.683,0.648,0.674,0.835,0.773,0.793,0.791,0.888,0.972,0.723,0.735,0.559,0.657,0.548,0.643],"punctuation":[0.689,0.75,0.747,0.76,0.856,0.805,0.855,0.842,0.877,0.955,0.684,0.743,0.599,0.648,0.619,0.639],"newline":[0.703,0.775,0.77,0.765,0.789,0.741,0.821,0.743,0.765,0.893,0.639,0.749,0.491,0.621,0.577,0.614]},"5":{"letter":[0.524,0.565,0.698,0.728,0.752,0.825,0.878,0.786,0.888,0.887,0.805,0.731,0.647,0.619,0.712,0.68],"digit":[0.595,0.569,0.757,0.74,0.787,0.776,0.864,0.809,0.836,0.824,0.826,0.715,0.637,0.656,0.742,0.63],"whitespace":[0.369,0.364,0.52,0.623,0.724,0.698,0.814,0.758,0.816,0.761,0.674,0.664,0.607,0.638,0.591,0.511],"punctuation":[0.468,0.514,0.518,0.596,0.683,0.688,0.776,0.774,0.768,0.788,0.777,0.683,0.634,0.636,0.737,0.598],"newline":[0.446,0.516,0.421,0.475,0.592,0.518,0.549,0.586,0.598,0.648,0.739,0.587,0.561,0.626,0.694,0.591]}};
+  const THETA = Array.from({length: 16}, (_, i) => Math.pow(10000, -i / 16));
+  const CLASSES = ["letter", "digit", "whitespace", "punctuation", "newline"];
+  const LAYERS = ["0", "3", "5"];
+
+  const canvas = document.getElementById("dials");
+  const ctx = canvas.getContext("2d");
+  const deltaEl = document.getElementById("delta");
+  const css = getComputedStyle(document.documentElement);
+  const INK = css.getPropertyValue("--ink").trim();
+  const FAINT = css.getPropertyValue("--faint").trim();
+  const RULE = css.getPropertyValue("--rule").trim();
+  const ACCENT = css.getPropertyValue("--accent").trim();
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let cls = "digit", layer = "0";
+  let delta = 24;         // relative offset n - m, in tokens
+  let drift = !reduced;   // idle drift until first drag
+  let shown = GATES[layer][cls].slice();
+
+  function makePicks(el, items, get, set) {
+    items.forEach(v => {
+      const b = document.createElement("button");
+      b.textContent = el.id === "layerpicks" ? "layer " + v : v;
+      b.onclick = () => { set(v); update(); };
+      el.appendChild(b);
+    });
+    el._sync = () => [...el.children].forEach((b, i) => b.classList.toggle("on", items[i] === get()));
+    el._sync();
+  }
+  makePicks(document.getElementById("classpicks"), CLASSES, () => cls, v => cls = v);
+  makePicks(document.getElementById("layerpicks"), LAYERS, () => layer, v => layer = v);
+  function update() {
+    document.getElementById("classpicks")._sync();
+    document.getElementById("layerpicks")._sync();
+  }
+
+  // drag to scrub delta
+  let dragging = false, lastX = 0;
+  canvas.addEventListener("pointerdown", e => { dragging = true; drift = false; lastX = e.clientX; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    delta = Math.max(0, Math.min(512, delta + (e.clientX - lastX) * 0.6));
+    lastX = e.clientX;
+  });
+  canvas.addEventListener("pointerup", () => dragging = false);
+
+  function draw(t) {
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    if (drift) delta = (delta + 0.06) % 512;
+
+    const target = GATES[layer][cls];
+    const n = 16, cell = w / n, r = Math.min(cell * 0.34, 40), cy = h * 0.42;
+    for (let i = 0; i < n; i++) {
+      shown[i] += (target[i] - shown[i]) * 0.12;   // ease between profiles
+      const g = shown[i];
+      const cx = cell * (i + 0.5);
+      const ang = -delta * THETA[i] + Math.PI / 2;  // ccw from vertical
+
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = RULE;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI); ctx.stroke();
+
+      // gate arc: how much of this channel survives
+      ctx.strokeStyle = g > 0.999 ? ACCENT : INK;
+      ctx.globalAlpha = 0.25 + 0.75 * g;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * g); ctx.stroke();
+
+      // needle at the current rotation angle, weighted by the gate
+      ctx.strokeStyle = ACCENT;
+      ctx.globalAlpha = 0.15 + 0.85 * g;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(ang) * r * (0.35 + 0.6 * g), cy - Math.sin(ang) * r * (0.35 + 0.6 * g));
+      ctx.stroke();
+
+      // gate value under each dial
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = g < 0.6 ? ACCENT : FAINT;
+      ctx.font = "13px ui-monospace, Consolas, monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(g.toFixed(2), cx, cy + r + 24);
+    }
+    // wavelength ruler
+    ctx.fillStyle = FAINT;
+    ctx.font = "12px ui-monospace, Consolas, monospace";
+    ctx.textAlign = "left";  ctx.fillText("λ ≈ 6 tokens", 6, h - 8);
+    ctx.textAlign = "right"; ctx.fillText("λ ≈ 35k tokens", w - 6, h - 8);
+    deltaEl.textContent = "Δ = " + Math.round(delta) + " tokens";
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  console.log("%cthe dial weights are results/gate_profile_enwik8_gated_seed1.json — head-averaged, nothing invented.", "color:#b3372c");
+  console.log("gates at 1 would make this page exactly rope. the model chose otherwise.");
+})();
+</script>
 </body>
 </html>
