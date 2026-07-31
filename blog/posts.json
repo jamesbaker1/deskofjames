@@ -3,6 +3,14 @@
   "generated": "2026-07-30T04:05:25Z",
   "posts": [
     {
+      "title": "SWAG: what happened when I let every token choose its own positional scales",
+      "url": "https://deskofjim.com/blog/swag/",
+      "date": "2026-07-31",
+      "subtitle": "gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time",
+      "slug": "swag",
+      "local": true
+    },
+    {
       "title": "AI Is Bayesian Evidence That We Live in a Simulation",
       "url": "https://jamesfbaker.substack.com/p/ai-is-bayesian-evidence-that-we-live",
       "date": "2026-07-15",

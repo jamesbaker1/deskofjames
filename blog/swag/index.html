@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SWAG: what happened when I let every token choose its own positional scales · James Baker</title>
+<meta name="description" content="gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time">
+<link rel="canonical" href="https://deskofjim.com/blog/swag/">
+
+<meta property="og:title" content="SWAG: what happened when I let every token choose its own positional scales · James Baker">
+<meta property="og:description" content="gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time">
+<meta property="og:image" content="https://deskofjim.com/og.png">
+<meta property="og:url" content="https://deskofjim.com/blog/swag/">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+
+<link rel="preload" href="/fonts-web/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts-web/fonts.css">
+
+<style>
+:root {
+	--bg: #f7f5f0;
+	--ink: #1a1917;
+	--muted: #706c63;
+	--accent: #0f52ba;
+	--rule: rgba(26, 25, 23, .13);
+	--tint: rgba(26, 25, 23, .045);
+	--serif: Newsreader, Georgia, "Times New Roman", serif;
+	--mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box }
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 17.5px/1.7 var(--serif);
+}
+
+.column {
+	max-width: 640px;
+	margin: 0 auto;
+	padding: 5.5rem 1.75rem 4rem;
+}
+
+a { color: inherit; text-decoration: none; transition: color 120ms ease }
+a:hover { color: var(--accent) }
+
+/* --- masthead: the breadcrumb is the whole nav --- */
+
+.crumb {
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+header {
+	padding-bottom: 2.5rem;
+	border-bottom: 1px solid var(--rule);
+}
+
+h1 {
+	margin: 1.9rem 0 0;
+	font: 500 30px/1.2 var(--serif);
+	letter-spacing: -.005em;
+}
+
+.subtitle {
+	margin: .55rem 0 0;
+	font-size: 16.5px;
+	font-style: italic;
+	color: var(--muted);
+}
+
+.date {
+	margin: 1rem 0 0;
+	font: 400 12.5px var(--mono);
+	color: var(--muted);
+}
+
+/* --- body --- */
+
+article { margin-top: 2.5rem }
+
+article p { margin: 0 0 1.35rem }
+
+/* substack exports section heads as h3, so h3 has to read as a section head, not as bold body */
+article h2 { margin: 2.9rem 0 .9rem; font: 500 22px/1.35 var(--serif) }
+article h3 { margin: 2.6rem 0 .8rem; font: 500 20px/1.35 var(--serif) }
+article h4 { margin: 2rem 0 .6rem; font: 500 17.5px/1.4 var(--serif) }
+
+article a {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+article ul, article ol { margin: 0 0 1.35rem; padding-left: 1.35rem }
+article li { margin-bottom: .55rem }
+/* substack wraps list text in its own <p>, so those must not carry block spacing */
+article li p { margin: 0 0 .4rem }
+article li p:last-child { margin-bottom: 0 }
+
+article blockquote {
+	margin: 1.8rem 0;
+	padding-left: 1.25rem;
+	border-left: 3px solid var(--rule);
+	font-style: italic;
+	color: var(--muted);
+}
+
+article pre {
+	margin: 1.8rem 0;
+	padding: 1rem;
+	background: var(--tint);
+	font: 400 13px/1.6 var(--mono);
+	overflow-x: auto;
+}
+
+article code {
+	padding: 1px 4px;
+	background: var(--tint);
+	font-family: var(--mono);
+	font-size: .88em;
+}
+
+article pre code { padding: 0; background: none; font-size: inherit }
+
+/* equations are MathML, rendered at build time: no math stylesheet, script or webfont ships
+   with the page, so this is only spacing and ink. A wide one scrolls instead of the phone. */
+article math { color: inherit }
+article math[display="block"] { margin: 1.6rem 0; overflow-x: auto }
+
+article figure { margin: 2rem 0 }
+article img { display: block; max-width: 100%; height: auto }
+
+article figcaption {
+	margin-top: .6rem;
+	font: 400 12px/1.5 var(--mono);
+	color: var(--muted);
+	text-align: center;
+}
+
+article hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--rule) }
+
+article table {
+	width: 100%;
+	margin: 1.8rem 0;
+	border-collapse: collapse;
+	font-size: 15.5px;
+}
+
+article th, article td {
+	padding: .45rem .7rem .45rem 0;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+/* --- footer --- */
+
+footer {
+	margin-top: 4.5rem;
+	padding-top: 1.4rem;
+	border-top: 1px solid var(--rule);
+	font: 400 12.5px/2 var(--mono);
+	color: var(--muted);
+}
+
+footer p { margin: 0 }
+
+@media (max-width: 560px) {
+	.column { padding: 3.5rem 1.4rem 3rem }
+	body { font-size: 17px }
+}
+</style>
+</head>
+
+<body>
+<div class="column">
+
+<header>
+	<p class="crumb"><a href="/">James Baker</a> · <a href="/blog/">writing</a></p>
+	<h1>SWAG: what happened when I let every token choose its own positional scales</h1>
+	<p class="subtitle">gating rotary position embeddings per token: best in-distribution loss, a real trade-off, and interpretable gates for ~$6 of GPU time</p>
+	<p class="date"><time datetime="2026-07-31">jul 31, 2026</time></p>
+</header>
+
+<article>
+<p>I had an idea on my clipboard for about a week: in a transformer with rotary position embeddings, every token gets the same fixed bank of positional frequency channels. A comma resolving local syntax and a pronoun hunting for its antecedent three paragraphs back are handed identical positional geometry. What if each token could choose which scales matter to it?</p>
+<p>The trick is doing that without breaking the thing that makes RoPE good. RoPE's whole value is that attention scores depend only on the <em>distance</em> between tokens — shift a passage left or right and nothing changes. Recent papers get flexibility by making the rotations themselves input-dependent, but then two identical relationships at different absolute positions stop behaving identically. I wanted the opposite: keep the geometry fixed, and let each token gate how much it <em>uses</em> each channel.</p>
+<p>The mechanism ended up clean. Each RoPE channel's contribution to an attention score splits into a content part and a purely positional correction. SWAG (Scale-Wise Adaptive Gating) has every query token emit a sigmoid gate per channel that scales only the correction. Gates at 1: exactly standard RoPE. Gates at 0: position ignored, content kept. And the whole thing computes exactly — no approximation — as one inner product in a doubled head dimension, so it runs on normal fused attention kernels. There's a test in the repo verifying the fast form against the naive formula at 1e-10.</p>
+<h2>The experiment</h2>
+<p>Six variants, matched at ~5M parameters, trained under identical budgets on byte-level enwik8 (plus synthetic positional probes), 2–3 seeds each, evaluated at the training context and at 2× and 4× that length: no positions at all, standard RoPE, learned per-head frequencies, a reimplementation of token-conditioned frequencies (CARoPE-style), SWAG, and an ablation that gates whole channels instead of just the positional correction. Everything ran on Modal — about 3 GPU-hours total, roughly six dollars.</p>
+<h2>What happened</h2>
+<p><strong>SWAG got the best language-modeling number.</strong> 1.479 bits/char vs 1.499 for standard RoPE, best of all six, consistent across seeds — but the margin is about the size of RoPE's own seed-to-seed noise, so I'd call it &quot;reliably slightly better,&quot; not a breakthrough. It also degraded less than RoPE at every longer context.</p>
+<p><strong>But the interesting result is a trade-off, not a victory.</strong> The best extrapolator on natural text was the boring variant: just make the frequency values learnable. It crushed everyone at 4× context (2.31 vs SWAG's 3.25 vs RoPE's 3.58). So why bother with gating? Because the synthetic probes show what learned frequencies quietly give up. On a task that requires attending <em>exactly k positions back</em>, every variant scores 100% at the training length — but at 4× length, learned frequencies collapse to 54–73% on two of three seeds, and token-conditioned frequencies fall as low as 50%. SWAG stays at 100% on every seed, exactly like standard RoPE, because it never touched the geometry. Moving the frequency bank helps you extrapolate prose and breaks your ruler. SWAG keeps the ruler.</p>
+<p><strong>The ablation earned its slot.</strong> Gating whole channels (content and position together) matched SWAG in-distribution but lost the entire long-context advantage — same parameters, same inputs, different multiplication target. Gating <em>the positional correction specifically</em> is the operative choice. That's the kind of result that makes me trust the mechanism more than any headline number.</p>
+<p><strong>And the gates learned something legible.</strong> This was the long-shot hope, and it showed up. Digits suppress the most-local channels hard (position <em>within</em> &quot;1847&quot; barely matters). Whitespace keeps nearly everything open in layer 0. By layer 3, every character class converges on one shared mid-band scale with long wavelengths pruned. Deeper layers shed positional correction overall — fastest for newlines and whitespace. Meanwhile the per-head strength parameter λ drifted <em>up</em> almost everywhere (~1.3): the model turns position up globally and prunes it per token. None of that was supervised.</p>
+<h2>What didn't work</h2>
+<p>My CARoPE reimplementation trained badly — 2.79 bits/char, worse than a model with no positional information at all. I'm reporting that as a fact about my approximation at this scale, not about the original paper, whose configuration differs in details I didn't replicate. SWAG also costs 1.29× RoPE's wall-clock in my unfused implementation. And on a tiny corpus (character-level Shakespeare), SWAG's in-distribution edge disappeared entirely — the gate network plausibly needs more data than 1.1M characters to learn its structure. Copy-task length generalization failed for every variant, including SWAG; positional encodings alone don't buy you that.</p>
+<p>All of this is at ~5M parameters. Effects that appear here may vanish at scale; effects that matter at scale may be invisible here. What the setup does support is the controlled within-study comparison — same budgets, same data, same seeds.</p>
+<h2>Where it lands</h2>
+<p>Standard RoPE: robust geometry, worst prose extrapolation. Learned frequencies: best prose extrapolation, broken ruler. SWAG: best in-distribution, better-than-RoPE extrapolation, ruler intact. Nobody wins everything, and I think the honest framing is that input-dependent positional <em>flexibility isn't free</em> — the papers making rotations input-dependent are trading away a property whose absence only shows up on tasks that measure it directly.</p>
+<p>Code, paper, all 78 run records, and the gate heatmaps: <a href="https://github.com/jamesbaker1/swag-rope">github.com/jamesbaker1/swag-rope</a>. The whole thing — implementation, tests, training, analysis, paper — ran in about a day, with the GPU work costing less than lunch.</p>
+</article>
+
+<footer>
+	<!-- FE0E after the arrow: text presentation, so Windows doesn't swap in a colour emoji glyph -->
+	<p><a href="/blog/">← writing</a></p>
+	<p><a href="https://github.com/jamesbaker1/swag-rope" target="_blank" rel="noopener">code on github ↗&#xFE0E;</a></p>
+	<p><a href="https://jamesbaker1.github.io/swag-rope/swag.pdf" target="_blank" rel="noopener">read the paper (pdf) ↗&#xFE0E;</a></p>
+	<p><a href="https://jamesbaker1.github.io/swag-rope/" target="_blank" rel="noopener">project site ↗&#xFE0E;</a></p>
+</footer>
+
+</div>
+
+</body>
+</html>

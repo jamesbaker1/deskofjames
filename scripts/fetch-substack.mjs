@@ -530,6 +530,10 @@ async function pages(posts, bodies) {
   const claimed = new Set(); // one slug, one directory: posts are sorted, so the first wins
 
   for (const post of posts) {
+    // Written here by hand, not pulled from the feed: its page is committed, so there is
+    // nothing to generate, and slugOf would read no slug out of a deskofjim.com URL and
+    // strip the good one the entry already carries.
+    if (post.local) { tally.unchanged++; continue; }
     const slug = slugOf(post.url);
     if (!usable(slug)) {
       delete post.slug;
