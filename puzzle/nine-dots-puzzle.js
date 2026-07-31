@@ -311,7 +311,7 @@ var NINE_DOTS_PUZZLE_DEFAULT_CONFIG = {
             var textPaddingY = backgroundRadius / 5;
             var fontSize = backgroundRadius / 2;
 
-            this.drawingContext.font = fontSize + "px sans-serif"
+            this.drawingContext.font = fontSize + "px ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace"
             this.drawingContext.strokeStyle = this.context.get("colour_text_background_dark");
             this.drawingContext.fillStyle = this.context.get("colour_text_background_dark");
             this.drawingContext.lineWidth = 1;
@@ -350,7 +350,7 @@ var NINE_DOTS_PUZZLE_DEFAULT_CONFIG = {
             this.drawingContext.fill();
 
             // Text
-            this.drawingContext.font = fontSize + "px sans-serif";
+            this.drawingContext.font = fontSize + "px ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace";
             this.drawingContext.lineWidth = 1;
             this.drawingContext.fillStyle = this.context.get("colour_text");
             this.drawingContext.fillText(this.context.get("text_button_hint"), textPadding, this.height - textPadding);
@@ -432,13 +432,13 @@ var NINE_DOTS_PUZZLE_DEFAULT_CONFIG = {
             // Show happy/sad face
             setTimeout(function() {
                 if (this.puzzleSolved) {
-                    // Redirect to blog on success
-                    localStorage.setItem('puzzle_solved', 'true');
-                    localStorage.setItem('puzzle_solved_time', Date.now().toString());
-                    window.location.href = "/blog/";
+                    // Terminal state: the expanded dots stay put, the page reveals the payoff.
+                    // No face on success — the dots said it.
+                    this.canvas.style.cursor = "default";
+                    document.body.classList.add("solved");
                     return;
                 }
-                
+
                 // Store hint for next round
                 this.updateCurrentHint();
                 
@@ -461,7 +461,7 @@ var NINE_DOTS_PUZZLE_DEFAULT_CONFIG = {
                 var fontSize = Math.max(13, this.size / 28);
                 var padding = 30;
                 
-                this.drawingContext.font = "italic " + fontSize + "px -apple-system, BlinkMacSystemFont, sans-serif";
+                this.drawingContext.font = fontSize + "px ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace";
                 this.drawingContext.textAlign = "center";
                 this.drawingContext.fillStyle = this.context.get("colour_text");
                 this.drawingContext.fillText(this.currentHint, this.width / 2, padding);

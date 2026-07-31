@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>· · ·</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture identify alias set_config startSessionRecording stopSessionRecording get_distinct_id get_session_id opt_in_capturing opt_out_capturing register register_once unregister reset".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_EFLt4tZQGNYoKwwixTF7HP8iMdiSVqqAXieGDcHYlAj',{api_host:'https://us.i.posthog.com',person_profiles:'identified_only',capture_pageview:true,capture_pageleave:true,autocapture:true})
+</script>
+<script src="nine-dots-puzzle.js" defer></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box }
+
+    body {
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        padding: 1.5rem;
+        background: #f7f5f0;
+        color: #1a1917;
+        font: 12.5px/1.6 ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    }
+
+    a {
+        color: #706c63;
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: color 120ms ease, border-color 120ms ease;
+    }
+
+    a:hover { color: #1a1917; border-bottom-color: #1a1917 }
+
+    .home { position: fixed; top: 26px; left: 26px }
+
+    canvas { display: block; cursor: crosshair }
+
+    /* The engine adds .solved to <body> once the nine dots are covered. */
+    .payoff { display: none; text-align: center }
+
+    body.solved .payoff { display: block }
+
+    .payoff p { margin-bottom: 14px }
+</style>
+</head>
+<body>
+<a class="home" href="/">← home</a>
+
+<canvas id="canvas-nine-dots-puzzle" width="400" height="400"
+    data-colour_background="#f7f5f0"
+    data-colour_neutral="#b3afa5"
+    data-colour_success="#1a1917"
+    data-colour_fail="#b0512f"
+    data-colour_face="#f7f5f0"
+    data-colour_text="#706c63"
+    data-colour_text_background_dark="#eceae3"
+    data-colour_text_background_light="#f2f0e9"></canvas>
+<script>
+    // Sized here because the deferred engine reads width/height once and hit-tests
+    // in canvas pixels — CSS must never scale the canvas.
+    {
+        const canvas = document.getElementById('canvas-nine-dots-puzzle');
+        canvas.width = canvas.height = Math.min(400, Math.min(innerWidth, innerHeight) - 72);
+    }
+</script>
+
+<div class="payoff">
+    <p>there was never a box.</p>
+    <a href="/">← home</a>
+</div>
+</body>
+</html>
