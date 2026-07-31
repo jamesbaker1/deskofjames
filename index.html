@@ -83,6 +83,24 @@
 
 	nav span { opacity: 0.4; }
 
+	/* one line, quieter than the nav — there if you look for it */
+	footer {
+		margin-top: 16px;
+		font: 12.5px/1 ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+		color: #5e5b55;
+	}
+
+	footer a {
+		color: inherit;
+		text-decoration: none;
+		padding-bottom: 3px;
+		border-bottom: 1px solid transparent;
+		pointer-events: auto;
+		transition: color 120ms ease, border-color 120ms ease;
+	}
+
+	footer a:hover, footer a:focus-visible { color: #fff; border-bottom-color: #fff; }
+
 	#dots {
 		position: fixed;
 		z-index: 3;
@@ -96,13 +114,14 @@
 	#dots:hover, #dots:focus-visible { opacity: 0.6; }
 
 	/* Entrance only exists when the sim does — no script, no hiding. */
-	.js h1, .js nav { opacity: 0; }
+	.js h1, .js nav, .js footer { opacity: 0; }
 	.js h1 { transition: opacity 1.2s ease; }
 	.js nav { transition: opacity 1.2s ease 250ms; }
-	.ready h1, .ready nav { opacity: 1; }
+	.js footer { transition: opacity 1.2s ease 500ms; }
+	.ready h1, .ready nav, .ready footer { opacity: 1; }
 
 	@media (prefers-reduced-motion: reduce) {
-		.js h1, .js nav { transition: none; }
+		.js h1, .js nav, .js footer { transition: none; }
 	}
 </style>
 <script>document.documentElement.className = "js";</script>
@@ -123,6 +142,7 @@
 		<span>·</span>
 		<a href="https://scholar.google.com/citations?user=mYkMGl8AAAAJ&amp;hl=en" target="_blank" rel="noopener">scholar</a>
 	</nav>
+	<footer><a href="mailto:james@deskofjim.com">james@deskofjim.com</a></footer>
 </main>
 
 <a id="dots" href="/puzzle/" aria-label="nine dots">
