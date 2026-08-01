@@ -82,6 +82,16 @@
     <p>so i checked it before writing any analysis code. two things came back, pointing in
     opposite directions. <strong>the mechanism doesn't survive the arithmetic.</strong> and
     <strong>nobody has ever checked anyway.</strong></p>
+
+    <p class="note"><strong>revised august 2026.</strong> i asked at the top of the original
+    version for someone to check the arithmetic. someone did, and a lot of it was wrong. the
+    conclusion holds, but the margin was overstated on both channels, one of my simulation's two
+    worlds wasn't the world i said it was, the job-exposure matrix statistics were in sample when
+    i presented them as validation, and the evidence section left out every study i had myself
+    graded as pointing toward harm. the corrections are inline below rather than in a footnote,
+    marked as corrections, with the original numbers kept next to the new ones. the pattern in
+    them is not flattering and is worth naming: every single error ran in the direction of my own
+    conclusion.</p>
   </section>
 
   <section>
@@ -91,18 +101,47 @@
     <table>
       <thead><tr><th></th><th>vehicle vibration at the head</th><th>sub-concussive impact</th></tr></thead>
       <tbody>
-        <tr><td>peak linear</td><td>0.04 – 0.7 g</td><td>10 – 30 g</td></tr>
-        <tr><td>rotational</td><td>~1 rad/s²</td><td>~1000 rad/s²</td></tr>
+        <tr><td>peak linear</td><td>0.04 – 0.7 g ordinary driving<br>up to ~2.8 g shock-rich machinery</td><td>10 – 30 g</td></tr>
+        <tr><td>peak rotational</td><td>order 10 – 40 rad/s²</td><td>~1000 rad/s²</td></tr>
         <tr><td>character</td><td>sustained, 4–10 Hz</td><td>transient, high-jerk</td></tr>
       </tbody>
     </table>
-    <p>one and a half to two orders of magnitude below sub-concussive thresholds on linear
-    acceleration, and about three orders below on rotational, which is the quantity that actually
-    drives diffuse axonal injury. it sits in a band the head and neck low-pass filter, with no
-    transient component at all.</p>
+    <p>on linear acceleration that is two orders of magnitude below sub-concussive thresholds in
+    ordinary driving, closing to under one order on the shock-rich agricultural and mining
+    machinery at the top of the range. on rotational, which is the quantity that actually drives
+    diffuse axonal injury, it is one and a half to two orders below. there is no transient
+    component.</p>
+    <p>an earlier version of this paragraph said the 4–10 Hz band is one the head and neck
+    low-pass filter. that was wrong, and wrong in the direction that flatters the conclusion.
+    seat-to-head transmissibility peaks at 3–10 Hz and is greater than one around 4 Hz, so the
+    band vehicles actually excite is the band the body amplifies. filtering only starts above
+    about 10 Hz. the magnitude gap is what carries the argument here, not any help from the
+    anatomy.</p>
+    <p class="note">a correction, august 2026. this table first read 0.04 – 0.7 g and ~1 rad/s²,
+    and claimed three orders of magnitude on rotational. both numbers were too flattering to my own
+    conclusion. the linear figure came from crest factors of 1.41 – 3.96, but the measurement table
+    in my own repo records a median crest factor of about 23 for agricultural machines, which is
+    where the ~2.8 g worst case comes from. the ~1 rad/s² was worse: i had cited it to Paddan and
+    Griffin, but it is the input level their shaker was set to, not a measurement of any vehicle.
+    the nearest real field data i have since found is Cation et al. 2008 on forestry skidders,
+    0.33 – 0.79 rad/s² weighted rms at the seat, which converts to the order of 10 – 40 rad/s²
+    peak.</p>
     <p class="note">no published paper makes this comparison directly. i assembled it from cited
     measurement inputs, so it's derived arithmetic rather than a quoted result. it's the most
-    important number here and it deserves someone checking my work.</p>
+    important number here and it deserves someone checking my work. that was not a rhetorical
+    invitation: someone did check it, and the numbers above are what survived.</p>
+    <p class="note">two caveats i should have carried over from the repo. first, this is a
+    comparison of peak against peak, and the two exposures are nothing alike in duration: eight
+    hours a day for thirty years integrates on the order of a billion loading cycles against
+    roughly ten thousand for a decade of contact sport. which one does more damage depends on how
+    steeply damage scales with amplitude, and the crossover sits around an exponent of five, where
+    ISO 2631-1's own VDV metric uses four. so the argument is not pure arithmetic. it assumes brain
+    injury is steeply threshold-like, which i think is right, since no threshold-free damage
+    mechanism has been demonstrated for brain tissue at these strain levels, but it is a biological
+    premise and it should be stated as one. second, none of this covers repeated-shock
+    populations such as high-speed boat crews, where slams of 2 g and up carry exactly the
+    transient character vehicle vibration lacks. the argument below is about trucks, tractors and
+    motorcycles.</p>
     <p>which means the hypothesis i started with, <s>vibration acts as chronic sub-concussive
     trauma and damages the brain mechanically</s>, is the wrong shape. if anything is happening
     it's indirect: vibration at 4–10 Hz reliably
@@ -114,20 +153,70 @@
   <section>
     <h2>what the literature actually has</h2>
     <ul>
-      <li>the largest review of acute effects (32 studies, 114 exposure levels) found cognitive
-      after-effects <em>inconsistent</em>, with no pooled estimate. only postural stability
-      degraded reliably.</li>
-      <li>the classic positive result was n=16. the larger replication at n=54 was null.</li>
+      <li>the largest review of acute after-effects found cognition <em>inconsistent</em>, with no
+      pooled estimate. only postural stability degraded reliably. the review covers 32 studies and
+      114 exposure levels in total, but the cognitive arm of it is 11 studies and 52 trials, and i
+      should not have quoted the larger number next to the cognitive null. it also covers
+      after-effects only. a separate meta-analysis does exist for during-exposure performance
+      (Conway 2007, 115 effect sizes) and it does find degradation, mostly visual and fine-motor.</li>
+      <li>the classic positive result was n=16 and a later study at n=54 was null. i previously
+      called that a failed replication. it isn't one. the larger study varied vibration magnitude
+      between subjects, at 18 per cell, where the original varied it within subjects, so on the
+      contrast that produced the original result it is the less powerful design, and it was framed
+      as a question about noise and vibration combined rather than as a replication.</li>
       <li>the one study pairing vibration dosimetry with a neurodegenerative outcome found an
-      <em>inverse</em> association with parkinson's, OR 0.67 (0.48–0.94).</li>
-      <li>vibration-as-exercise trials meta-analyse to a cognitive <em>benefit</em>, g = +0.375.</li>
-      <li>chronic epidemiology: zero cohort studies, zero case-control studies. the literature is
-      empty.</li>
+      <em>inverse</em> association with parkinson's, OR 0.67 (0.48–0.94), for ever-exposed. i left
+      out the rest of that abstract, which i shouldn't have: higher exposure intensities had
+      consistently <em>elevated</em> odds ratios, and the effect reached significance at
+      intermediate intensities once exposure was restricted to the ten years before diagnosis.
+      that restriction is the analysis designed to strip reverse causation, and it is where the
+      harm signal shows up. see the note below on why i should have been more careful with this
+      study than with any other.</li>
+      <li>vibration-as-exercise trials meta-analyse to a cognitive <em>benefit</em>, g = +0.375.
+      i keep listing this and i should stop leaning on it. that literature is standing on a plate
+      at 20–50 Hz for minutes a day, given to older or deconditioned people, and my own research
+      notes say in writing that it has to be screened out as a trap for naive searching. it is an
+      exercise intervention, not eight hours a day seated at 4–8 Hz.</li>
+      <li>chronic epidemiology: no cohort or case-control study has ever measured cognition or
+      dementia as an endpoint in a chronically vibration-exposed population. i previously wrote
+      "zero cohort studies, zero case-control studies, the literature is empty," which was too
+      strong, and contradicted by the parkinson's study two bullets up, which is a case-control
+      study of chronic occupational vibration with a central nervous system outcome.</li>
+      <li>the evidence i left out. my own repo grades several findings as pointing toward harm and
+      none of them made it into this post, which was a real failure of even-handedness. the most
+      occupationally realistic acute study (60 minutes at the EU limit value) found reaction time
+      up 6% and vigilance lapses doubled, dose-dependently. a study at 3–7 Hz, the exact band i
+      argue matters, found selective attention degraded at magnitudes at and just above the EU
+      action value. in animals there is hippocampal blood-brain-barrier opening after 63 days of
+      exposure but not after one, and one lab reporting neuronal apoptosis and cerebral edema in
+      rats. i discount the animal work, and i think fairly: it is one lab running the same
+      experiment twice, unreplicated for eleven years, at roughly eight times human dose, with no
+      barrier or glial assays. but discounting it in the open is different from omitting it.</li>
     </ul>
-    <p>that combination is the whole reason to bother. the prior on a real effect should be near
-    zero, but a field with no chronic studies at all can't tell anyone in these jobs anything, and
-    a precise null would be the first empirical statement on the question. so i wrote the protocol
-    so that finding nothing counts as success rather than as a wasted year.</p>
+    <p>a note on that parkinson's study, because this is the sharpest thing wrong with the original
+    version of this post. the whole methodological point i make below is that occupational designs
+    manufacture spurious <em>protective</em> associations, because the people whose health is
+    failing leave the job. i then took a protective association out of an occupational
+    case-control study and used it as evidence that the prior should be low. i can't have it both
+    ways. by my own argument that OR 0.67 is exactly what healthy-worker survivorship produces,
+    and the latency-restricted strata are the more informative part of that paper.</p>
+    <p>i also excluded the entire hand-arm vibration literature on the grounds that it has "no
+    established connection to central cognition." the dosimetric case for excluding it is fine,
+    since hand tools and vehicle seats are not the same exposure. the reason i gave is false.
+    there is a paper called <em>Involvement of the central nervous system in vibration syndrome</em>
+    reporting delayed P300 potentials in vibration-exposed workers, with the delay largest in the
+    rock-drilling group that carries the most whole-body exposure. that is objective
+    electrophysiology with a cognitive endpoint and an internal exposure gradient, and it is the
+    one occupational-vibration literature containing positive central findings. excluding it by a
+    rule that happened to be worded wrongly is how you end up with a review that only points one
+    way.</p>
+    <p>that combination is the whole reason to bother. the prior on direct <em>mechanical</em>
+    harm should be near zero, and i should keep that qualifier attached, because the magnitude
+    argument rules out one pathway rather than vibration neurotoxicity in general. vascular,
+    barrier and inflammatory routes are untested rather than excluded. and a field with no chronic
+    studies at all can't tell anyone in these jobs anything, so a precise null would be the first
+    empirical statement on the question. i wrote the protocol so that finding nothing counts as
+    success rather than as a wasted year.</p>
   </section>
 
   <section id="rig">
@@ -156,12 +245,21 @@
     <table>
       <thead><tr><th>estimator</th><th>mean estimate</th><th>false positives</th><th>CI coverage</th></tr></thead>
       <tbody>
-        <tr><td>within-person change, adjusted</td><td>+0.0003</td><td class="win">5.5%</td><td>94.5%</td></tr>
+        <tr><td>within-person change, adjusted</td><td>+0.0002</td><td class="win">5.5%</td><td>94.5%</td></tr>
         <tr><td>same, no co-exposure adjustment</td><td>−0.0075</td><td>20.0%</td><td>80.0%</td></tr>
-        <tr><td>cross-sectional level ~ dose</td><td>−0.0096</td><td>10.5%</td><td>89.5%</td></tr>
-        <tr class="us"><td>naive ~ current exposure</td><td>+0.2394</td><td>100%</td><td>0%</td></tr>
+        <tr><td>cross-sectional level ~ dose</td><td>−0.0009</td><td>5.5%</td><td>94.5%</td></tr>
+        <tr class="us"><td>naive ~ current exposure</td><td>+0.2427</td><td>100%</td><td>0%</td></tr>
       </tbody>
     </table>
+    <p class="note">a second correction. the version of this table i first published had the
+    cross-sectional estimator at −0.0096 with a 10.5% false-positive rate, and i described it as
+    biased. it wasn't. my "world where vibration does nothing" had a leftover parameter in it
+    making vibration lower baseline cognition by 0.01 per unit of dose, so that estimator was
+    being marked wrong for correctly recovering an effect i had forgotten to switch off. with the
+    null world actually null it comes out at −0.0009 with a 5.5% false-positive rate, which is
+    fine. the tell was there in my own output: both cross-sectional estimators returned identical
+    numbers in the null world and the effect world, across all 200 replicates, which should have
+    made me look.</p>
     <p>the naive estimator reports a large <em>protective</em> effect of vibration in a world where
     vibration does nothing, in every single replicate. when a true harm of −0.02 is present it
     still reports +0.239: wrong sign, twelve times the magnitude. bias doesn't shrink with sample
@@ -169,6 +267,20 @@
     <p>i'd bet that's behind any claim you've seen that professional drivers or motorcyclists have
     unusually sharp reaction times. it isn't a finding about vibration. it's a finding about who
     quits.</p>
+    <p class="note">how much to believe this, stated plainly, because a simulation only ever tells
+    you about the world you built. the +0.24 is a readout of one number i chose: a healthy-worker
+    selection strength of 0.55, which appears nowhere in my research notes with a citation, and
+    which the artefact scales linearly with. set it to zero and the artefact disappears. and the
+    mechanism i describe in the paragraph above this one, people whose cognition is slipping
+    stopping driving, turns out to contribute nothing: switching it off changes the answer by
+    about 0.004. what the simulation actually shows is narrower than i implied. select a sample on
+    its outcome, then regress that outcome on the selection indicator, and you recover the
+    selection coefficient. that is a real and standard hazard, and it is worth demonstrating, but
+    it is a mathematical identity rather than a discovery about occupational epidemiology, and the
+    magnitude of it in any real cohort is unknown. by the same token my primary estimator's clean
+    5.5% is not evidence that it works. the generator contains no confounder that the estimator
+    doesn't already adjust for, so it is unbiased by construction. that is a check that i wired
+    the regression up correctly, nothing more.</p>
   </section>
 
   <section>
@@ -178,21 +290,47 @@
     whole-body vibration (894 occupations) and calibrated it against jobs whose A(8) has actually
     been measured in the field. it doesn't work very well, and that's worth saying out loud:</p>
     <table>
+      <thead><tr><th></th><th>as first published<br>(in sample)</th><th>leave-one-out</th></tr></thead>
       <tbody>
-        <tr><td>rank correlation with measured A(8)</td><td>0.74</td></tr>
-        <tr><td>log-scale correlation</td><td>0.66</td></tr>
-        <tr><td>typical prediction error</td><td class="win">×1.90</td></tr>
+        <tr><td>rank correlation with measured A(8)</td><td>0.74</td><td>0.41</td></tr>
+        <tr><td>log-scale correlation</td><td>0.66</td><td>0.32</td></tr>
+        <tr><td>variance explained</td><td>0.43</td><td class="us">−0.09</td></tr>
+        <tr><td>typical prediction error</td><td>×1.90</td><td class="us">×2.42</td></tr>
+        <tr><td>office clerks</td><td>3.9× too high</td><td class="us">6.8× too high</td></tr>
       </tbody>
     </table>
+    <p>the third correction, and the one that changes what this matrix is for. i originally
+    published only the left-hand column, and it is entirely in sample: eight calibration anchors,
+    fitting two parameters, then scored on the same eight points. the honest version is the
+    right-hand column. a leave-one-out variance explained of −0.09 means that out of sample the
+    calibration predicts measured vibration <em>worse than simply guessing the average of the
+    anchors</em>. on magnitude, this matrix has no demonstrated validity at all.</p>
+    <p>two smaller things in the same direction. the "log-scale correlation 0.66" isn't an
+    independent statistic, it is just the square root of the in-sample variance explained from the
+    same two-parameter fit, and on eight points its confidence interval runs from about −0.09 to
+    0.93. and the ×1.90 was computed with the wrong degrees of freedom for a fitted model; done
+    properly in sample it is ×2.00. the rank correlation of 0.74 is the one number here i'd still
+    stand behind, because nothing is fitted to produce it, though on n=8 it is marginal at
+    p = 0.04.</p>
     <p>frequency of exposure isn't intensity of exposure. truck drivers rate 2.73 on the frequency
     scale and measure 0.45 m/s²; shuttle drivers rate 1.28 and measure 0.47. the worst failure is
     at the bottom, where the scale floors out: office clerks measure 0.068 m/s² and the calibration
-    hands them 0.265, a 3.9× overestimate.</p>
-    <p>that one matters more than the scatter elsewhere. inflating the unexposed group's dose
-    compresses the contrast and drags the dose–response slope toward zero, so a null from this
-    matrix is conservative in the wrong direction, partly an artefact of the instrument rather
-    than a fact about biology. so the dose–response test is pre-specified on exposure quantiles,
-    where the ranking is trustworthy, and continuous dose drops to secondary.</p>
+    hands them 0.265. because that floor is structural, every one of the 894 occupations comes out
+    at 0.261 m/s² or above, which is more than half the EU action value. floral designers and
+    software managers included. a threshold count off this matrix is not meaningful.</p>
+    <p>i previously wrote that this makes a null "conservative in the wrong direction," on the
+    reasoning that inflating the unexposed group's dose compresses the contrast and drags the
+    slope toward zero. that reasoning is the guarantee for <em>binary</em> misclassification, and
+    it does not carry over to a continuous mismeasured exposure, where compressing the assigned
+    scale inflates the per-unit slope rather than shrinking it. worse, the error here has the
+    wrong structure for that argument anyway: it is uncorrelated with the assigned value and
+    correlated at 0.76 with the truth, which is the Berkson signature, and Berkson error does not
+    attenuate. it leaves the coefficient roughly alone and destroys the precision instead. my own
+    simulation codes the opposite kind of error, and at about a quarter of the magnitude the
+    matrix actually has. so the dose–response test stays pre-specified on exposure quantiles,
+    where the ranking is trustworthy, continuous dose stays secondary, and the real conclusion is
+    that getting a magnitude-based matrix such as SweJEM is not an optimisation, it is a
+    precondition.</p>
   </section>
 
   <section>
@@ -215,10 +353,16 @@
   <section>
     <h2>the experiment i'd rather run</h2>
     <p>the review turned up a cheaper and far more decisive gap than any cohort analysis.
-    <strong>nobody has ever measured head-level vibration during normal riding or driving.</strong>
-    every measurement in the literature is taken at the seat. seat-to-head transmissibility is
-    exactly the quantity the magnitude table at the top turns on, and right now it's inferred
-    rather than measured.</p>
+    <strong>nobody has measured head-level vibration during normal on-road riding or
+    driving.</strong> every ground-vehicle measurement in the literature is taken at the seat.
+    seat-to-head transmissibility is exactly the quantity the magnitude table at the top turns on,
+    and for cars, trucks and motorcycles it is currently inferred rather than measured.</p>
+    <p class="note">i originally wrote this as "nobody has ever measured head-level vibration
+    during normal riding or driving," full stop, which is too strong. in-flight head and helmet
+    accelerometry does exist for helicopters and carrier aircraft. it is worth knowing what it
+    shows, because it does not help me: head vibration around 5.4 Hz came out <em>amplified</em>
+    relative to the seat. that is consistent with the transmissibility correction further up, and
+    it is a reason to want the ground-vehicle measurement rather than to assume the answer.</p>
     <p>accelerometers at seat and head, across a few vehicle types and road surfaces, would settle
     the mechanistic question far more directly than analysing a hundred thousand job histories, and
     for a rounding error of the cost. if someone wants to actually answer this, that's the study.</p>
@@ -330,7 +474,10 @@
       const years = Math.pow(rnd(), 0.55) * Math.max(age - 20, 1);
       const dose = a8 * years / 10;
 
-      const level = 0.45 * edu - 0.35 * (age - 56) / 10 - 0.01 * dose + 0.15 * childSes + randn() * 0.75;
+      // The baseline-level effect scales with the slider, so that "no effect"
+      // really is no effect. A hardcoded -0.01 here meant dose still moved
+      // baseline cognition at betaDose = 0, which is not a null world.
+      const level = 0.45 * edu - 0.35 * (age - 56) / 10 + 0.5 * betaDose * dose + 0.15 * childSes + randn() * 0.75;
       const slope = -0.06 - 0.055 * (age - 56) / 10 + 0.010 * edu + betaDose * dose
                   - 0.012 * noise - 0.014 * exhaust - 0.010 * shift + randn() * 0.05;
 
