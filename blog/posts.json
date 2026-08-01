@@ -3,6 +3,14 @@
   "generated": "2026-07-30T04:05:25Z",
   "posts": [
     {
+      "title": "Vibration: does shaking people for a living damage their brains?",
+      "url": "https://deskofjim.com/blog/vibration/",
+      "date": "2026-08-01",
+      "subtitle": "the mechanism is two orders of magnitude short, nobody has ever checked anyway, and the obvious study reports the wrong sign — run it yourself in the browser",
+      "slug": "vibration",
+      "local": true
+    },
+    {
       "title": "SWAG: scale-wise adaptive gating for rotary position embeddings",
       "url": "https://deskofjim.com/blog/swag/",
       "date": "2026-07-31",

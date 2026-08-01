@@ -1,0 +1,495 @@
+<!doctype html>
+<!-- the two bands below are a real regression, not a picture of one. same
+     data-generating process as src/wbvcog/simulate.py, transcribed to js.
+     drag the true effect to zero. the naive estimator keeps finding one. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vibration — does shaking people for a living hurt their brains?</title>
+<link rel="canonical" href="https://deskofjim.com/blog/vibration/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="description" content="A pre-analysis study of whole-body vibration and cognitive decline. The mechanism does not survive the arithmetic, and nobody has ever checked anyway.">
+<style>
+  :root {
+    --ink: #1a1916;
+    --paper: #f7f5f0;
+    --faint: #8a857a;
+    --rule: #d8d4ca;
+    --accent: #b3372c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, monospace;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 4.5rem 1.25rem 6rem; }
+  h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; }
+  .sub { color: var(--faint); margin-top: 0.3rem; }
+  section { margin-top: 3.2rem; }
+  h2 { font-size: 0.85rem; font-weight: 600; color: var(--faint); margin-bottom: 1rem; }
+  p { margin-bottom: 0.9rem; max-width: 40rem; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+  code { font-size: 0.92em; }
+  s { color: var(--faint); text-decoration-thickness: 1px; }
+  strong { font-weight: 600; }
+
+  /* the rig */
+  #rig { margin-top: 1.2rem; }
+  #plot { display: block; width: 100%; height: auto; cursor: ew-resize; touch-action: pan-y; }
+  .rigrow { display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.7rem; flex-wrap: wrap; gap: 0.5rem; }
+  .picks button {
+    font: inherit; font-size: 0.85rem; background: none; border: none;
+    color: var(--faint); cursor: pointer; padding: 0.1rem 0.35rem;
+  }
+  .picks button.on { color: var(--accent); }
+  .picks button:hover { color: var(--ink); }
+  #truth { color: var(--faint); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
+  #verdict { font-size: 0.85rem; max-width: 40rem; margin-top: 0.8rem; min-height: 3.2em; color: var(--faint); }
+  #verdict b { color: var(--accent); font-weight: 600; }
+
+  table { border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; margin: 0.4rem 0 0.9rem; }
+  th, td { text-align: left; padding: 0.28rem 1.4rem 0.28rem 0; font-weight: 400; }
+  thead th { color: var(--faint); border-bottom: 1px solid var(--rule); }
+  td.win { color: var(--accent); }
+  tr.us td:first-child { color: var(--accent); }
+  tr.us td { color: var(--accent); }
+
+  ul { list-style: none; }
+  li { margin-bottom: 0.45rem; }
+  li::before { content: "— "; color: var(--faint); }
+  .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="note"><a href="/blog/">← blog</a></p>
+  <h1>vibration</h1>
+  <p class="sub">does shaking people for a living damage their brains? probably not — but nobody has ever checked</p>
+
+  <section>
+    <p>i started from an idea that sounds reasonable out loud: years of riding motorcycles or
+    operating heavy machinery deliver a lot of vibration to the skull, and maybe that accumulates
+    the way repeated sub-concussive hits do in contact sport. millions of people drive, dig, and
+    haul for a living. it seemed worth checking.</p>
+
+    <p>so i checked it before writing any analysis code. two things came back, pointing in
+    opposite directions. <strong>the mechanism doesn't survive the arithmetic.</strong> and
+    <strong>nobody has ever checked anyway.</strong></p>
+  </section>
+
+  <section>
+    <h2>the magnitude problem</h2>
+    <p>the sub-concussive framing needs vehicle vibration to be doing something mechanically
+    comparable to a head impact. it isn't close.</p>
+    <table>
+      <thead><tr><th></th><th>vehicle vibration at the head</th><th>sub-concussive impact</th></tr></thead>
+      <tbody>
+        <tr><td>peak linear</td><td>0.04 – 0.7 g</td><td>10 – 30 g</td></tr>
+        <tr><td>rotational</td><td>~1 rad/s²</td><td>~1000 rad/s²</td></tr>
+        <tr><td>character</td><td>sustained, 4–10 Hz</td><td>transient, high-jerk</td></tr>
+      </tbody>
+    </table>
+    <p>one and a half to two orders of magnitude below sub-concussive thresholds on linear
+    acceleration, and about three orders below on rotational — which is the quantity that actually
+    drives diffuse axonal injury. it sits in a band the head and neck low-pass filter, with no
+    transient component at all.</p>
+    <p class="note">no published paper makes this comparison directly. i assembled it from cited
+    measurement inputs, so it's derived arithmetic rather than a quoted result. it's the most
+    important number here and it deserves someone checking my work.</p>
+    <p>which means the hypothesis i started with —
+    <s>vibration acts as chronic sub-concussive trauma and damages the brain mechanically</s> —
+    is the wrong shape. if anything is happening it's indirect: vibration at 4–10 Hz reliably
+    makes people drowsy within half an hour, and chronic sleep disruption does have a cognitive
+    cost. that version is testable, and it makes a discriminating prediction — adjust for sleep and
+    the association should mostly dissolve. mechanical injury wouldn't behave that way.</p>
+  </section>
+
+  <section>
+    <h2>what the literature actually has</h2>
+    <ul>
+      <li>the largest review of acute effects — 32 studies, 114 exposure levels — found cognitive
+      after-effects <em>inconsistent</em>, with no pooled estimate. only postural stability
+      degraded reliably.</li>
+      <li>the classic positive result was n=16. the larger replication at n=54 was null.</li>
+      <li>the one study pairing vibration dosimetry with a neurodegenerative outcome found an
+      <em>inverse</em> association with parkinson's, OR 0.67 (0.48–0.94).</li>
+      <li>vibration-as-exercise trials meta-analyse to a cognitive <em>benefit</em>, g = +0.375.</li>
+      <li>chronic epidemiology: zero cohort studies, zero case-control studies. the literature is
+      empty.</li>
+    </ul>
+    <p>that combination is the whole reason to bother. the prior on a real effect should be near
+    zero — but a field with no chronic studies at all can't tell anyone in these jobs anything, and
+    a precise null would be the first empirical statement on the question. so i wrote the protocol
+    so that finding nothing counts as success rather than as a wasted year.</p>
+  </section>
+
+  <section id="rig">
+    <h2>why the obvious study fails, live</h2>
+    <p>the tempting design is to compare cognition between people who drive for a living and people
+    who don't. below is the data-generating process from the repo, running in your browser. it
+    builds a population where i set the true effect of vibration exactly, then adds what actually
+    happens in occupational cohorts: education sorts people into jobs, vibration arrives bundled
+    with noise and exhaust and shift work, and people whose cognition is slipping stop driving.</p>
+
+    <canvas id="plot" width="1320" height="330"></canvas>
+    <div class="rigrow">
+      <span class="picks" id="picks"></span>
+      <span id="truth"></span>
+    </div>
+    <p class="note" style="margin-top:0.8rem">drag horizontally to set the true effect, or pick one.
+    each dot is one simulated study of 1,200 people; the heavy line is the running mean. the dashed
+    line is the truth. <strong>set it to no effect</strong> and watch the naive estimator carry on
+    reporting one.</p>
+    <p id="verdict"></p>
+  </section>
+
+  <section>
+    <h2>the same thing, at full size</h2>
+    <p>200 replicates, n=8,000, in a world where vibration does <em>nothing</em>:</p>
+    <table>
+      <thead><tr><th>estimator</th><th>mean estimate</th><th>false positives</th><th>CI coverage</th></tr></thead>
+      <tbody>
+        <tr><td>within-person change, adjusted</td><td>+0.0003</td><td class="win">5.5%</td><td>94.5%</td></tr>
+        <tr><td>same, no co-exposure adjustment</td><td>−0.0075</td><td>20.0%</td><td>80.0%</td></tr>
+        <tr><td>cross-sectional level ~ dose</td><td>−0.0096</td><td>10.5%</td><td>89.5%</td></tr>
+        <tr class="us"><td>naive ~ current exposure</td><td>+0.2394</td><td>100%</td><td>0%</td></tr>
+      </tbody>
+    </table>
+    <p>the naive estimator reports a large <em>protective</em> effect of vibration in a world where
+    vibration does nothing, in every single replicate. when a true harm of −0.02 is present it
+    still reports +0.239 — wrong sign, twelve times the magnitude. bias doesn't shrink with sample
+    size, so no cohort is big enough to rescue it.</p>
+    <p>i'd bet that's behind any claim you've seen that professional drivers or motorcyclists have
+    unusually sharp reaction times. it isn't a finding about vibration. it's a finding about who
+    quits.</p>
+  </section>
+
+  <section>
+    <h2>measuring the exposure, badly</h2>
+    <p>no cohort large enough to matter measures vibration directly, so it has to come from a
+    job-exposure matrix. i built one from the public-domain O*NET work-context element for
+    whole-body vibration — 894 occupations — and calibrated it against jobs whose A(8) has actually
+    been measured in the field. it doesn't work very well, and that's worth saying out loud:</p>
+    <table>
+      <tbody>
+        <tr><td>rank correlation with measured A(8)</td><td>0.74</td></tr>
+        <tr><td>log-scale correlation</td><td>0.66</td></tr>
+        <tr><td>typical prediction error</td><td class="win">×1.90</td></tr>
+      </tbody>
+    </table>
+    <p>frequency of exposure isn't intensity of exposure. truck drivers rate 2.73 on the frequency
+    scale and measure 0.45 m/s²; shuttle drivers rate 1.28 and measure 0.47. the worst failure is
+    at the bottom, where the scale floors out — office clerks measure 0.068 m/s² and the calibration
+    hands them 0.265, a 3.9× overestimate.</p>
+    <p>that one matters more than the scatter elsewhere. inflating the unexposed group's dose
+    compresses the contrast and drags the dose–response slope toward zero, so a null from this
+    matrix is conservative in the wrong direction — partly an artefact of the instrument rather
+    than a fact about biology. so the dose–response test is pre-specified on exposure quantiles,
+    where the ranking is trustworthy, and continuous dose drops to secondary.</p>
+  </section>
+
+  <section>
+    <h2>two things that died on contact</h2>
+    <p>the original plan had an indonesia arm: household motorcycle ownership crossed with
+    community road quality, differenced around road improvements. IFLS has excellent cognitive
+    data — two waves, 21,013 adults, within-person change computable. it has no motorcycle variable
+    at any level. motorcycles are folded into one asset category with cars, boats and bicycles as a
+    single rupiah figure, and no wave asks anyone how they travel. the design has no independent
+    variable. the road arm fails separately: 17 of 310 communities went from unpaved to asphalt
+    between 2007 and 2014, against 9 that went the other way, which is reporting noise rather than
+    resurfacing.</p>
+    <p>uk biobank is scientifically the right cohort and currently unavailable — applications
+    paused until late 2026 after a breach, affiliation mandatory, earliest data in hand Q1–Q2 2027.
+    i don't have a university affiliation, so it's someone else's cohort. CHARLS replaces it as the
+    starting point: about three days to access, free, and it carries household motorcycle and
+    electric-bicycle variables directly.</p>
+  </section>
+
+  <section>
+    <h2>the experiment i'd rather run</h2>
+    <p>the review turned up a cheaper and far more decisive gap than any cohort analysis.
+    <strong>nobody has ever measured head-level vibration during normal riding or driving.</strong>
+    every measurement in the literature is taken at the seat. seat-to-head transmissibility is
+    exactly the quantity the magnitude table at the top turns on, and right now it's inferred
+    rather than measured.</p>
+    <p>accelerometers at seat and head, across a few vehicle types and road surfaces, would settle
+    the mechanistic question far more directly than analysing a hundred thousand job histories, and
+    for a rounding error of the cost. if someone wants to actually answer this, that's the study.</p>
+  </section>
+
+  <section>
+    <h2>artifacts</h2>
+    <ul>
+      <li><a href="https://jamesbaker1.github.io/wbv-cognition/">the long version</a> — same estimator, more room</li>
+      <li><a href="https://github.com/jamesbaker1/wbv-cognition">code</a> — simulation, estimators, job-exposure matrix, 15 tests</li>
+      <li><a href="https://github.com/jamesbaker1/wbv-cognition/blob/main/protocol/PROTOCOL.md">protocol</a> — falsifiable predictions and negative controls fixed in advance</li>
+      <li><a href="https://github.com/jamesbaker1/wbv-cognition/tree/main/research-notes">evidence review</a> — sourced, with PMIDs, and unverified claims marked unverified</li>
+    </ul>
+  </section>
+
+  <p class="foot">james baker, august 2026 · no cohort data obtained or analysed; everything above is
+  published measurements and simulation · <a href="mailto:james@deskofjim.com">james@deskofjim.com</a></p>
+</main>
+<script>
+(() => {
+  "use strict";
+
+  // ---- rng ----
+  let seed = 20260801;
+  const rnd = () => { seed = (seed * 1664525 + 1013904223) & 0x7fffffff; return seed / 0x7fffffff; };
+  let spare = null;
+  function randn() {
+    if (spare !== null) { const s = spare; spare = null; return s; }
+    let u = 0, v = 0, r = 0;
+    do { u = rnd() * 2 - 1; v = rnd() * 2 - 1; r = u * u + v * v; } while (r >= 1 || r === 0);
+    const f = Math.sqrt(-2 * Math.log(r) / r); spare = v * f; return u * f;
+  }
+  const gumbel = () => -Math.log(-Math.log(rnd() + 1e-12) + 1e-12);
+
+  // occupational strata: a8 (m/s^2), noise, exhaust, p(shift), education pull
+  const OCC = [
+    [0.05, -0.6, -0.4, 0.05,  1.00],
+    [0.35,  0.1,  0.8, 0.25, -0.20],
+    [0.55,  0.4,  0.9, 0.60, -0.35],
+    [0.65,  0.5,  1.0, 0.70, -0.45],
+    [0.80,  0.6,  0.5, 0.40, -0.50],
+    [0.95,  0.8,  0.6, 0.20, -0.55],
+    [1.15,  1.0,  0.7, 0.45, -0.60]
+  ];
+
+  // ---- ols: normal equations, gauss-jordan inverse, returns coefs + std errors ----
+  function ols(X, y) {
+    const n = X.length, k = X[0].length;
+    const A = [], b = new Float64Array(k);
+    for (let i = 0; i < k; i++) A.push(new Float64Array(k));
+    for (let l = 0; l < n; l++) {
+      const xr = X[l];
+      for (let i = 0; i < k; i++) {
+        b[i] += xr[i] * y[l];
+        for (let j = i; j < k; j++) A[i][j] += xr[i] * xr[j];
+      }
+    }
+    for (let i = 0; i < k; i++) for (let j = 0; j < i; j++) A[i][j] = A[j][i];
+    const M = [];
+    for (let i = 0; i < k; i++) {
+      M.push(new Float64Array(2 * k));
+      for (let j = 0; j < k; j++) M[i][j] = A[i][j];
+      M[i][k + i] = 1;
+    }
+    for (let i = 0; i < k; i++) {
+      let piv = i;
+      for (let l = i + 1; l < k; l++) if (Math.abs(M[l][i]) > Math.abs(M[piv][i])) piv = l;
+      if (Math.abs(M[piv][i]) < 1e-12) return null;
+      const t = M[i]; M[i] = M[piv]; M[piv] = t;
+      const d = M[i][i];
+      for (let j = 0; j < 2 * k; j++) M[i][j] /= d;
+      for (let l = 0; l < k; l++) {
+        if (l === i) continue;
+        const f = M[l][i];
+        if (f === 0) continue;
+        for (let j = 0; j < 2 * k; j++) M[l][j] -= f * M[i][j];
+      }
+    }
+    const beta = new Float64Array(k);
+    for (let i = 0; i < k; i++) { let s = 0; for (let j = 0; j < k; j++) s += M[i][k + j] * b[j]; beta[i] = s; }
+    let ss = 0;
+    for (let l = 0; l < n; l++) {
+      let p = 0; const xr = X[l];
+      for (let i = 0; i < k; i++) p += xr[i] * beta[i];
+      const e = y[l] - p; ss += e * e;
+    }
+    const s2 = ss / (n - k), se = new Float64Array(k);
+    for (let i = 0; i < k; i++) se[i] = Math.sqrt(Math.max(s2 * M[i][k + i], 0));
+    return { b: beta, se };
+  }
+
+  const N = 1200;
+  function replicate(betaDose) {
+    const Xn = [], yn = [], Xc = [], yc = [];
+    for (let i = 0; i < N; i++) {
+      const age = 56 + randn() * 8;
+      const childSes = randn();
+      const edu = 0.45 * childSes + randn() * 0.893;
+
+      let best = -1e9, oi = 0;
+      for (let j = 0; j < 7; j++) {
+        const v = 1.1 * edu * OCC[j][4] + gumbel();
+        if (v > best) { best = v; oi = j; }
+      }
+      const o = OCC[oi];
+      const a8 = o[0], noise = o[1] + randn() * 0.5, exhaust = o[2] + randn() * 0.5;
+      const shift = rnd() < o[3] ? 1 : 0;
+
+      const years = Math.pow(rnd(), 0.55) * Math.max(age - 20, 1);
+      const dose = a8 * years / 10;
+
+      const level = 0.45 * edu - 0.35 * (age - 56) / 10 - 0.01 * dose + 0.15 * childSes + randn() * 0.75;
+      const slope = -0.06 - 0.055 * (age - 56) / 10 + 0.010 * edu + betaDose * dose
+                  - 0.012 * noise - 0.014 * exhaust - 0.010 * shift + randn() * 0.05;
+
+      // healthy-worker survival + reverse causation: current exposure is a collider
+      const leave = -0.55 * level - 0.45 * (slope * 10) + 0.8 * (a8 - 0.64)
+                  + Math.log(rnd() / (1 - rnd() + 1e-12) + 1e-12);
+      const current = a8 < 0.1 ? 0 : (leave < -0.15 ? 1 : 0);
+
+      const cog0 = level + randn() * 0.32;
+      const cog1 = level + slope + 0.08 + randn() * 0.32;   // 10y later, plus practice
+
+      Xn.push([1, current, (age - 56) / 10, edu]); yn.push(cog0);
+      Xc.push([1, dose, (age - 56) / 10, edu, noise, exhaust, shift]); yc.push(cog1 - cog0);
+    }
+    const rn = ols(Xn, yn), rc = ols(Xc, yc);
+    if (!rn || !rc) return null;
+    return {
+      naive: rn.b[1], naiveT: Math.abs(rn.b[1] / (rn.se[1] || 1e-9)),
+      prim:  rc.b[1], primT:  Math.abs(rc.b[1] / (rc.se[1] || 1e-9)),
+      jitter: rnd()
+    };
+  }
+
+  // ---- state ----
+  const canvas = document.getElementById("plot");
+  const ctx = canvas.getContext("2d");
+  const truthEl = document.getElementById("truth");
+  const verdictEl = document.getElementById("verdict");
+  const css = getComputedStyle(document.documentElement);
+  const INK = css.getPropertyValue("--ink").trim();
+  const FAINT = css.getPropertyValue("--faint").trim();
+  const RULE = css.getPropertyValue("--rule").trim();
+  const ACCENT = css.getPropertyValue("--accent").trim();
+
+  const PRESETS = [["no effect", 0], ["small harm", -0.02], ["large harm", -0.05]];
+  let beta = -0.02, pts = [], sumP = 0, sumN = 0, rejP = 0, rejN = 0;
+  const MAX = 240, LO = -0.34, HI = 0.34;
+
+  const picksEl = document.getElementById("picks");
+  PRESETS.forEach(([label, v]) => {
+    const b = document.createElement("button");
+    b.textContent = label;
+    b.onclick = () => { beta = v; reset(); };
+    picksEl.appendChild(b);
+  });
+  const syncPicks = () => [...picksEl.children].forEach((b, i) =>
+    b.classList.toggle("on", Math.abs(PRESETS[i][1] - beta) < 1e-9));
+
+  function reset() { pts = []; sumP = sumN = rejP = rejN = 0; seed = 20260801; syncPicks(); }
+  const fmt = x => (x < 0 ? "−" : "+") + Math.abs(x).toFixed(3);
+
+  // drag to scrub the true effect
+  let dragging = false, lastX = 0;
+  canvas.addEventListener("pointerdown", e => {
+    dragging = true; lastX = e.clientX; canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    const per = (canvas.getBoundingClientRect().width || 700);
+    beta = Math.max(-0.06, Math.min(0.01, beta + (e.clientX - lastX) * (0.07 / per)));
+    lastX = e.clientX;
+    reset();
+  });
+  canvas.addEventListener("pointerup", () => { dragging = false; });
+
+  function verdict() {
+    const n = pts.length;
+    if (n < 20) { verdictEl.innerHTML = "accumulating…"; return; }
+    const mp = sumP / n, mn = sumN / n, rp = rejP / n, rn = rejN / n;
+    if (Math.abs(beta) < 5e-4) {
+      verdictEl.innerHTML = "vibration does nothing in this world. the naive estimator reports <b>" +
+        fmt(mn) + "</b> — a protective effect — and calls it significant " + (rn * 100).toFixed(0) +
+        "% of the time. the within-person estimator sits at " + fmt(mp) + ", significant " +
+        (rp * 100).toFixed(0) + "% of the time.";
+    } else if (mn * beta < 0) {
+      verdictEl.innerHTML = "true effect is " + fmt(beta) + ". the naive estimator reports <b>" +
+        fmt(mn) + "</b> — the wrong sign entirely. within-person recovers " + fmt(mp) + ".";
+    } else {
+      verdictEl.innerHTML = "true effect is " + fmt(beta) + ". within-person recovers " + fmt(mp) +
+        ", detecting it " + (rp * 100).toFixed(0) + "% of the time. the naive estimator reports <b>" +
+        fmt(mn) + "</b>.";
+    }
+  }
+
+  function draw() {
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    const padL = 4, top = 46, bandH = 104, gap = 44;
+    const w = W - padL * 2;
+    const X = v => padL + (v - LO) / (HI - LO) * w;
+
+    ctx.font = "17px ui-monospace, Consolas, monospace";
+    ctx.lineWidth = 1;
+
+    // ticks
+    ctx.strokeStyle = RULE; ctx.fillStyle = FAINT; ctx.textAlign = "center";
+    [-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3].forEach(t => {
+      const x = Math.round(X(t)) + 0.5;
+      ctx.beginPath(); ctx.moveTo(x, top - 12); ctx.lineTo(x, top + bandH * 2 + gap); ctx.stroke();
+      ctx.fillText(t.toFixed(1), x, top + bandH * 2 + gap + 24);
+    });
+
+    // truth marker
+    const tx = Math.round(X(beta)) + 0.5;
+    ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = FAINT; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(tx, top - 26); ctx.lineTo(tx, top + bandH * 2 + gap); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = FAINT; ctx.fillText("truth", tx, top - 32);
+
+    [{ y: top, c: INK, k: "prim", l: "within-person change" },
+     { y: top + bandH + gap, c: ACCENT, k: "naive", l: "naive cross-sectional" }].forEach(bd => {
+      ctx.fillStyle = FAINT; ctx.textAlign = "left";
+      ctx.fillText(bd.l, padL, bd.y - 12);
+      ctx.strokeStyle = RULE;
+      ctx.beginPath(); ctx.moveTo(padL, bd.y + bandH - 0.5); ctx.lineTo(W - padL, bd.y + bandH - 0.5); ctx.stroke();
+      for (let p = 0; p < pts.length; p++) {
+        const xx = X(Math.max(LO, Math.min(HI, pts[p][bd.k])));
+        const yy = bd.y + bandH - 6 - pts[p].jitter * (bandH - 14);
+        ctx.globalAlpha = 0.18 + 0.5 * (p / Math.max(pts.length - 1, 1));
+        ctx.fillStyle = bd.c;
+        ctx.beginPath(); ctx.arc(xx, yy, 2.6, 0, 6.2832); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      if (pts.length) {
+        const m = (bd.k === "prim" ? sumP : sumN) / pts.length;
+        const mx = Math.round(X(Math.max(LO, Math.min(HI, m)))) + 0.5;
+        ctx.strokeStyle = bd.c; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(mx, bd.y - 3); ctx.lineTo(mx, bd.y + bandH + 3); ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+    });
+
+    truthEl.textContent = "true effect = " + fmt(beta) + " · " + pts.length + " studies";
+  }
+
+  function tick() {
+    for (let k = 0; k < 2; k++) {
+      const r = replicate(beta);
+      if (!r) continue;
+      pts.push(r); sumP += r.prim; sumN += r.naive;
+      if (r.primT > 1.96) rejP++;
+      if (r.naiveT > 1.96) rejN++;
+      if (pts.length > MAX) {
+        const o = pts.shift();
+        sumP -= o.prim; sumN -= o.naive;
+        if (o.primT > 1.96) rejP--;
+        if (o.naiveT > 1.96) rejN--;
+      }
+    }
+    draw(); verdict();
+    requestAnimationFrame(tick);
+  }
+
+  reset();
+  requestAnimationFrame(tick);
+
+  console.log("%cthe two bands are a real regression — same DGP as src/wbvcog/simulate.py, nothing mocked.", "color:#b3372c");
+  console.log("set the true effect to zero. the naive estimator still reports a large positive one, every replicate.\nthat is the healthy-worker survivor effect: people whose cognition slips stop driving, so whoever\nis still driving looks sharp. github.com/jamesbaker1/wbv-cognition");
+})();
+</script>
+</body>
+</html>
