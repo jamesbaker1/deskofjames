@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>swag — scale-wise adaptive gating for rotary position embeddings</title>
+<title>swag: scale-wise adaptive gating for rotary position embeddings</title>
 <style>
   :root {
     --ink: #1a1916;
@@ -63,7 +63,7 @@
 
   ul { list-style: none; }
   li { margin-bottom: 0.45rem; }
-  li::before { content: "— "; color: var(--faint); }
+  li::before { content: "· "; color: var(--faint); }
   .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
   @media (prefers-reduced-motion: reduce) { /* dials still scrub by hand; they just don't drift */ }
 </style>
@@ -77,7 +77,7 @@
   <section>
     <p>rope hands every token the same fixed bank of positional frequency channels.
     swag lets each query token emit a gate per channel that scales only that channel's
-    positional correction — which scales of "how far apart are we" this token cares
+    positional correction: which scales of "how far apart are we" this token cares
     about. the geometry itself never moves, so attention still depends on relative
     offset alone, exactly like rope. gates at 1 recover rope; gates at 0 ignore
     position; the whole thing computes exactly as one inner product in a doubled head
@@ -96,14 +96,14 @@
     <p class="note" style="margin-top:0.8rem">sixteen rope channels, fast on the left, slow on the
     right, spinning at their true rates θ<sub>i</sub> = 10000<sup>−i/16</sup>. drag
     horizontally to scrub the relative offset. each dial's weight is the mean learned
-    gate for that channel, measured from the trained model on 81,920 validation bytes —
-    pick a token class and a layer. digits mute the local channels in layer&nbsp;0;
+    gate for that channel, measured from the trained model on 81,920 validation bytes. pick a
+    token class and a layer. digits mute the local channels in layer&nbsp;0;
     layer&nbsp;3 converges on one shared mid-band scale; by layer&nbsp;5 whitespace has
     mostly stopped caring about position.</p>
   </section>
 
   <section>
-    <h2>results — byte-level enwik8, six matched ~5m-param variants, 2 seeds</h2>
+    <h2>results: byte-level enwik8, six matched ~5m-param variants, 2 seeds</h2>
     <table>
       <thead><tr><th>variant</th><th>bpc @512</th><th>@1024</th><th>@2048</th><th>offset recall @4×</th></tr></thead>
       <tbody>
@@ -116,21 +116,21 @@
       </tbody>
     </table>
     <p>the finding is a trade, not a trophy. learning the frequencies extrapolates prose
-    best and quietly breaks the ruler — exact-offset recall collapses past the training
+    best and quietly breaks the ruler: exact-offset recall collapses past the training
     length. swag is the only variant that improves on rope (best in-distribution number,
     both seeds, smaller degradation at every longer context) while keeping rope's
     relative-position robustness to the last decimal. costs 1.29× rope's wall-clock
-    unfused. the in-distribution margin is about the size of rope's seed spread — the
-    paper says so, in those words.</p>
+    unfused. the in-distribution margin is about the size of rope's seed spread, and the paper
+    says so, in those words.</p>
   </section>
 
   <section>
     <h2>artifacts</h2>
     <ul>
-      <li><a href="swag.pdf">paper</a> — 12 pages, every number traceable to a committed run record</li>
-      <li><a href="https://github.com/jamesbaker1/swag-rope">code</a> — pytorch, 44 tests, the gated form verified against the naive formula at 1e-10</li>
-      <li><a href="https://github.com/jamesbaker1/swag-rope/tree/main/results">78 run records</a> — configs, curves, wall-clock, all of it</li>
-      <li><a href="https://github.com/jamesbaker1/swag-rope/blob/main/blog/post.md">notes</a> — what worked, what didn't, what it cost</li>
+      <li><a href="swag.pdf">paper</a>: 12 pages, every number traceable to a committed run record</li>
+      <li><a href="https://github.com/jamesbaker1/swag-rope">code</a>: pytorch, 44 tests, the gated form verified against the naive formula at 1e-10</li>
+      <li><a href="https://github.com/jamesbaker1/swag-rope/tree/main/results">78 run records</a>: configs, curves, wall-clock, all of it</li>
+      <li><a href="https://github.com/jamesbaker1/swag-rope/blob/main/blog/post.md">notes</a>: what worked, what didn't, what it cost</li>
     </ul>
   </section>
 
@@ -236,7 +236,7 @@
   }
   requestAnimationFrame(draw);
 
-  console.log("%cthe dial weights are results/gate_profile_enwik8_gated_seed1.json — head-averaged, nothing invented.", "color:#b3372c");
+  console.log("%cthe dial weights are results/gate_profile_enwik8_gated_seed1.json, head-averaged, nothing invented.", "color:#b3372c");
   console.log("gates at 1 would make this page exactly rope. the model chose otherwise.");
 })();
 </script>

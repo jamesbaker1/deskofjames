@@ -122,7 +122,7 @@ h1 {
 	font-size: 14.5px;
 	line-height: 1.5;
 	color: var(--muted);
-	/* subtitles come from the feed and are occasionally long — hold them to two lines */
+	/* subtitles come from the feed and are occasionally long, so hold them to two lines */
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
@@ -167,7 +167,7 @@ footer p { margin: 0 }
 <header>
 	<a class="home" href="/">James Baker</a>
 	<h1>Writing</h1>
-	<p class="intro">Essays on legal technology and AI — <a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">subscribe</a> for new ones by email</p>
+	<p class="intro">Essays on legal technology and AI. <a href="https://jamesfbaker.substack.com/subscribe" target="_blank" rel="noopener">Subscribe</a> for new ones by email</p>
 </header>
 
 <main>
@@ -219,8 +219,8 @@ footer p { margin: 0 }
 	function label(year) {
 		var h = document.createElement('h2');
 		h.className = 'year';
-		// the running year is an open range, so it reads "2026 —"
-		h.textContent = year === THIS_YEAR ? year + ' —' : year;
+		// the running year is an open range, so it reads "2026 –"
+		h.textContent = year === THIS_YEAR ? year + ' –' : year;
 		return h;
 	}
 

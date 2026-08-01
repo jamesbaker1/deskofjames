@@ -6,7 +6,7 @@
       "title": "Vibration: does shaking people for a living damage their brains?",
       "url": "https://deskofjim.com/blog/vibration/",
       "date": "2026-08-01",
-      "subtitle": "the mechanism is two orders of magnitude short, nobody has ever checked anyway, and the obvious study reports the wrong sign — run it yourself in the browser",
+      "subtitle": "the mechanism is two orders of magnitude short, nobody has ever checked anyway, and the obvious study reports the wrong sign. run it yourself in the browser",
       "slug": "vibration",
       "local": true
     },
@@ -14,7 +14,7 @@
       "title": "SWAG: scale-wise adaptive gating for rotary position embeddings",
       "url": "https://deskofjim.com/blog/swag/",
       "date": "2026-07-31",
-      "subtitle": "an interactive tour of what each token learned about position — best in-distribution loss of six variants, one real trade-off, ~$6 of GPU",
+      "subtitle": "an interactive tour of what each token learned about position: best in-distribution loss of six variants, one real trade-off, ~$6 of GPU",
       "slug": "swag",
       "local": true
     },

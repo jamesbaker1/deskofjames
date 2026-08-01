@@ -190,10 +190,10 @@ footer p { margin: 0 }
 
 <article>
 <p><a href="https://www.blueybot.com">Visit BlueyBot here</a></p>
-<p>The Bluebook— hauntingly familiar to every lawyer—has always been the gold standard for legal citations. Yet if you’ve ever navigated its pages, you know it’s dense, intricate, and not exactly designed for the digital era. As large language models become increasingly sophisticated, I’ve been working on a project to create a Bluebook-savvy AI assistant. The goal: allow lawyers to quickly and reliably query a system that not only understands general legal language, but also can cite according to the Bluebook’s rigorous standards.</p>
-<p>My recent journey in training this AI model led me down two potential paths: fine-tuning an existing open-source model with the Bluebook’s content, or using what’s known as Retrieval-Augmented Generation (RAG). While both approaches have their merits, I ultimately chose RAG—and I’d like to explain why, and how that decision shaped this project.</p>
+<p>The Bluebook, hauntingly familiar to every lawyer, has always been the gold standard for legal citations. Yet if you’ve ever navigated its pages, you know it’s dense, intricate, and not exactly designed for the digital era. As large language models become increasingly sophisticated, I’ve been working on a project to create a Bluebook-savvy AI assistant. The goal: allow lawyers to quickly and reliably query a system that not only understands general legal language, but also can cite according to the Bluebook’s rigorous standards.</p>
+<p>My recent journey in training this AI model led me down two potential paths: fine-tuning an existing open-source model with the Bluebook’s content, or using what’s known as Retrieval-Augmented Generation (RAG). While both approaches have their merits, I ultimately chose RAG, and I’d like to explain why, and how that decision shaped this project.</p>
 <h3>Fine-Tuning vs. Retrieval-Augmented Generation</h3>
-<p><strong>Fine-Tuning</strong> is a process where you take an existing language model and update its “weights” using additional training data—in this case, the Bluebook text. It’s like teaching an associate attorney the entire Bluebook cover-to-cover so they internalize every rule. After this process, the model “remembers” these rules and can ideally recite them as needed.</p>
+<p><strong>Fine-Tuning</strong> is a process where you take an existing language model and update its “weights” using additional training data, in this case the Bluebook text. It’s like teaching an associate attorney the entire Bluebook cover-to-cover so they internalize every rule. After this process, the model “remembers” these rules and can ideally recite them as needed.</p>
 <p><strong>Retrieval-Augmented Generation (RAG)</strong>, on the other hand, is more akin to having a smart research assistant who never memorizes everything but instead has instant access to the Bluebook’s content. When you ask a question, the model retrieves the most relevant rules and uses them to craft an answer on the fly.</p>
 <p>Here are some pros and cons I considered:</p>
 <p><strong>Fine-Tuning Pros:</strong></p>
@@ -223,7 +223,7 @@ footer p { margin: 0 }
 <p><strong>RAG Pros:</strong></p>
 <ul>
 <li>
-<p>Easy to update the data—just edit the underlying documents.</p>
+<p>Easy to update the data: just edit the underlying documents.</p>
 </li>
 <li>
 <p>The model remains lighter and more flexible.</p>
@@ -246,14 +246,14 @@ footer p { margin: 0 }
 </ul>
 <p>After weighing these factors, I chose RAG. Given how often the Bluebook might be updated and how nuanced its rules are, it felt more prudent to keep the authoritative text external. This way, if the Bluebook changes (a new edition, a major revision), I simply update the underlying reference text and embeddings, rather than retraining the entire model from scratch.</p>
 <h3>Embedding the Bluebook</h3>
-<p>To make RAG work, I needed to transform the Bluebook’s text into a searchable, “vectorized” format—what we call embeddings. Embeddings translate text into numerical representations. Think of them like assigning GPS coordinates to each rule, so the AI can quickly “find” them when searching.</p>
+<p>To make RAG work, I needed to transform the Bluebook’s text into a searchable, “vectorized” format, which is what we call embeddings. Embeddings translate text into numerical representations. Think of them like assigning GPS coordinates to each rule, so the AI can quickly “find” them when searching.</p>
 <p>There are open-source embedding models I could start from, and they can even be fine-tuned to produce embeddings particularly suited to legal texts. By tuning these embeddings, I help ensure that when the model looks for &quot;citation form for Supreme Court cases,&quot; it pulls the right section every time, rather than something about period placement in footnotes.</p>
 <h3>Using a Vector Database (Pinecone)</h3>
 <p>Once I had these embeddings, I needed a place to store and efficiently search them. For that, I used a vector database called Pinecone. Instead of searching by keywords, Pinecone allows searching by vector similarity. It’s like having a librarian who instantly knows which shelf and which exact page to open to, all based on the content’s semantic meaning.</p>
 <p><strong>Search Methods in Vector Databases:</strong></p>
 <ul>
 <li>
-<p><strong>Cosine Similarity:</strong> Measures the angle between two vectors (i.e., how similar their “direction” is). This is often used as it’s invariant to vector length—perfect for comparing text meaning.</p>
+<p><strong>Cosine Similarity:</strong> Measures the angle between two vectors (i.e., how similar their “direction” is). This is often used as it’s invariant to vector length, which is perfect for comparing text meaning.</p>
 </li>
 <li>
 <p><strong>Euclidean Distance:</strong> Measures the direct distance between vectors, as if plotting points in multi-dimensional space.</p>
@@ -266,11 +266,11 @@ footer p { margin: 0 }
 <h3>Costs and Considerations</h3>
 <p>This approach does come with costs. Running a vector database like Pinecone has usage fees, and embedding large documents (like the entire Bluebook) also isn’t free. On top of that, hosting a large language model (even if not fine-tuned) has associated costs. For a law firm or legal department, these might be manageable compared to the billing rates of attorneys spending hours combing through citation manuals, but they’re still worth tracking.</p>
 <h3>Improving the Setup</h3>
-<p>Right now, I’ve been chunking the Bluebook into 400-token segments with a 200-token overlap. In other words, I take the big text, slice it into fairly arbitrary chunks, and give each chunk a bit of overlap with the next for context. But this is somewhat “dumb”—it doesn’t respect the structure of the Bluebook’s rules. A better approach would be to chunk by actual rule sections. By doing that, the model will be retrieving rules that are semantically whole, not arbitrarily truncated segments. This would help ensure that when a lawyer asks, “What’s the proper citation format for a federal appellate decision?” the retrieved chunk corresponds to a self-contained rule rather than half a rule and half another.</p>
+<p>Right now, I’ve been chunking the Bluebook into 400-token segments with a 200-token overlap. In other words, I take the big text, slice it into fairly arbitrary chunks, and give each chunk a bit of overlap with the next for context. But this is somewhat “dumb”: it doesn’t respect the structure of the Bluebook’s rules. A better approach would be to chunk by actual rule sections. By doing that, the model will be retrieving rules that are semantically whole, not arbitrarily truncated segments. This would help ensure that when a lawyer asks, “What’s the proper citation format for a federal appellate decision?” the retrieved chunk corresponds to a self-contained rule rather than half a rule and half another.</p>
 <p>I also want to surface the vector search results in the user interface. Right now, the model silently retrieves the relevant sections from Pinecone, but it would be helpful to show lawyers which Bluebook sections were used to generate the answer. Think of it like clickable footnotes or hyperlinks directly to the relevant rules. This transparency would build trust and allow attorneys to verify the model’s recommendations.</p>
 <h3>Larger Implications</h3>
 <p>The Bluebook is just one example. The methodology behind this project is applicable to a wide range of legal texts and practice guides. Picture corporate counsel quickly referencing their company’s internal policies or regulations, or litigators seamlessly pulling from local court rules. This technology can streamline legal research, reduce associate time spent on routine citation checks, and ensure more consistent, error-free documents.</p>
-<p>But as with any AI application in law, accuracy, validation, cost, and ethical concerns should shape the deployment. Law is inherently conservative and tradition-bound—rightfully so, given the stakes. Yet, as these tools mature, we may see them evolve from novel experiments into indispensable aspects of legal practice.</p>
+<p>But as with any AI application in law, accuracy, validation, cost, and ethical concerns should shape the deployment. Law is inherently conservative and tradition-bound, rightfully so, given the stakes. Yet, as these tools mature, we may see them evolve from novel experiments into indispensable aspects of legal practice.</p>
 </article>
 
 <footer>
