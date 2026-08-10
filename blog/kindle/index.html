@@ -1,0 +1,403 @@
+<!doctype html>
+<!-- every chart below is drawn from the actual export: amazon's "request my data"
+     kindle bundle, 410 csv files of telemetry. numbers are computed, not vibes.
+     timestamps are utc in the raw data; the charts use true local time, corrected
+     for a jul 2026 itinerary of nyc -> sf -> tokyo -> taipei via the phone's own
+     timezone stamps. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>my kindle thinks i died in 2022</title>
+<link rel="canonical" href="https://deskofjim.com/blog/kindle/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="description" content="Seven years of Kindle telemetry: 141 hours, 3,705 sessions, a 905-day flatline, and a resurrection. What Amazon's data export says about how I actually read.">
+<style>
+  :root {
+    --ink: #1a1916;
+    --paper: #f7f5f0;
+    --faint: #8a857a;
+    --rule: #d8d4ca;
+    --accent: #b3372c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, monospace;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 4.5rem 1.25rem 6rem; }
+  h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; }
+  .sub { color: var(--faint); margin-top: 0.3rem; }
+  section { margin-top: 3.2rem; }
+  h2 { font-size: 0.85rem; font-weight: 600; color: var(--faint); margin-bottom: 1rem; }
+  p { margin-bottom: 0.9rem; max-width: 40rem; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  figure { margin: 1.4rem 0 0.6rem; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { color: var(--faint); font-size: 0.8rem; margin-top: 0.45rem; max-width: 40rem; }
+  .axis { font-size: 10px; fill: var(--faint); }
+  .lbl { font-size: 10.5px; fill: var(--ink); }
+  .lblf { font-size: 10.5px; fill: var(--faint); }
+  .lbla { font-size: 10.5px; fill: var(--accent); font-weight: 600; }
+
+  table { border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; margin: 0.4rem 0 0.9rem; }
+  th, td { text-align: left; padding: 0.28rem 1.4rem 0.28rem 0; font-weight: 400; }
+  thead th { color: var(--faint); border-bottom: 1px solid var(--rule); }
+  td.hi { color: var(--accent); }
+
+  ul { list-style: none; }
+  li { margin-bottom: 0.45rem; max-width: 40rem; }
+  li::before { content: "· "; color: var(--faint); }
+  .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
+  .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="note"><a href="/blog/">← blog</a></p>
+  <h1>my kindle thinks i died in 2022</h1>
+  <p class="sub">141 hours, 3,705 sessions, a 905-day flatline, and a resurrection: seven years of kindle telemetry, exhumed</p>
+
+  <section>
+    <p>amazon will hand you everything it knows about your kindle if you ask. i asked. it knows
+    a lot: 410 csv files covering every reading session since 2019, every page flip, every
+    dictionary lookup, every time i changed a font setting, every lockscreen ad it showed me,
+    and, my favorite, every time the e-reader woke up and immediately went back to sleep.</p>
+
+    <p>i pointed seven analysis agents at the pile expecting a list of books. what came back was
+    a three-act biography told entirely in timestamps, with a culprit, a body, and a
+    resurrection.</p>
+  </section>
+
+  <section>
+    <h2>the flatline</h2>
+    <figure id="fig-monthly"></figure>
+    <p class="note">reading minutes per month, aug 2019 → aug 2026. the shaded band is 905
+    consecutive days in which i did not open a book once.</p>
+
+    <p>act one: 2019, new kindle, 32 hours of reading, quantum physics and mountaineering
+    disasters. act two: the slow fade. 25 hours in 2020, 19 in 2021, 90 minutes total in 2022.
+    then may 4, 2022: the last session. after that, nothing. not a short gap. <strong>905
+    days.</strong> all of 2023: zero minutes. as far as the telemetry is concerned i was
+    deceased.</p>
+
+    <p>except the library kept logging purchases, and the purchases tell you exactly what
+    happened. the timeline reads like an indictment:</p>
+
+    <table>
+      <thead><tr><th>date</th><th>event</th></tr></thead>
+      <tbody>
+        <tr><td>may 6, 2021</td><td>lsat superprep I and II purchased</td></tr>
+        <tr><td>may 4, 2022</td><td>last pleasure-reading session</td></tr>
+        <tr><td class="hi">aug 21, 2022</td><td class="hi">torts casebook, $234. 1L begins.</td></tr>
+        <tr><td>jan 18, 2023</td><td>contracts ($150) + business orgs ($247)</td></tr>
+        <tr><td>oct–dec 2024</td><td>a brief "3L blip": 254 minutes, then silence</td></tr>
+        <tr><td>apr 7, 2026</td><td>new kindle arrives</td></tr>
+        <tr><td class="hi">apr 2026 –</td><td class="hi">59 hours in 4 months, 91% of days</td></tr>
+      </tbody>
+    </table>
+
+    <p>reading didn't fade; it was killed. law school billed the reading hours to casebooks
+    (recorded pleasure-reading time in the $631 of casebooks: <strong>0.0 minutes</strong>, they
+    were for class) and the habit flatlined within weeks of the torts purchase. act three: a new
+    kindle arrives april 7, 2026, roughly one bar exam after graduation, and within 24 hours i'm
+    reading again. the four months since have produced <strong>59 hours</strong>, more than any
+    full year in the dataset. same person. the only variables that changed were the diploma and
+    the hardware.</p>
+  </section>
+
+  <section>
+    <h2>the habit became structurally unbreakable</h2>
+    <figure id="fig-hazard"></figure>
+    <p class="note">probability of reading tomorrow, given the current streak length. left: the
+    2019–2022 era. right: 2026. the red bars are certainties.</p>
+
+    <p>this is my favorite result in the whole export. in the first era, 57% of reading streaks
+    died at day one; the chance a one-day streak survived to day two was 44%, and no streak ever
+    passed 12 days. in 2026, once a streak reaches day 2, the observed probability that i read
+    the next day is <strong>100% through day 14</strong> (70 of 70 day-observations continued).
+    the only risky day is day 1. same brain, categorically different process: the longest streak
+    is now 39 days, and i've read on 113 of the 124 days since the new kindle arrived.</p>
+
+    <p>the daily dose is boring in the best way: ~41 minutes per day in the first 30 days, ~41
+    in the last 30. what changed is the shape. median session grew from 15 seconds to 78, on
+    fewer, longer sittings. the habit isn't growing; it consolidated.</p>
+  </section>
+
+  <section>
+    <h2>midnight is my biggest reading hour</h2>
+    <figure id="fig-hours"></figure>
+    <p class="note">reading minutes by hour of day, in true local time (the jul–aug sessions are
+    converted to sf/tokyo/taipei clocks per the phone's own timezone stamps). red bars are
+    midnight through 4 a.m.</p>
+
+    <p>an honesty note first: i've been in asia since mid-july, and in the raw utc data that trip
+    masquerades as a sudden 3 a.m. reading habit, then as me becoming a morning person. neither
+    happened. corrected to where i actually was, my evening anchor is identical on both sides of
+    the planet (center of mass ~7:30 p.m. local), and the night-owl finding survives cleanly:
+    <strong>26% of every minute i've ever read, about 37 hours, happened between midnight and
+    4 a.m. local time</strong>, with midnight itself the single biggest hour (924 minutes).</p>
+
+    <p>the forensics say it's not insomnia, it's momentum: 86% of late-night sessions are
+    continuations of an evening session. i don't wake up to read; i fail to stop. the funny
+    part: on the asia leg, the after-midnight share collapsed to 2%. jet lag accidentally fixed
+    my bedtime.</p>
+  </section>
+
+  <section>
+    <h2>the median session is 35 seconds, and that's fine</h2>
+    <figure id="fig-buckets"></figure>
+    <p class="note">left: share of sessions by length. right: share of actual reading time.
+    86% of sessions are under five minutes; the 5–15 minute sittings carry the most minutes.</p>
+
+    <p>i pictured myself as someone who settles in with a book. the data says the picture is
+    half right: 70% of all sessions are under two minutes, but <strong>79% of those
+    micro-sessions are warm-ups</strong>, followed by more reading within half an hour. they're
+    ignition attempts, not doomscroll pokes. a typical reading day is one main sitting that
+    carries 74% of the day's minutes, surrounded by little sparks.</p>
+
+    <p>my attention followed a u-curve: median session 147 seconds in 2019, down to 12 seconds
+    at the grazing bottom in early 2026, back to 78 in the last 30 days. the longest true
+    sitting of the entire seven years happened three weeks ago: 190 minutes of shackleton's
+    <em>endurance</em> in a tokyo hotel. exactly one session in seven years crossed the hour
+    mark before that era (61.9 minutes of <em>peak</em>, started 11:56 p.m., obviously).</p>
+  </section>
+
+  <section>
+    <h2>what i actually read: three epochs</h2>
+    <p>the content tells the same story as the timestamps, so the agents named my reading eras
+    like geological periods:</p>
+    <ul>
+      <li><strong>the optimization eon (2019–2022), 4,666 min.</strong> gladwell, sinek,
+      collins, "built to last", a gates biography, self-improvement, and quantum physics
+      primers after midnight. fiction: 2.9%. a self under construction.</li>
+      <li><strong>the founder flicker (2024–25), 268 min.</strong> five weeks of saas playbook,
+      lean startup, and venture deals on a phone, then 14 minutes in all of 2025. reading as
+      ambition, not as life.</li>
+      <li><strong>the survival &amp; feeling supereon (2026), 3,552 min.</strong> opens like a
+      therapy intake (week one: <em>attached</em>, <em>the body keeps the score</em>), finishes
+      the jordan peterson book abandoned 1,434 days earlier, then glass castle, shackleton,
+      horror novels, caro. fiction jumps to 19.5%. four months out-read the best full year of
+      the optimization eon.</li>
+    </ul>
+    <p>one theme survives every era: <strong>people enduring extreme circumstances</strong>.
+    into thin air, on desperate ground, endurance, the glass castle: ~24 hours lifetime, my
+    true north across seven years. physics, meanwhile, died with the first kindle (524 minutes
+    → 16 → 6), and the book i've spent the most time on ever, 7.3 hours of <em>what is real?</em>,
+    a book about the unfinished quest for the meaning of quantum physics, remains, fittingly,
+    unfinished.</p>
+    <p>meanwhile my "not interested" list on amazon is the entire airport-bestseller canon:
+    atomic habits, sapiens (rejected twice), outliers, blink, zero to one, infinite jest. amazon's
+    response to someone who rejected two gladwell books is, per the recommendation logs, to
+    recommend more gladwell.</p>
+  </section>
+
+  <section>
+    <h2>things the telemetry would rather i didn't know</h2>
+    <ul>
+      <li>buying the ad-supported kindle saved $20 and has cost 432 minutes of lockscreen ads
+      (572 impressions). that's an effective wage of <strong>$2.78/hour</strong> for watching
+      ads, below every us minimum wage. i have clicked exactly one ad, ever.</li>
+      <li>blended cost of my library: <strong>$20.61 per hour actually read</strong>. 79% of the
+      dollars sit in books with under ten minutes of reading. best value: a $1 thriller i read
+      for 3.2 hours ($0.31/hr). worst: <em>influence</em>, $22 for 4.2 minutes ($318/hr), and i
+      own two editions of it.</li>
+      <li>amazon doesn't store search text, only lengths. but at 2:26 a.m. on jul 18, a
+      25-character search, the exact length of "the count of monte cristo", opened that book's
+      page, and by the afternoon one of only two audible listens in seven years was logged:
+      <em>the count of monte cristo</em>. the 2 a.m. version of me has ambitions.</li>
+      <li>276 of my 282 logged settings changes are toggling one setting: the reading-progress
+      display, cycled between "time left in chapter", "time left in book", and "page number",
+      138 times in may 2026 alone. current answer: "time left in book".</li>
+      <li>on the phone, reading gets interrupted every <strong>83 seconds</strong> (757 "app
+      backgrounded" events against 17.6 hours of reading). the e-reader just idles to sleep
+      every 12.5 minutes. that ratio is the entire phone-vs-e-reader argument in one number.</li>
+      <li>kindle points: 446 earned lifetime, 254 silently expired, 162 remaining. more points
+      have died of old age than i currently possess.</li>
+      <li>font settings across seven years and two devices: bookerly, size 4, justified. two
+      recorded experiments with size 5, both reverted within minutes. some things about a person
+      are load-bearing.</li>
+      <li>my "kindle" data export is 38% fire tv stick telemetry. the stick was used 5 days in
+      8 months, its screensaver out-ran netflix 118 minutes to 92, and on all 5 tv days my
+      reading minutes were exactly zero.</li>
+      <li>one of the e-reader's internal settings is named, in production telemetry shipped to
+      millions of devices, "prower saver".</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>what i take from it</h2>
+    <p>the whole dataset reduces to one uncomfortable finding: my reading life is not a function
+    of discipline, intention, or how much i claim to love books. it's a function of whether a
+    dedicated device with an e-ink screen is physically near my bed, and whether law school is
+    currently in session. when the device was there, i read 78 hours, then 59 more and climbing,
+    with a streak mechanism that's now statistically unbreakable past day two. when it wasn't,
+    a lifetime of book-lover self-image produced four hours across eighteen months of phone-only
+    reading.</p>
+    <p>the $110 gadget outperformed the willpower by an order of magnitude. i'd call that
+    humbling, but the telemetry suggests i'll have stopped thinking about it by midnight, which
+    is when the reading starts.</p>
+  </section>
+
+  <p class="foot">data: amazon "request my data" → kindle, exported aug 2026. 410 files; sessions
+  from the reading-insights and device logs, cross-checked against whispersync, library index,
+  and lockscreen-ad telemetry. timestamps converted from utc to true local time (nyc, then
+  sf jul 15–19, then tokyo/taipei, per the phone's own timezone stamps). charts are drawn from
+  the real monthly, hourly, and streak-hazard totals; view source, the arrays are right there.</p>
+</main>
+
+<script>
+(function () {
+  // minutes per month, aug 2019 -> aug 2026
+  var MONTHLY = [67,420,755,461,227,47,44,84,424,35,0,202,34,264,249,44,90,101,5,0,52,62,29,0,47,57,0,364,413,2,11,0,20,56,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,35,127,92,10,0,0,0,0,0,0,0,4,0,0,0,0,0,0,998,609,493,1073,378];
+  var M0 = { y: 2019, m: 8 };
+  // reading minutes by hour of day, 0..23, true local time (trip-corrected)
+  var HOURS = [924,598,389,295,107,69,40,69,66,178,381,396,411,497,414,363,351,338,312,423,362,419,377,707];
+  // sessions and minutes by session-length bucket
+  var BUCKETS = [
+    { name: "<5m",    sessions: 3187, minutes: 3003 },
+    { name: "5–15m",  sessions: 433,  minutes: 3643 },
+    { name: "15–30m", sessions: 76,   minutes: 1501 },
+    { name: "30–60m", sessions: 8,    minutes: 278 },
+    { name: "60m+",   sessions: 1,    minutes: 62 }
+  ];
+  // p(read tomorrow | streak length): observed continuation rates
+  var HAZ19 = [ ["day 1",44],["day 2",54],["day 3",70],["day 4",44],["day 5",57],["day 6",75],["day 7",67] ];
+  var HAZ26 = [ ["1",71],["2–3",100],["4–7",100],["8–14",100],["15–30",90],["31+",89] ];
+
+  var NS = "http://www.w3.org/2000/svg";
+  function mk(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  var INK = css("--ink"), FAINT = css("--faint"), RULE = css("--rule"), ACCENT = css("--accent");
+
+  // --- monthly flatline chart ---
+  (function () {
+    var W = 680, H = 220, mL = 34, mR = 8, mT = 14, mB = 20;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "reading minutes per month from 2019 to 2026, with a long gap of zero from mid-2022 to late 2024 and a large spike in 2026" },
+      document.getElementById("fig-monthly"));
+    var max = 1100, pw = W - mL - mR, ph = H - mT - mB;
+    var x = function (i) { return mL + i / (MONTHLY.length - 1) * pw; };
+    var y = function (v) { return mT + ph - v / max * ph; };
+    [0, 500, 1000].forEach(function (gv) {
+      mk("line", { x1: mL, x2: W - mR, y1: y(gv), y2: y(gv), stroke: gv ? RULE : FAINT, "stroke-width": 1 }, svg);
+      mk("text", { x: mL - 5, y: y(gv) + 3, "text-anchor": "end", "class": "axis" }, svg).textContent = gv;
+    });
+    // the flatline band: 2022-06 (i=34) .. 2024-10 (i=62)
+    mk("rect", { x: x(33.5), y: mT, width: x(62) - x(33.5), height: ph, fill: RULE, opacity: 0.5 }, svg);
+    mk("text", { x: (x(33.5) + x(62)) / 2, y: mT + 14, "text-anchor": "middle", "class": "lbla" }, svg).textContent = "905 days";
+    for (var i = 0; i < MONTHLY.length; i++) {
+      var yy = M0.y + Math.floor((M0.m - 1 + i) / 12);
+      var mm = (M0.m - 1 + i) % 12 + 1;
+      if (mm === 1) {
+        mk("line", { x1: x(i), x2: x(i), y1: mT + ph, y2: mT + ph + 4, stroke: FAINT }, svg);
+        mk("text", { x: x(i), y: H - 5, "text-anchor": "middle", "class": "axis" }, svg).textContent = yy;
+      }
+    }
+    var dLine = "";
+    for (i = 0; i < MONTHLY.length; i++) dLine += (i ? "L" : "M") + x(i).toFixed(1) + "," + y(MONTHLY[i]).toFixed(1);
+    var dArea = "M" + x(0).toFixed(1) + "," + y(0).toFixed(1) + dLine.slice(1) +
+      "L" + x(MONTHLY.length - 1).toFixed(1) + "," + y(0).toFixed(1) + "Z";
+    mk("path", { d: dArea, fill: INK, opacity: 0.07 }, svg);
+    mk("path", { d: dLine, fill: "none", stroke: INK, "stroke-width": 1.5, "stroke-linejoin": "round" }, svg);
+    // peak label: jul 2026, i = 83
+    mk("circle", { cx: x(83), cy: y(MONTHLY[83]), r: 3.5, fill: ACCENT }, svg);
+    mk("text", { x: x(83) - 6, y: y(MONTHLY[83]) - 6, "text-anchor": "end", "class": "lbl" }, svg).textContent = "jul 2026 · 1,073 min";
+  })();
+
+  // --- streak hazard chart, two panels ---
+  (function () {
+    var W = 680, H = 210, gap = 40, half = (W - gap) / 2;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "two bar charts of the probability of reading tomorrow given streak length: 2019 to 2022 hovers between 44 and 75 percent; 2026 is at 100 percent for streak days 2 through 14" },
+      document.getElementById("fig-hazard"));
+    function panel(x0, data, title) {
+      var mL2 = x0 + 30, mT2 = 24, mB2 = 18, pw = half - 38, ph = H - mT2 - mB2;
+      mk("text", { x: x0, y: 12, "class": "lblf" }, svg).textContent = title;
+      [0, 50, 100].forEach(function (gv) {
+        var gy = mT2 + ph - gv / 100 * ph;
+        mk("line", { x1: mL2, x2: x0 + half, y1: gy, y2: gy, stroke: gv ? RULE : FAINT, "stroke-width": 1 }, svg);
+        mk("text", { x: mL2 - 4, y: gy + 3, "text-anchor": "end", "class": "axis" }, svg).textContent = gv;
+      });
+      var band = pw / data.length, bw = Math.min(26, band * 0.6);
+      data.forEach(function (d, i) {
+        var v = d[1], bx = mL2 + band * i + (band - bw) / 2;
+        var by = mT2 + ph - v / 100 * ph;
+        mk("rect", { x: bx, y: by, width: bw, height: mT2 + ph - by,
+          fill: v === 100 ? ACCENT : INK, opacity: v === 100 ? 0.9 : 0.3 }, svg);
+        mk("text", { x: mL2 + band * i + band / 2, y: by - 4, "text-anchor": "middle",
+          "class": v === 100 ? "lbla" : "lbl" }, svg).textContent = v;
+        mk("text", { x: mL2 + band * i + band / 2, y: H - 4, "text-anchor": "middle", "class": "axis" }, svg).textContent = d[0];
+      });
+    }
+    panel(0, HAZ19, "2019–2022: p(read tomorrow), %");
+    panel(half + gap, HAZ26, "2026, by streak-day bin");
+  })();
+
+  // --- hour of day chart ---
+  (function () {
+    var W = 680, H = 190, mL = 34, mR = 8, mT = 10, mB = 20;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "reading minutes by hour of day in local time; midnight through 4 a.m. dominate, peaking at 924 minutes in the midnight hour" },
+      document.getElementById("fig-hours"));
+    var max = 950, pw = W - mL - mR, ph = H - mT - mB;
+    var y = function (v) { return mT + ph - v / max * ph; };
+    [0, 400, 800].forEach(function (gv) {
+      mk("line", { x1: mL, x2: W - mR, y1: y(gv), y2: y(gv), stroke: gv ? RULE : FAINT, "stroke-width": 1 }, svg);
+      mk("text", { x: mL - 5, y: y(gv) + 3, "text-anchor": "end", "class": "axis" }, svg).textContent = gv;
+    });
+    var band = pw / 24, bw = band * 0.66;
+    HOURS.forEach(function (v, h) {
+      var night = h <= 4;
+      mk("rect", { x: mL + band * h + (band - bw) / 2, y: y(v), width: bw, height: mT + ph - y(v),
+        fill: night ? ACCENT : INK, opacity: night ? 0.9 : 0.28 }, svg);
+      if (h % 4 === 0) mk("text", { x: mL + band * h + band / 2, y: H - 5, "text-anchor": "middle", "class": "axis" }, svg)
+        .textContent = (h === 0 ? "12am" : h < 12 ? h + "am" : h === 12 ? "12pm" : (h - 12) + "pm");
+    });
+    mk("text", { x: mL + band * 0.5, y: y(HOURS[0]) - 6, "class": "lbla" }, svg).textContent = "924 min at midnight";
+  })();
+
+  // --- session buckets, sessions vs minutes ---
+  (function () {
+    var W = 680, H = 200, gap = 40, half = (W - gap) / 2;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "two bar charts: sessions are dominated by the under-five-minute bucket, while total minutes are spread across under-five and five-to-fifteen minute buckets" },
+      document.getElementById("fig-buckets"));
+    function panel(x0, key, total, title, hiIndex) {
+      var mL2 = x0 + 56, mR2 = 44, mT2 = 22, rowH = 30;
+      mk("text", { x: x0, y: 12, "class": "lblf" }, svg).textContent = title;
+      var pw = x0 + half - mL2 - mR2;
+      var max = Math.max.apply(null, BUCKETS.map(function (b) { return b[key]; }));
+      BUCKETS.forEach(function (b, i) {
+        var cy = mT2 + rowH * i + rowH / 2;
+        mk("text", { x: mL2 - 8, y: cy + 3.5, "text-anchor": "end", "class": "axis" }, svg).textContent = b.name;
+        var w = Math.max(1.5, b[key] / max * pw);
+        mk("rect", { x: mL2, y: cy - 7, width: w, height: 14, fill: INK, opacity: i === hiIndex ? 1 : 0.35 }, svg);
+        mk("text", { x: mL2 + w + 6, y: cy + 3.5, "class": "lbl" }, svg).textContent =
+          Math.round(b[key] / total * 100) + "%";
+      });
+    }
+    panel(0, "sessions", 3705, "share of sessions", 0);
+    panel(half + gap, "minutes", 8487, "share of reading time", 1);
+  })();
+
+  console.log("%c141 hours, 3,705 sessions, one 905-day flatline, one diploma-shaped culprit. the arrays above are the real monthly, hourly, and streak-hazard totals from the export.", "color:#b3372c");
+})();
+</script>
+</body>
+</html>
