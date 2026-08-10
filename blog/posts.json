@@ -3,6 +3,14 @@
   "generated": "2026-07-30T04:05:25Z",
   "posts": [
     {
+      "title": "Reading physics",
+      "url": "https://deskofjim.com/blog/reading-physics/",
+      "date": "2026-08-10",
+      "subtitle": "a hawkes process, a changepoint detector, circular statistics, survival curves, a gini coefficient, and 20,000 simulations, applied to seven years of one kindle",
+      "slug": "reading-physics",
+      "local": true
+    },
+    {
       "title": "My Kindle thinks I died in 2022",
       "url": "https://deskofjim.com/blog/kindle/",
       "date": "2026-08-10",

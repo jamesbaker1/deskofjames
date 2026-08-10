@@ -1,0 +1,560 @@
+<!doctype html>
+<!-- every figure is computed from the raw kindle export (3,705 sessions, 2019-2026).
+     hawkes MLE, BOCPD, kaplan-meier, von mises fits, and 20,000 monte carlo runs were
+     done offline in python; the fitted curves and arrays are embedded below. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>reading physics</title>
+<link rel="canonical" href="https://deskofjim.com/blog/reading-physics/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="description" content="A Hawkes process, a Bayesian changepoint detector, circular statistics, survival curves, a Gini coefficient, and 20,000 Monte Carlo simulations, applied to seven years of one Kindle.">
+<style>
+  :root {
+    --ink: #1a1916;
+    --paper: #f7f5f0;
+    --faint: #8a857a;
+    --rule: #d8d4ca;
+    --accent: #b3372c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, monospace;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 4.5rem 1.25rem 6rem; }
+  h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; }
+  .sub { color: var(--faint); margin-top: 0.3rem; }
+  section { margin-top: 3.2rem; }
+  h2 { font-size: 0.85rem; font-weight: 600; color: var(--faint); margin-bottom: 1rem; }
+  p { margin-bottom: 0.9rem; max-width: 40rem; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  figure { margin: 1.4rem 0 0.6rem; position: relative; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { color: var(--faint); font-size: 0.8rem; margin-top: 0.45rem; max-width: 40rem; }
+  .axis { font-size: 10px; fill: var(--faint); }
+  .lbl { font-size: 10.5px; fill: var(--ink); }
+  .lblf { font-size: 10.5px; fill: var(--faint); }
+  .lbla { font-size: 10.5px; fill: var(--accent); font-weight: 600; }
+
+  table { border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; margin: 0.4rem 0 0.9rem; }
+  th, td { text-align: left; padding: 0.28rem 1.4rem 0.28rem 0; font-weight: 400; }
+  thead th { color: var(--faint); border-bottom: 1px solid var(--rule); }
+  td.hi { color: var(--accent); }
+
+  ul { list-style: none; }
+  li { margin-bottom: 0.45rem; max-width: 40rem; }
+  li::before { content: "· "; color: var(--faint); }
+  .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
+  .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+  #maptip {
+    position: fixed; display: none; pointer-events: none; z-index: 5;
+    background: var(--ink); color: var(--paper); font-size: 12px;
+    padding: 0.3rem 0.55rem; border-radius: 4px; max-width: 220px; line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="note"><a href="/blog/">← blog</a></p>
+  <h1>reading physics</h1>
+  <p class="sub">a hawkes process, a changepoint detector, circular statistics, survival curves, a gini coefficient, and 20,000 simulations, applied to seven years of one kindle</p>
+
+  <section>
+    <p>the <a href="/blog/kindle/">previous post</a> established the narrative: 141 hours of
+    reading, a 905-day gap, a resurrection. this one drops the narrative and treats the habit as
+    a physical system. the same 3,705 timestamped sessions, run through the machinery normally
+    used for earthquakes, income distributions, clinical trials, and animal navigation. eight
+    analyses. the models were not told where the eras are.</p>
+  </section>
+
+  <section>
+    <h2>1 · reading is self-exciting: 75% of sessions are aftershocks</h2>
+    <p>a hawkes process models events that trigger more events: each occurrence temporarily
+    raises the rate of further occurrences, with the excitation decaying exponentially. it's the
+    standard model for earthquake aftershocks. fitted to session start times by maximum
+    likelihood (nine starts per fit, all converging to the same optimum):</p>
+    <table>
+      <thead><tr><th>era</th><th>μ, spontaneous starts/day</th><th>α, aftershock fraction</th><th>excitation half-life</th></tr></thead>
+      <tbody>
+        <tr><td>2019–2022</td><td>0.30</td><td>0.74</td><td>10.5 min</td></tr>
+        <tr><td class="hi">2026</td><td class="hi">3.11</td><td class="hi">0.76</td><td class="hi">6.3 min</td></tr>
+      </tbody>
+    </table>
+    <p>the branching ratio α says <strong>~75% of all sessions are aftershocks</strong>:
+    triggered by a recent session rather than by a spontaneous decision to read. half the
+    triggering force is gone within 6–10 minutes. and the parameter that separates the dead era
+    from the current one is not the cascade mechanics, which barely moved. it's μ, the
+    spontaneous rate, which increased <strong>10×</strong>. the difference between not reading
+    and reading 59 hours in four months is entirely in how often the first session of a burst
+    happens. everything after that first session was always automatic.</p>
+    <figure id="fig-hawkes"></figure>
+    <p class="note">fitted intensity λ(t) on 2026-05-06, the busiest day in the record (28
+    merged sessions, tick marks). the rate swings from a floor of 0.13 sessions/hour to a peak
+    of 24.8, a 190× range. this is what a reading day looks like to the model: quiet, then
+    chain reactions.</p>
+  </section>
+
+  <section>
+    <h2>2 · the gaps are scale-free</h2>
+    <p>the time between sessions has no typical value. fitted against lognormal, exponential
+    (what a memoryless poisson reader would produce), and stretched-exponential alternatives,
+    the inter-session gap distribution is a <strong>power law</strong> in every era, and it
+    isn't close: the exponential loses by thousands of AIC points. 2026 tail exponent:
+    α = 1.44 across the full range from one minute to days.</p>
+    <figure id="fig-ccdf"></figure>
+    <p class="note">log-log survival function of inter-session gaps, 2026 era. dots: the 1,564
+    observed gaps. solid: fitted power law. dashed: the exponential a poisson process would
+    produce, which fails immediately. a straight line on these axes is the signature of
+    scale-free behavior.</p>
+    <p>burstiness index (barabási's B, where 0 is poisson and +1 is maximally bursty): +0.48 in
+    the first era, +0.55 in 2026, the same range as human email behavior. the texture of the
+    habit never changed. what changed is that the bursts now happen every day.</p>
+  </section>
+
+  <section>
+    <h2>3 · the changepoint detector re-dates the death</h2>
+    <p>bayesian online changepoint detection (adams &amp; mackay 2007) watches the daily
+    read/no-read sequence and reports when the underlying regime probably changed. it was given
+    no dates. it found the resurrection on its own: strongest changepoint of the whole series at
+    <strong>2026-04-07, posterior 0.91</strong>, one day off the new kindle's arrival (a
+    gaussian model on weekly minutes independently picks the same week at 0.98).</p>
+    <p>the surprise is the death. the last session was may 2022, and i started law school that
+    fall, so the natural story is that classes killed the habit. the detector disagrees: it
+    places the changepoint at <strong>late december 2021</strong> (p≈0.5–0.7 across both
+    models). the data backs it: november–december 2021 was an intense reading stretch (reading
+    on 60% of days), and from december 28 onward the read-probability collapses to 0.011: seven
+    scattered days in five months, then nothing. reading died <strong>eight months before
+    orientation</strong>, during the application year. law school didn't kill the habit. it
+    inherited a body.</p>
+    <p>the other boundary tells the same story in reverse. graduation (may 2025) did not revive
+    anything: reading stayed dead through the startup year that followed. the detected
+    resurrection is 2026-04-07, the day the new kindle arrived, three weeks before the startup
+    wound down, at the start of a summer off. institutional boundaries don't move the needle in
+    either direction; the hardware date does.</p>
+    <figure id="fig-cpd"></figure>
+    <p class="note">weekly reading minutes (bars) and the changepoint posterior (red, bernoulli
+    model on daily read/no-read). the two dominant spikes are dec 2021 and apr 2026. neither
+    date was supplied to the model.</p>
+  </section>
+
+  <section>
+    <h2>4 · book survival is memoryless, and paying doubles it</h2>
+    <p>kaplan-meier survival curves over the 61 books with ≥10 minutes of reading, with "death"
+    = abandonment and time measured in hours invested (completed and still-active books are
+    censored):</p>
+    <figure id="fig-km"></figure>
+    <p class="note">probability a book is still alive after x hours of reading. black: all
+    books. red: sideloaded documents. gray dashes: store-bought.</p>
+    <ul>
+      <li>P(a book survives past 2 hours of investment) = <strong>53%</strong>. median lifetime:
+      2.5 hours of reading.</li>
+      <li>the fitted weibull shape is k = 1.04. abandonment is <strong>memoryless</strong>.
+      hours already invested buy a book no safety; the sunk-cost fallacy is apparently not one
+      of my failure modes.</li>
+      <li>the one significant split: <strong>sideloaded books die at 2.0× the hazard of
+      purchased ones</strong> (log-rank p = 0.017; median 1.7 h vs 3.4 h). i read sideloads
+      more, but i abandon them faster. paying for a book roughly doubles its life
+      expectancy.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5 · attention inequality: gini 0.68</h2>
+    <p>treat each of the 115 titles ever opened as a citizen and reading minutes as income. the
+    resulting gini coefficient is <strong>0.685</strong>, more unequal than income in south
+    africa (0.63), the most unequal major economy. the top 10% of books absorb 47% of all
+    reading time. across days the gini is 0.578.</p>
+    <figure id="fig-lorenz"></figure>
+    <p class="note">lorenz curve of attention across books. the diagonal is perfect equality;
+    the sag is how far reality deviates from it.</p>
+  </section>
+
+  <section>
+    <h2>6 · the circadian phase survived a 13-timezone move</h2>
+    <p>session start times, mapped onto a 24-hour circle and fitted with von mises
+    distributions, in true local time for wherever i was. the home leg of 2026 (new york,
+    1,015 sessions) versus the asia leg (tokyo/taipei, 500 sessions):</p>
+    <ul>
+      <li>circular mean start time: <strong>19:00 at home, 19:22 in asia</strong>. phase
+      difference +21.5 minutes, 95% CI [−52, +96], statistically indistinguishable
+      (watson-williams p = 0.36).</li>
+      <li>concentration went <em>up</em> in asia (κ = 1.18 vs 0.32): reading got tighter around
+      the evening, not looser.</li>
+      <li>at home the distribution is bimodal: a broad afternoon-evening component plus a very
+      sharp mode at <strong>0:54</strong> (κ = 16.5, nearly a fixed appointment). in tokyo the
+      after-midnight mode vanished entirely.</li>
+    </ul>
+    <figure id="fig-clock"></figure>
+    <p class="note">fitted time-of-day densities on a 24-hour clock, 2026. black: home (ny).
+    red: asia leg. the home curve's sharp lobe just past midnight is the 12:54 a.m. mode; the
+    asia curve has none.</p>
+    <p>the phase held across half the planet. what the trip removed was only the after-midnight
+    appointment, which is consistent with it being an artifact of the home schedule rather than
+    of the clock.</p>
+  </section>
+
+  <section>
+    <h2>7 · monte carlo: what the rest of 2026 looks like</h2>
+    <p>a generative model built from the 2026 era: the observed streak-hazard curve
+    (laplace-smoothed, since several bins are at 100% and nothing deserves probability 1),
+    daily minutes bootstrapped from the 113 observed reading days, starting from the actual
+    aug 9 state (16-day streak, 59.2 h). 20,000 simulated year-ends:</p>
+    <ul>
+      <li>total 2026 reading: median <strong>126 hours</strong>, 80% interval [118, 136]. for
+      scale, 2019 through 2025 combined was 82.</li>
+      <li>reading days in 2026: median 242 of 365.</li>
+      <li>P(the 39-day streak record falls by dec 31) = <strong>12%</strong>.</li>
+      <li>P(a 100-day streak): 0 in 20,000 runs. the day-1 hazard is too high; the model says
+      the streak always eventually resets at a skipped day, then rebuilds.</li>
+    </ul>
+    <figure id="fig-mc"></figure>
+    <p class="note">left: distribution of the longest streak achieved by dec 31 (the spike at 39
+    is "record stands"). right: distribution of total 2026 hours.</p>
+    <p>one caveat outranks the others. the model assumes april–august behavior persists, and it
+    won't get the chance: i start a big-law job on september 8. the last two times a demanding
+    institution entered the picture, the changepoint detector later found that reading had died
+    months before the official start date. the 126-hour median is conditional on a world that
+    ends in four weeks. if a future export shows a changepoint in the late summer of 2026, this
+    post predicted it.</p>
+  </section>
+
+  <section>
+    <h2>8 · a map of the corpus</h2>
+    <p>every book with ≥15 minutes, placed on a two-axis plane: x runs inward/psychological ↔
+    outward/worldly, y runs systematic/analytical ↔ narrative/visceral. placement is semantic
+    (by what the books are), sizing is minutes read, color is era. hover for titles.</p>
+    <figure id="fig-map"></figure>
+    <p class="note">61 books. gray: 2019–2022. red: 2026. black: the 2024–25 interlude (3L and
+    the startup). the crosses are the minutes-weighted center of mass of each era; the dotted
+    line is the migration.</p>
+    <p>the center of intellectual mass moved 0.58 units between the first era and 2026, and
+    the leg out of the law-school interlude is the single largest move on the map (1.00 in a
+    2-unit space): inward, and across the analytic/narrative equator. the first era reads
+    about systems and winning; 2026 reads about people and enduring. two details the geometry
+    surfaces: the only science fiction with real minutes (<em>the martian</em>) sits inside the
+    shackleton cluster (survival taste in a spacesuit), and <em>kitchen confidential</em>
+    (2021) sits alone in the middle of the otherwise all-2026 memoir cluster, four years early.</p>
+  </section>
+
+  <section>
+    <h2>method notes</h2>
+    <ul>
+      <li>hawkes: exponential kernel, exact recursive log-likelihood, 9 random starts per fit;
+      all converged to identical optima. events &lt;1 min apart merged. subcritical in every
+      fit.</li>
+      <li>changepoints: BOCPD with beta-bernoulli (daily read/no-read) and normal-gamma on
+      sqrt(weekly minutes), hazard 1/250; reported changepoints are run-length posterior
+      peaks.</li>
+      <li>survival: 61 books, 38 abandonments, 23 censored (12 completed, 11 active at export).
+      log-rank tests; weibull/exponential hazards for the ratios.</li>
+      <li>circular: von mises MLE and 2-component mixtures by BIC; watson-williams for the
+      phase test plus a 10,000-rep bootstrap CI. timezones corrected per the phone's own
+      stamps: ny → sf (jul 15) → tokyo (jul 19) → taipei (jul 31).</li>
+      <li>monte carlo: 20,000 runs, add-1 smoothing on hazard bins; the 31+ day bin rests on
+      only 10 observations, so the record probability is the least certain number here.</li>
+      <li>the map: coordinates are hand-assigned semantic placement, not an algorithmic
+      embedding; era centroids and distances are computed from the placed points.</li>
+    </ul>
+  </section>
+
+  <p class="foot">data: the same amazon "request my data" kindle export as the
+  <a href="/blog/kindle/">previous post</a>. all fitted parameters and chart arrays are
+  embedded in this page's source.</p>
+</main>
+
+<div id="maptip"></div>
+
+<script>
+var P = {"trace":[[0,0.129],[5,0.129],[10,0.129],[15,0.129],[20,0.129],[25,7.139],[30,15.612],[35,24.831],[40,17.478],[45,13.213],[50,7.659],[55,4.463],[60,2.623],[65,1.565],[70,3.885],[75,2.291],[80,1.373],[85,0.845],[90,0.541],[95,0.367],[100,0.266],[105,0.208],[110,0.175],[115,0.156],[120,0.144],[125,0.138],[130,0.134],[135,0.132],[140,0.131],[145,0.13],[150,0.13],[155,0.13],[160,0.13],[165,0.13],[170,0.13],[175,0.13],[180,0.13],[185,0.13],[190,0.13],[195,0.13],[200,0.13],[205,0.13],[210,0.129],[215,0.129],[220,0.129],[225,0.129],[230,0.129],[235,0.129],[240,0.129],[245,0.129],[250,0.129],[255,0.129],[260,0.129],[265,0.129],[270,0.129],[275,0.129],[280,0.129],[285,0.129],[290,0.129],[295,0.129],[300,0.129],[305,0.129],[310,0.129],[315,0.129],[320,0.129],[325,0.129],[330,0.129],[335,0.129],[340,0.129],[345,0.129],[350,0.129],[355,0.129],[360,0.129],[365,0.129],[370,0.129],[375,0.129],[380,0.129],[385,0.129],[390,0.129],[395,0.129],[400,0.129],[405,0.129],[410,0.129],[415,0.129],[420,0.129],[425,0.129],[430,0.129],[435,0.129],[440,0.129],[445,0.129],[450,0.129],[455,0.129],[460,0.129],[465,0.129],[470,0.129],[475,0.129],[480,0.129],[485,0.129],[490,0.129],[495,0.129],[500,0.129],[505,0.129],[510,0.129],[515,0.129],[520,0.129],[525,0.129],[530,0.129],[535,0.129],[540,0.129],[545,0.129],[550,0.129],[555,0.129],[560,3.837],[565,7.148],[570,4.169],[575,2.454],[580,1.467],[585,0.899],[590,0.573],[595,0.385],[600,3.721],[605,2.196],[610,1.319],[615,5.293],[620,3.101],[625,1.84],[630,4.769],[635,2.8],[640,1.666],[645,1.014],[650,0.638],[655,0.422],[660,0.298],[665,0.227],[670,0.185],[675,0.162],[680,0.148],[685,0.14],[690,0.136],[695,0.133],[700,0.132],[705,0.131],[710,0.13],[715,0.13],[720,6.984],[725,4.074],[730,6.609],[735,7.093],[740,4.137],[745,2.436],[750,1.457],[755,0.893],[760,0.569],[765,0.383],[770,0.275],[775,0.213],[780,0.178],[785,0.157],[790,0.145],[795,0.139],[800,0.135],[805,3.944],[810,2.325],[815,1.393],[820,0.857],[825,0.548],[830,0.37],[835,0.268],[840,0.209],[845,0.175],[850,0.156],[855,3.82],[860,5.21],[865,3.054],[870,1.812],[875,1.098],[880,0.687],[885,0.45],[890,4.459],[895,6.115],[900,3.574],[905,2.112],[910,1.27],[915,0.786],[920,0.507],[925,0.347],[930,0.255],[935,0.202],[940,0.171],[945,0.153],[950,0.143],[955,0.137],[960,0.134],[965,0.132],[970,0.131],[975,0.13],[980,0.13],[985,0.13],[990,0.13],[995,0.13],[1000,0.13],[1005,0.13],[1010,0.13],[1015,0.13],[1020,0.13],[1025,0.13],[1030,0.13],[1035,0.13],[1040,0.129],[1045,0.129],[1050,0.129],[1055,0.129],[1060,0.129],[1065,0.129],[1070,0.129],[1075,0.129],[1080,0.129],[1085,0.129],[1090,0.129],[1095,0.129],[1100,0.129],[1105,0.129],[1110,0.129],[1115,0.129],[1120,0.129],[1125,0.129],[1130,0.129],[1135,0.129],[1140,0.129],[1145,0.129],[1150,0.129],[1155,0.129],[1160,0.129],[1165,0.129],[1170,0.129],[1175,0.129],[1180,0.129],[1185,0.129],[1190,0.129],[1195,0.129],[1200,0.129],[1205,0.129],[1210,0.129],[1215,0.129],[1220,8.181],[1225,4.764],[1230,2.796],[1235,1.664],[1240,1.013],[1245,0.638],[1250,0.422],[1255,0.298],[1260,0.226],[1265,0.185],[1270,0.162],[1275,0.148],[1280,0.14],[1285,0.136],[1290,0.133],[1295,0.132],[1300,0.131],[1305,0.13],[1310,0.13],[1315,0.13],[1320,0.13],[1325,0.13],[1330,0.13],[1335,0.13],[1340,0.13],[1345,0.13],[1350,0.13],[1355,0.13],[1360,0.13],[1365,0.129],[1370,0.129],[1375,0.129],[1380,0.129],[1385,0.129],[1390,0.129],[1395,0.129],[1400,0.129],[1405,0.129],[1410,0.129],[1415,0.129],[1420,0.129],[1425,0.129],[1430,0.129],[1435,0.129],[1440,0.129]],"events":[20.7,22.7,25.8,27.0,29.4,30.7,32.2,33.4,34.6,35.7,40.6,65.1,557.3,564.8,596.6,614.0,627.1,715.3,717.6,728.4,731.0,802.5,852.2,855.2,888.3,891.7,1217.3,1218.7],"traceDate":"2026-05-06","fits":{"e1":{"mu_day":0.3,"alpha":0.743,"half_min":10.5,"n":1134},"e2":{"mu_day":3.11,"alpha":0.757,"half_min":6.3,"n":1565}},"ccdf1":[[1.02,1.0,1.0,0.997575],[1.29,0.97376,0.92428,0.996933],[1.64,0.92941,0.85429,0.996121],[2.07,0.88507,0.7896,0.995095],[2.62,0.82715,0.72981,0.993799],[3.31,0.77104,0.67454,0.992162],[4.19,0.70769,0.62346,0.990094],[5.3,0.63439,0.57625,0.987484],[6.7,0.56652,0.53262,0.984192],[8.48,0.50136,0.49229,0.980043],[10.73,0.45249,0.45501,0.97482],[13.58,0.40724,0.42055,0.968251],[17.17,0.37104,0.38871,0.960004],[21.73,0.33484,0.35927,0.949671],[27.49,0.30498,0.33207,0.936759],[34.78,0.28235,0.30692,0.920674],[43.99,0.27059,0.28368,0.900719],[55.66,0.25611,0.2622,0.876094],[70.41,0.24163,0.24235,0.845901],[89.08,0.23258,0.22399,0.809191],[112.7,0.22534,0.20703,0.765021],[142.58,0.21357,0.19136,0.71258],[180.38,0.2009,0.17687,0.651354],[228.2,0.19457,0.16347,0.581375],[288.7,0.18824,0.15109,0.503512],[365.24,0.18009,0.13965,0.419767],[462.07,0.17195,0.12908,0.333473],[584.57,0.16199,0.1193,0.249239],[739.55,0.13846,0.11027,0.172444],[935.62,0.12308,0.10192,0.108211],[1183.67,0.11403,0.0942,0.060012],[1497.48,0.08326,0.08707,0.028466],[1894.49,0.06968,0.08048,0.01108],[2396.75,0.05792,0.07438,0.003358],[3032.18,0.04434,0.06875,0.000742],[3836.06,0.03529,0.06354,0.00011],[4853.06,0.019,0.05873,1e-05],[6139.69,0.01086,0.05428,0.0],[7767.43,0.00452,0.05017,0.0],[9826.71,0.0009,0.04637,0.0]],"ccdf2":[[1.0,1.0,1.0,0.991191],[1.26,0.91944,0.9039,0.988921],[1.59,0.82864,0.81703,0.98607],[2.0,0.75256,0.73851,0.982493],[2.51,0.67455,0.66754,0.978007],[3.17,0.61253,0.60339,0.972388],[3.99,0.55754,0.5454,0.96536],[5.02,0.51726,0.49299,0.956582],[6.32,0.45972,0.44561,0.945643],[7.96,0.41176,0.40279,0.932048],[10.02,0.36893,0.36408,0.915209],[12.61,0.32928,0.32909,0.894438],[15.88,0.29987,0.29746,0.868955],[19.99,0.2711,0.26887,0.837899],[25.18,0.24936,0.24304,0.80037],[31.7,0.22634,0.21968,0.7555],[39.91,0.20844,0.19857,0.702563],[50.25,0.19629,0.17948,0.641154],[63.27,0.18414,0.16224,0.571409],[79.67,0.17583,0.14664,0.494281],[100.31,0.16368,0.13255,0.411798],[126.29,0.15601,0.11981,0.327228],[159.02,0.14706,0.1083,0.244991],[200.22,0.13747,0.09789,0.17017],[252.09,0.12596,0.08848,0.10755],[317.41,0.10997,0.07998,0.060354],[399.65,0.08951,0.07229,0.02916],[503.19,0.07161,0.06535,0.011669],[633.57,0.05499,0.05907,0.003683],[797.72,0.03325,0.05339,0.000862],[1004.41,0.02366,0.04826,0.000139],[1264.65,0.0179,0.04362,1.4e-05],[1592.31,0.00767,0.03943,1e-06],[2004.87,0.00512,0.03564,0.0],[2524.32,0.0032,0.03221,0.0],[3178.36,0.00256,0.02912,0.0],[4001.86,0.00128,0.02632,0.0],[5038.72,0.00064,0.02379,0.0],[6344.22,0.00064,0.0215,0.0],[7987.98,0.0,0.01944,0.0]],"alpha1":{"xmin_minutes":1.6880225988538538,"alpha":1.36916147228625,"n_tail":1020,"ks_distance":0.061688003427171845},"alpha2":{"xmin_minutes":1.0003666665579658,"alpha":1.438551288103556,"n_tail":1564,"ks_distance":0.04087555701473},"burst":{"b1":0.478,"b2":0.545},"week":[["2019-08-19",0.0193,19.0],["2019-08-26",0.0152,48.0],["2019-09-02",0.0186,192.0],["2019-09-09",0.0991,224.0],["2019-09-16",0.0481,0.0],["2019-09-23",0.0114,5.0],["2019-09-30",0.0587,68.0],["2019-10-07",0.0088,270.0],["2019-10-14",0.0133,57.0],["2019-10-21",0.026,123.0],["2019-10-28",0.0273,258.0],["2019-11-04",0.0329,26.0],["2019-11-11",0.0199,284.0],["2019-11-18",0.2066,127.0],["2019-11-25",0.0926,3.0],["2019-12-02",0.1269,27.0],["2019-12-09",0.0642,0.0],["2019-12-16",0.0957,0.0],["2019-12-23",0.0934,198.0],["2019-12-30",0.1746,27.0],["2020-01-06",0.0187,0.0],["2020-01-13",0.0143,10.0],["2020-01-20",0.004,0.0],["2020-01-27",0.0433,11.0],["2020-02-03",0.0097,36.0],["2020-02-10",0.0263,9.0],["2020-02-17",0.0064,0.0],["2020-02-24",0.004,0.0],["2020-03-02",0.0137,68.0],["2020-03-09",0.0049,0.0],["2020-03-16",0.0123,16.0],["2020-03-23",0.004,0.0],["2020-03-30",0.004,0.0],["2020-04-06",0.0769,0.0],["2020-04-13",0.7321,128.0],["2020-04-20",0.076,22.0],["2020-04-27",0.6302,279.0],["2020-05-04",0.0576,0.0],["2020-05-11",0.0073,1.0],["2020-05-18",0.004,0.0],["2020-05-25",0.0261,28.0],["2020-06-01",0.004,0.0],["2020-06-08",0.004,0.0],["2020-06-15",0.004,0.0],["2020-06-22",0.0064,0.0],["2020-06-29",0.1979,0.0],["2020-07-06",0.7289,118.0],["2020-07-13",0.3229,79.0],["2020-07-20",0.1111,2.0],["2020-07-27",0.0526,2.0],["2020-08-03",0.0107,0.0],["2020-08-10",0.0265,3.0],["2020-08-17",0.0092,31.0],["2020-08-24",0.0466,0.0],["2020-08-31",0.256,36.0],["2020-09-07",0.0197,107.0],["2020-09-14",0.0209,22.0],["2020-09-21",0.0342,64.0],["2020-09-28",0.2869,71.0],["2020-10-05",0.0971,98.0],["2020-10-12",0.2307,63.0],["2020-10-19",0.0111,43.0],["2020-10-26",0.0097,25.0],["2020-11-02",0.0061,6.0],["2020-11-09",0.0246,20.0],["2020-11-16",0.2949,2.0],["2020-11-23",0.0171,0.0],["2020-11-30",0.004,0.0],["2020-12-07",0.004,0.0],["2020-12-14",0.0177,0.0],["2020-12-21",0.1425,19.0],["2020-12-28",0.0931,84.0],["2021-01-04",0.0202,85.0],["2021-01-11",0.0076,0.0],["2021-01-18",0.0131,0.0],["2021-01-25",0.0441,4.0],["2021-02-01",0.1544,5.0],["2021-02-08",0.0796,0.0],["2021-02-15",0.0221,0.0],["2021-02-22",0.0072,0.0],["2021-03-01",0.004,0.0],["2021-03-08",0.004,0.0],["2021-03-15",0.004,0.0],["2021-03-22",0.004,0.0],["2021-03-29",0.004,0.0],["2021-04-05",0.0053,0.0],["2021-04-12",0.0319,0.0],["2021-04-19",0.4511,41.0],["2021-04-26",0.0224,17.0],["2021-05-03",0.0824,52.0],["2021-05-10",0.016,0.0],["2021-05-17",0.004,0.0],["2021-05-24",0.0178,4.0],["2021-05-31",0.0041,0.0],["2021-06-07",0.004,0.0],["2021-06-14",0.0226,29.0],["2021-06-21",0.0046,0.0],["2021-06-28",0.004,0.0],["2021-07-05",0.004,0.0],["2021-07-12",0.004,0.0],["2021-07-19",0.004,0.0],["2021-07-26",0.004,0.0],["2021-08-02",0.004,0.0],["2021-08-09",0.0187,0.0],["2021-08-16",0.6146,47.0],["2021-08-23",0.004,0.0],["2021-08-30",0.0238,5.0],["2021-09-06",0.0102,0.0],["2021-09-13",0.1595,47.0],["2021-09-20",0.0169,4.0],["2021-09-27",0.004,0.0],["2021-10-04",0.004,0.0],["2021-10-11",0.004,0.0],["2021-10-18",0.004,0.0],["2021-10-25",0.004,0.0],["2021-11-01",0.0356,0.0],["2021-11-08",0.7605,77.0],["2021-11-15",0.0241,112.0],["2021-11-22",0.1813,160.0],["2021-11-29",0.0174,126.0],["2021-12-06",0.0291,55.0],["2021-12-13",0.0121,141.0],["2021-12-20",0.0144,94.0],["2021-12-27",0.5379,12.0],["2022-01-03",0.0061,0.0],["2022-01-10",0.004,0.0],["2022-01-17",0.047,0.0],["2022-01-24",0.004,2.0],["2022-01-31",0.0607,0.0],["2022-02-07",0.2307,11.0],["2022-02-14",0.004,0.0],["2022-02-21",0.004,0.0],["2022-02-28",0.004,0.0],["2022-03-07",0.004,0.0],["2022-03-14",0.004,0.0],["2022-03-21",0.004,0.0],["2022-03-28",0.004,0.0],["2022-04-04",0.004,0.0],["2022-04-11",0.0178,0.0],["2022-04-18",0.0515,2.0],["2022-04-25",0.0432,19.0],["2022-05-02",0.0371,56.0],["2022-05-09",0.0078,0.0],["2022-05-16",0.0059,0.0],["2022-05-23",0.0046,0.0],["2022-05-30",0.004,0.0],["2022-06-06",0.004,0.0],["2022-06-13",0.004,0.0],["2022-06-20",0.004,0.0],["2022-06-27",0.004,0.0],["2022-07-04",0.004,0.0],["2022-07-11",0.004,0.0],["2022-07-18",0.004,0.0],["2022-07-25",0.004,0.0],["2022-08-01",0.004,0.0],["2022-08-08",0.004,0.0],["2022-08-15",0.004,0.0],["2022-08-22",0.004,0.0],["2022-08-29",0.004,0.0],["2022-09-05",0.004,0.0],["2022-09-12",0.004,0.0],["2022-09-19",0.004,0.0],["2022-09-26",0.004,0.0],["2022-10-03",0.004,0.0],["2022-10-10",0.004,0.0],["2022-10-17",0.004,0.0],["2022-10-24",0.004,0.0],["2022-10-31",0.004,0.0],["2022-11-07",0.004,0.0],["2022-11-14",0.004,0.0],["2022-11-21",0.004,0.0],["2022-11-28",0.004,0.0],["2022-12-05",0.004,0.0],["2022-12-12",0.004,0.0],["2022-12-19",0.004,0.0],["2022-12-26",0.004,0.0],["2023-01-02",0.004,0.0],["2023-01-09",0.004,0.0],["2023-01-16",0.004,0.0],["2023-01-23",0.004,0.0],["2023-01-30",0.004,0.0],["2023-02-06",0.004,0.0],["2023-02-13",0.004,0.0],["2023-02-20",0.004,0.0],["2023-02-27",0.004,0.0],["2023-03-06",0.004,0.0],["2023-03-13",0.004,0.0],["2023-03-20",0.004,0.0],["2023-03-27",0.004,0.0],["2023-04-03",0.004,0.0],["2023-04-10",0.004,0.0],["2023-04-17",0.004,0.0],["2023-04-24",0.004,0.0],["2023-05-01",0.004,0.0],["2023-05-08",0.004,0.0],["2023-05-15",0.004,0.0],["2023-05-22",0.004,0.0],["2023-05-29",0.004,0.0],["2023-06-05",0.004,0.0],["2023-06-12",0.004,0.0],["2023-06-19",0.004,0.0],["2023-06-26",0.004,0.0],["2023-07-03",0.004,0.0],["2023-07-10",0.004,0.0],["2023-07-17",0.004,0.0],["2023-07-24",0.004,0.0],["2023-07-31",0.004,0.0],["2023-08-07",0.004,0.0],["2023-08-14",0.004,0.0],["2023-08-21",0.004,0.0],["2023-08-28",0.004,0.0],["2023-09-04",0.004,0.0],["2023-09-11",0.004,0.0],["2023-09-18",0.004,0.0],["2023-09-25",0.004,0.0],["2023-10-02",0.004,0.0],["2023-10-09",0.004,0.0],["2023-10-16",0.004,0.0],["2023-10-23",0.004,0.0],["2023-10-30",0.004,0.0],["2023-11-06",0.004,0.0],["2023-11-13",0.004,0.0],["2023-11-20",0.004,0.0],["2023-11-27",0.004,0.0],["2023-12-04",0.004,0.0],["2023-12-11",0.004,0.0],["2023-12-18",0.004,0.0],["2023-12-25",0.004,0.0],["2024-01-01",0.004,0.0],["2024-01-08",0.004,0.0],["2024-01-15",0.004,0.0],["2024-01-22",0.004,0.0],["2024-01-29",0.004,0.0],["2024-02-05",0.004,0.0],["2024-02-12",0.004,0.0],["2024-02-19",0.004,0.0],["2024-02-26",0.004,0.0],["2024-03-04",0.004,0.0],["2024-03-11",0.004,0.0],["2024-03-18",0.004,0.0],["2024-03-25",0.004,0.0],["2024-04-01",0.004,0.0],["2024-04-08",0.004,0.0],["2024-04-15",0.004,0.0],["2024-04-22",0.004,0.0],["2024-04-29",0.004,0.0],["2024-05-06",0.004,0.0],["2024-05-13",0.004,0.0],["2024-05-20",0.004,0.0],["2024-05-27",0.004,0.0],["2024-06-03",0.004,0.0],["2024-06-10",0.004,0.0],["2024-06-17",0.004,0.0],["2024-06-24",0.004,0.0],["2024-07-01",0.004,0.0],["2024-07-08",0.004,0.0],["2024-07-15",0.004,0.0],["2024-07-22",0.004,0.0],["2024-07-29",0.004,0.0],["2024-08-05",0.004,0.0],["2024-08-12",0.004,0.0],["2024-08-19",0.004,0.0],["2024-08-26",0.004,0.0],["2024-09-02",0.004,0.0],["2024-09-09",0.004,0.0],["2024-09-16",0.004,0.0],["2024-09-23",0.0049,0.0],["2024-09-30",0.0099,0.0],["2024-10-07",0.0225,0.0],["2024-10-14",0.0638,0.0],["2024-10-21",0.3853,35.0],["2024-10-28",0.041,0.0],["2024-11-04",0.5278,19.0],["2024-11-11",0.0046,0.0],["2024-11-18",0.0585,5.0],["2024-11-25",0.6758,111.0],["2024-12-02",0.0241,64.0],["2024-12-09",0.585,20.0],["2024-12-16",0.0357,0.0],["2024-12-23",0.004,0.0],["2024-12-30",0.004,0.0],["2025-01-06",0.0494,0.0],["2025-01-13",0.004,10.0],["2025-01-20",0.004,0.0],["2025-01-27",0.004,0.0],["2025-02-03",0.004,0.0],["2025-02-10",0.004,0.0],["2025-02-17",0.004,0.0],["2025-02-24",0.004,0.0],["2025-03-03",0.004,0.0],["2025-03-10",0.004,0.0],["2025-03-17",0.004,0.0],["2025-03-24",0.004,0.0],["2025-03-31",0.004,0.0],["2025-04-07",0.004,0.0],["2025-04-14",0.004,0.0],["2025-04-21",0.004,0.0],["2025-04-28",0.004,0.0],["2025-05-05",0.004,0.0],["2025-05-12",0.004,0.0],["2025-05-19",0.004,0.0],["2025-05-26",0.004,0.0],["2025-06-02",0.004,0.0],["2025-06-09",0.004,0.0],["2025-06-16",0.004,0.0],["2025-06-23",0.004,0.0],["2025-06-30",0.004,0.0],["2025-07-07",0.004,0.0],["2025-07-14",0.004,0.0],["2025-07-21",0.004,0.0],["2025-07-28",0.004,0.0],["2025-08-04",0.004,0.0],["2025-08-11",0.004,0.0],["2025-08-18",0.004,0.0],["2025-08-25",0.0087,0.0],["2025-09-01",0.176,4.0],["2025-09-08",0.004,0.0],["2025-09-15",0.004,0.0],["2025-09-22",0.004,0.0],["2025-09-29",0.004,0.0],["2025-10-06",0.004,0.0],["2025-10-13",0.004,0.0],["2025-10-20",0.004,0.0],["2025-10-27",0.004,0.0],["2025-11-03",0.004,0.0],["2025-11-10",0.004,0.0],["2025-11-17",0.004,0.0],["2025-11-24",0.004,0.0],["2025-12-01",0.004,0.0],["2025-12-08",0.004,0.0],["2025-12-15",0.004,0.0],["2025-12-22",0.004,0.0],["2025-12-29",0.004,0.0],["2026-01-05",0.004,0.0],["2026-01-12",0.004,0.0],["2026-01-19",0.004,0.0],["2026-01-26",0.004,0.0],["2026-02-02",0.004,0.0],["2026-02-09",0.004,0.0],["2026-02-16",0.004,0.0],["2026-02-23",0.004,0.0],["2026-03-02",0.004,0.0],["2026-03-09",0.004,0.0],["2026-03-16",0.004,0.0],["2026-03-23",0.004,0.0],["2026-03-30",0.0645,0.0],["2026-04-06",0.9114,199.0],["2026-04-13",0.0058,419.0],["2026-04-20",0.1531,171.0],["2026-04-27",0.004,276.0],["2026-05-04",0.004,307.0],["2026-05-11",0.0243,115.0],["2026-05-18",0.0215,52.0],["2026-05-25",0.01,69.0],["2026-06-01",0.1279,100.0],["2026-06-08",0.6157,12.0],["2026-06-15",0.0828,54.0],["2026-06-22",0.004,192.0],["2026-06-29",0.004,201.0],["2026-07-06",0.004,170.0],["2026-07-13",0.004,197.0],["2026-07-20",0.0328,228.0],["2026-07-27",0.004,519.0],["2026-08-03",0.004,272.0]],"km":{"overall":[[0.0,1.0],[0.17,0.9833],[0.18,0.9664],[0.19,0.9494],[0.26,0.9322],[0.28,0.9149],[0.28,0.8973],[0.34,0.8794],[0.57,0.8607],[0.67,0.8419],[0.7,0.8232],[0.72,0.7858],[0.77,0.7671],[0.89,0.7484],[1.07,0.7292],[1.31,0.71],[1.31,0.6908],[1.32,0.6716],[1.34,0.6524],[1.45,0.6327],[1.77,0.6123],[1.78,0.5919],[1.84,0.5714],[1.84,0.551],[1.87,0.5306],[2.04,0.5102],[2.07,0.4898],[2.34,0.4685],[2.43,0.4462],[2.46,0.4239],[3.16,0.399],[3.44,0.3724],[4.06,0.3413],[4.25,0.3072],[5.26,0.2633],[6.79,0.1755],[6.94,0.0878],[7.28,0.0]],"side":[[0.0,1.0],[0.17,0.9677],[0.19,0.9344],[0.26,0.901],[0.28,0.8663],[0.34,0.8302],[0.57,0.7907],[0.67,0.7512],[0.7,0.7116],[0.77,0.6721],[0.89,0.6326],[1.31,0.593],[1.31,0.5535],[1.45,0.5109],[1.84,0.4645],[1.84,0.418],[1.87,0.3716],[2.04,0.3251],[2.34,0.2787],[2.46,0.2229],[5.26,0.1115]],"store":[[0.0,1.0],[0.18,0.9655],[0.28,0.9298],[0.72,0.8582],[1.07,0.8209],[1.32,0.7836],[1.34,0.7463],[1.77,0.709],[1.78,0.6717],[2.07,0.6343],[2.43,0.5947],[3.16,0.549],[3.44,0.4991],[4.06,0.4436],[4.25,0.3882],[6.79,0.2588],[6.94,0.1294],[7.28,0.0]]},"lorenz":[[0.0,0.0],[0.02,0.0],[0.04,0.0001],[0.06,0.0002],[0.08,0.0004],[0.1,0.0007],[0.12,0.001],[0.14,0.0016],[0.16,0.0023],[0.18,0.0032],[0.2,0.0041],[0.22,0.0051],[0.24,0.0062],[0.26,0.0073],[0.28,0.0086],[0.3,0.01],[0.32,0.0115],[0.34,0.0132],[0.36,0.0151],[0.38,0.0176],[0.4,0.0203],[0.42,0.0231],[0.44,0.0261],[0.46,0.0293],[0.48,0.0333],[0.5,0.0378],[0.52,0.0427],[0.54,0.0484],[0.56,0.0544],[0.58,0.0618],[0.6,0.0717],[0.62,0.0833],[0.64,0.0956],[0.66,0.1102],[0.68,0.1296],[0.7,0.151],[0.72,0.174],[0.74,0.201],[0.76,0.2306],[0.78,0.2617],[0.8,0.2964],[0.82,0.3347],[0.84,0.376],[0.86,0.4245],[0.88,0.4787],[0.9,0.5407],[0.92,0.6087],[0.94,0.6831],[0.96,0.7775],[0.98,0.885],[1.0,1.0]],"gini":{"books":0.6845,"days":0.578},"topshare":{"b10":0.4737,"b1":0.1006},"roseHome":{"bins":[335.0,234.0,102.0,42.0,0.0,13.0,3.0,11.0,28.0,60.0,175.0,200.0,120.0,109.0,103.0,121.0,170.0,89.0,100.0,141.0,36.0,82.0,49.0,124.0],"dens":[0.0787,0.0994,0.1185,0.1321,0.1374,0.1332,0.1202,0.1012,0.0799,0.0595,0.0423,0.0293,0.0204,0.0148,0.0116,0.01,0.0092,0.009,0.009,0.0092,0.0095,0.0098,0.0102,0.0107,0.0112,0.0118,0.0124,0.0131,0.0139,0.0148,0.0157,0.0167,0.0179,0.0191,0.0204,0.0218,0.0233,0.025,0.0267,0.0286,0.0305,0.0325,0.0346,0.0368,0.0391,0.0413,0.0436,0.0459,0.0482,0.0505,0.0526,0.0547,0.0566,0.0584,0.06,0.0614,0.0625,0.0634,0.0641,0.0644,0.0645,0.0643,0.0638,0.063,0.062,0.0607,0.0592,0.0575,0.0557,0.0537,0.0515,0.0493,0.0471,0.0448,0.0425,0.0402,0.0379,0.0357,0.0336,0.0315,0.0295,0.0276,0.0258,0.0242,0.0226,0.0211,0.0198,0.0187,0.0179,0.0176,0.0182,0.0202,0.0245,0.032,0.0436,0.0594]},"roseAsia":{"bins":[85.0,0.0,11.0,12.0,6.0,6.0,3.0,9.0,0.0,0.0,24.0,19.0,57.0,7.0,24.0,77.0,53.0,64.0,69.0,59.0,85.0,118.0,56.0,180.0],"dens":[0.0473,0.0442,0.0412,0.0383,0.0356,0.0331,0.0306,0.0284,0.0263,0.0243,0.0225,0.0208,0.0193,0.0179,0.0167,0.0155,0.0145,0.0135,0.0127,0.012,0.0113,0.0107,0.0102,0.0098,0.0094,0.0091,0.0089,0.0087,0.0085,0.0084,0.0084,0.0084,0.0085,0.0086,0.0088,0.009,0.0093,0.0097,0.0101,0.0106,0.0112,0.0119,0.0126,0.0135,0.0145,0.0156,0.0168,0.0182,0.0197,0.0214,0.0232,0.0252,0.0274,0.0298,0.0323,0.0351,0.0381,0.0412,0.0444,0.0479,0.0514,0.0551,0.0588,0.0626,0.0663,0.07,0.0736,0.0771,0.0804,0.0835,0.0863,0.0888,0.091,0.0927,0.0941,0.0951,0.0956,0.0958,0.0955,0.0948,0.0937,0.0922,0.0904,0.0883,0.0859,0.0833,0.0804,0.0773,0.0741,0.0708,0.0675,0.064,0.0606,0.0572,0.0538,0.0505]},"rose1":{"bins":[451.0,355.0,276.0,210.0,101.0,50.0,34.0,41.0,39.0,112.0,164.0,140.0,200.0,330.0,272.0,154.0,125.0,184.0,135.0,192.0,229.0,215.0,270.0,385.0],"dens":[0.0725,0.0717,0.0703,0.0683,0.0658,0.0628,0.0595,0.056,0.0523,0.0485,0.0446,0.0409,0.0372,0.0338,0.0305,0.0275,0.0247,0.0223,0.0201,0.0182,0.0166,0.0152,0.0141,0.0133,0.0127,0.0123,0.0122,0.0123,0.0126,0.0131,0.0138,0.0148,0.016,0.0174,0.0191,0.0209,0.0231,0.0254,0.0279,0.0307,0.0336,0.0366,0.0398,0.043,0.0462,0.0494,0.0525,0.0553,0.058,0.0603,0.0622,0.0637,0.0648,0.0654,0.0655,0.065,0.0641,0.0628,0.061,0.0589,0.0565,0.0538,0.051,0.0481,0.0452,0.0424,0.0397,0.0371,0.0348,0.0327,0.0309,0.0295,0.0284,0.0277,0.0273,0.0274,0.0278,0.0287,0.03,0.0317,0.0337,0.0361,0.0388,0.0418,0.0451,0.0484,0.0519,0.0554,0.0588,0.062,0.0649,0.0675,0.0696,0.0712,0.0723,0.0727]},"phase":{"diff_min":21.5,"ci":[-51.7,96.1],"p":0.3643},"fc":{"ls":[[39,17562],[40,408],[41,323],[42,269],[43,242],[44,195],[45,187],[46,126],[47,124],[48,100],[49,78],[50,61],[51,49],[52,44],[53,44],[54,30],[55,22],[56,26],[57,18],[58,13],[59,13],[60,12],[61,13],[62,8],[63,4],[64,6],[65,3],[66,4],[67,2],[68,1],[69,1],[70,4],[71,3],[72,2],[73,1],[78,1],[81,1]],"th_edges":[95.0,100.0,105.0,110.0,115.0,120.0,125.0,130.0,135.0,140.0,145.0,150.0,155.0,160.0],"th_counts":[1,15,111,742,2669,4906,5413,3707,1708,584,131,12,1],"probs":{"p_new_record_gt_39":0.1219,"p_any_100_day_streak":0.0,"p_total_exceeds_2019_2025_sum_82_2h":1.0},"total_med":126.4,"total_i80":[117.7,135.9],"days_med":242.0,"streak_med":39.0},"map":{"pts":[{"t":"Start with Why","x":0.66,"y":-0.62,"m":244.0,"e":"first","c":"Optimization Canon"},{"t":"Built to Last","x":0.58,"y":-0.56,"m":206.0,"e":"first","c":"Optimization Canon"},{"t":"HBR 10 Must Reads","x":0.7,"y":-0.52,"m":124.0,"e":"first","c":"Optimization Canon"},{"t":"7 Habits","x":0.55,"y":-0.66,"m":17.0,"e":"first","c":"Optimization Canon"},{"t":"Talking to Strangers","x":0.44,"y":-0.44,"m":262.0,"e":"first","c":"Optimization Canon"},{"t":"The SaaS Playbook","x":0.8,"y":-0.34,"m":146.0,"e":"purgatory","c":"Founder Fantasy"},{"t":"Gates","x":0.76,"y":-0.44,"m":255.0,"e":"first","c":"Founder Fantasy"},{"t":"Peak","x":0.1,"y":-0.66,"m":190.0,"e":"first","c":"Self-Engineering"},{"t":"Ultralearning","x":0.16,"y":-0.6,"m":79.0,"e":"first","c":"Self-Engineering"},{"t":"Getting Things Done","x":0.04,"y":-0.7,"m":112.0,"e":"first","c":"Self-Engineering"},{"t":"How to Win Friends","x":0.02,"y":-0.5,"m":78.0,"e":"first","c":"Self-Engineering"},{"t":"The 48 Laws of Power","x":0.2,"y":-0.46,"m":95.0,"e":"purgatory","c":"Self-Engineering"},{"t":"Thinking in Systems","x":0.32,"y":-0.78,"m":106.0,"e":"first","c":"Systems Worldview"},{"t":"The Rational Optimist","x":0.44,"y":-0.7,"m":79.0,"e":"first","c":"Systems Worldview"},{"t":"Antifragile","x":0.34,"y":-0.66,"m":64.0,"e":"first","c":"Systems Worldview"},{"t":"What Is Real?","x":-0.22,"y":-0.88,"m":437.0,"e":"first","c":"Physics Quest"},{"t":"Seven Brief Lessons","x":-0.28,"y":-0.78,"m":87.0,"e":"first","c":"Physics Quest"},{"t":"The Beginning of Infinity","x":-0.12,"y":-0.8,"m":17.0,"e":"purgatory","c":"Physics Quest"},{"t":"Philosophy 101","x":-0.56,"y":-0.58,"m":316.0,"e":"first","c":"Philosophy & Meaning"},{"t":"Zen (unidentified text)","x":-0.68,"y":-0.44,"m":42.0,"e":"first","c":"Philosophy & Meaning"},{"t":"Man's Search for Meaning","x":-0.62,"y":-0.34,"m":85.0,"e":"resurrection","c":"Philosophy & Meaning"},{"t":"Four Thousand Weeks","x":-0.5,"y":-0.42,"m":31.0,"e":"resurrection","c":"Philosophy & Meaning"},{"t":"The Body Keeps the Score","x":-0.78,"y":-0.1,"m":123.0,"e":"resurrection","c":"Inner Repair"},{"t":"Attached","x":-0.72,"y":-0.02,"m":110.0,"e":"resurrection","c":"Inner Repair"},{"t":"12 Rules for Life (2022)","x":-0.64,"y":-0.22,"m":75.0,"e":"first","c":"Inner Repair"},{"t":"12 Rules for Life (2026)","x":-0.68,"y":-0.16,"m":329.0,"e":"resurrection","c":"Inner Repair"},{"t":"Kitchen Confidential","x":-0.46,"y":0.56,"m":416.0,"e":"first","c":"Memoir: Lives Felt"},{"t":"Eat Pray Love","x":-0.62,"y":0.44,"m":237.0,"e":"resurrection","c":"Memoir: Lives Felt"},{"t":"The Glass Castle","x":-0.56,"y":0.56,"m":286.0,"e":"resurrection","c":"Memoir: Lives Felt"},{"t":"When Breath Becomes Air","x":-0.6,"y":0.3,"m":173.0,"e":"first","c":"Memoir: Lives Felt"},{"t":"Tuesdays with Morrie","x":-0.54,"y":0.34,"m":20.0,"e":"resurrection","c":"Memoir: Lives Felt"},{"t":"Barbarian Days","x":-0.44,"y":0.46,"m":17.0,"e":"resurrection","c":"Memoir: Lives Felt"},{"t":"The White Album","x":-0.36,"y":0.26,"m":80.0,"e":"resurrection","c":"Literary Interior"},{"t":"The Kite Runner","x":-0.28,"y":0.42,"m":43.0,"e":"resurrection","c":"Literary Interior"},{"t":"The Death of Ivan Ilyich","x":-0.4,"y":0.18,"m":58.0,"e":"resurrection","c":"Literary Interior"},{"t":"Where the Crawdads Sing","x":-0.22,"y":0.36,"m":15.0,"e":"first","c":"Literary Interior"},{"t":"We Used to Live Here","x":-0.18,"y":0.86,"m":252.0,"e":"resurrection","c":"Horror & Dread"},{"t":"The Intruder","x":-0.1,"y":0.8,"m":193.0,"e":"resurrection","c":"Horror & Dread"},{"t":"Killing Floor","x":0.04,"y":0.72,"m":107.0,"e":"first","c":"Horror & Dread"},{"t":"Endurance","x":0.34,"y":0.78,"m":373.0,"e":"resurrection","c":"Survival & Expedition"},{"t":"Into Thin Air","x":0.28,"y":0.7,"m":368.0,"e":"first","c":"Survival & Expedition"},{"t":"On Desperate Ground","x":0.46,"y":0.68,"m":408.0,"e":"first","c":"Survival & Expedition"},{"t":"The Martian","x":0.2,"y":0.58,"m":53.0,"e":"resurrection","c":"Sci-Fi Frontier"},{"t":"Red Rising","x":0.12,"y":0.48,"m":22.0,"e":"resurrection","c":"Sci-Fi Frontier"},{"t":"Stranger in a Strange Land","x":0.06,"y":0.44,"m":19.0,"e":"resurrection","c":"Sci-Fi Frontier"},{"t":"The Power Broker","x":0.72,"y":0.32,"m":168.0,"e":"resurrection","c":"History & Power"},{"t":"The Second World War","x":0.62,"y":0.48,"m":140.0,"e":"resurrection","c":"History & Power"},{"t":"The Spy and the Traitor","x":0.58,"y":0.4,"m":141.0,"e":"resurrection","c":"History & Power"},{"t":"Under the Banner of Heaven","x":0.48,"y":0.52,"m":147.0,"e":"first","c":"History & Power"},{"t":"Why Fish Don't Exist","x":-0.16,"y":0.2,"m":209.0,"e":"resurrection","c":"Narrative Science"},{"t":"The Psychopath Test","x":-0.06,"y":0.28,"m":134.0,"e":"resurrection","c":"Narrative Science"},{"t":"The Gene","x":-0.02,"y":0.08,"m":46.0,"e":"resurrection","c":"Narrative Science"},{"t":"A Short History of Nearly Everything","x":0.02,"y":0.14,"m":43.0,"e":"resurrection","c":"Narrative Science"},{"t":"Machines of Loving Grace","x":0.52,"y":-0.26,"m":21.0,"e":"resurrection","c":"AI & Tech Futures"},{"t":"Claude Mythos (ChinaTalk)","x":0.56,"y":-0.18,"m":18.0,"e":"resurrection","c":"AI & Tech Futures"},{"t":"Chip War","x":0.6,"y":-0.28,"m":40.0,"e":"resurrection","c":"AI & Tech Futures"},{"t":"The Design of Everyday Things","x":0.38,"y":-0.32,"m":111.0,"e":"first","c":"AI & Tech Futures"},{"t":"Economist: Sci & Tech","x":0.7,"y":-0.06,"m":21.0,"e":"first","c":"Ideas Journalism"},{"t":"Abundance","x":0.72,"y":0.04,"m":34.0,"e":"resurrection","c":"Ideas Journalism"},{"t":"The End of Reading Is Here","x":0.56,"y":0.02,"m":27.0,"e":"resurrection","c":"Ideas Journalism"},{"t":"Being John Rawls (ACX)","x":0.44,"y":-0.1,"m":25.0,"e":"resurrection","c":"Ideas Journalism"}],"cent":{"first":{"x":0.124,"y":-0.169,"minutes":4540.3,"n_points":27},"purgatory":{"x":0.519,"y":-0.414,"minutes":257.7,"n_points":3},"resurrection":{"x":-0.129,"y":0.349,"minutes":3377.0,"n_points":31},"migration":{"first_to_purgatory":0.464,"purgatory_to_resurrection":1.001,"first_to_resurrection":0.577},"migration_note":"First-era mass sits at (0.12,-0.17) - worldly-systematic territory anchored by the optimization canon and physics, already pulled upward by the survival books. Purgatory collapses to (0.52,-0.41): the far worldly-systematic corner (pure founder reading, distance 0.46 from era one). The 2026 resurrection lands at (-0.13,0.35) - a 1.00-unit leap from purgatory (the largest move on the map) and 0.58 from era one: sharply inward (x +0.52→-0.13) and across the analytic/narrative equator (y -0.41→+0.35). The center of intellectual mass migrated from 'how to win' toward 'how people endure and feel'."},"ax":{"x_label":"inward / psychological  <-->  outward / worldly","y_label":"systematic / analytical  <-->  narrative / visceral"}}};
+
+(function () {
+  var NS = "http://www.w3.org/2000/svg";
+  function mk(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  var INK = css("--ink"), FAINT = css("--faint"), RULE = css("--rule"), ACCENT = css("--accent");
+
+  // --- 1: hawkes intensity trace ---
+  (function () {
+    var W = 680, H = 210, mL = 36, mR = 8, mT = 12, mB = 30;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "fitted hawkes intensity over one day, spiking to 24.8 events per hour during session bursts" },
+      document.getElementById("fig-hawkes"));
+    var pw = W - mL - mR, ph = H - mT - mB;
+    var maxL = 26;
+    var x = function (m) { return mL + m / 1440 * pw; };
+    var y = function (v) { return mT + ph - v / maxL * ph; };
+    [0, 10, 20].forEach(function (gv) {
+      mk("line", { x1: mL, x2: W - mR, y1: y(gv), y2: y(gv), stroke: gv ? RULE : FAINT, "stroke-width": 1 }, svg);
+      mk("text", { x: mL - 5, y: y(gv) + 3, "text-anchor": "end", "class": "axis" }, svg).textContent = gv;
+    });
+    [0, 6, 12, 18, 24].forEach(function (h) {
+      mk("text", { x: x(h * 60), y: H - 18, "text-anchor": "middle", "class": "axis" }, svg)
+        .textContent = (h === 0 || h === 24) ? "12am" : h === 12 ? "12pm" : (h < 12 ? h + "am" : (h - 12) + "pm");
+    });
+    var d = "";
+    P.trace.forEach(function (p, i) { d += (i ? "L" : "M") + x(p[0]).toFixed(1) + "," + y(Math.min(p[1], maxL)).toFixed(1); });
+    mk("path", { d: d, fill: "none", stroke: INK, "stroke-width": 1.5, "stroke-linejoin": "round" }, svg);
+    P.events.forEach(function (m) {
+      mk("line", { x1: x(m), x2: x(m), y1: H - 28, y2: H - 34, stroke: ACCENT, "stroke-width": 1.5 }, svg);
+    });
+    mk("text", { x: x(60), y: H - 18 - 12, "class": "lblf" }, svg).textContent = "";
+    mk("text", { x: W - mR, y: mT + 8, "text-anchor": "end", "class": "lbla" }, svg).textContent = "peak 24.8 /hr";
+    mk("text", { x: W - mR, y: H - 30, "text-anchor": "end", "class": "lblf" }, svg).textContent = "sessions ↑";
+  })();
+
+  // --- 2: log-log ccdf ---
+  (function () {
+    var W = 680, H = 240, mL = 44, mR = 10, mT = 10, mB = 26;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "log-log survival plot of inter-session gaps following a straight power law line; the exponential alternative falls away immediately" },
+      document.getElementById("fig-ccdf"));
+    var pw = W - mL - mR, ph = H - mT - mB;
+    var lx = function (v) { return Math.log10(v); };
+    var xmin = 0, xmax = lx(10080), ymin = -3.3, ymax = 0;
+    var x = function (v) { return mL + (lx(v) - xmin) / (xmax - xmin) * pw; };
+    var y = function (c) { var l = Math.max(Math.log10(Math.max(c, 1e-4)), ymin); return mT + (ymax - l) / (ymax - ymin) * ph; };
+    [1, 10, 60, 480, 1440, 10080].forEach(function (v) {
+      mk("line", { x1: x(v), x2: x(v), y1: mT, y2: mT + ph, stroke: RULE, "stroke-width": 1 }, svg);
+      var lab = v === 1 ? "1 min" : v === 10 ? "10 min" : v === 60 ? "1 hr" : v === 480 ? "8 hr" : v === 1440 ? "1 day" : "1 wk";
+      mk("text", { x: x(v), y: H - 8, "text-anchor": "middle", "class": "axis" }, svg).textContent = lab;
+    });
+    [0, -1, -2, -3].forEach(function (e) {
+      var yy = mT + (ymax - e) / (ymax - ymin) * ph;
+      mk("line", { x1: mL, x2: W - mR, y1: yy, y2: yy, stroke: RULE, "stroke-width": 1 }, svg);
+      mk("text", { x: mL - 5, y: yy + 3, "text-anchor": "end", "class": "axis" }, svg).textContent = e === 0 ? "1" : e === -1 ? "0.1" : e === -2 ? "0.01" : "0.001";
+    });
+    var dP = "", dE = "";
+    P.ccdf2.forEach(function (p, i) {
+      dP += (i ? "L" : "M") + x(p[0]).toFixed(1) + "," + y(p[2]).toFixed(1);
+      dE += (i ? "L" : "M") + x(p[0]).toFixed(1) + "," + y(p[3]).toFixed(1);
+    });
+    mk("path", { d: dE, fill: "none", stroke: FAINT, "stroke-width": 1.2, "stroke-dasharray": "4 3" }, svg);
+    mk("path", { d: dP, fill: "none", stroke: ACCENT, "stroke-width": 1.6 }, svg);
+    P.ccdf2.forEach(function (p) {
+      mk("circle", { cx: x(p[0]), cy: y(p[1]), r: 2.6, fill: INK }, svg);
+    });
+    mk("text", { x: x(300), y: y(0.09), "class": "lbla" }, svg).textContent = "power law, α = 1.44";
+    mk("text", { x: x(6), y: y(0.004), "class": "lblf" }, svg).textContent = "exponential (poisson reader)";
+  })();
+
+  // --- 3: changepoints ---
+  (function () {
+    var W = 680, H = 230, mL = 36, mR = 8, mT = 12, mB = 24;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "weekly reading minutes with the changepoint posterior spiking at december 2021 and april 2026" },
+      document.getElementById("fig-cpd"));
+    var data = P.week;
+    var pw = W - mL - mR, phBars = 130, phP = 60;
+    var maxW = 400;
+    var x = function (i) { return mL + i / (data.length - 1) * pw; };
+    var yB = function (v) { return mT + phBars - Math.min(v, maxW) / maxW * phBars; };
+    var yP = function (p) { return mT + phBars + 8 + phP - p * phP; };
+    mk("line", { x1: mL, x2: W - mR, y1: mT + phBars, y2: mT + phBars, stroke: FAINT, "stroke-width": 1 }, svg);
+    data.forEach(function (p, i) {
+      if (p[2] > 0) mk("rect", { x: x(i) - 0.8, y: yB(p[2]), width: 1.6, height: mT + phBars - yB(p[2]), fill: INK, opacity: 0.5 }, svg);
+      if (p[0].slice(5, 7) === "01" && +p[0].slice(8, 10) <= 7)
+        mk("text", { x: x(i), y: H - 8, "text-anchor": "middle", "class": "axis" }, svg).textContent = p[0].slice(0, 4);
+    });
+    var d = "";
+    data.forEach(function (p, i) { d += (i ? "L" : "M") + x(i).toFixed(1) + "," + yP(p[1]).toFixed(1); });
+    mk("line", { x1: mL, x2: W - mR, y1: yP(0), y2: yP(0), stroke: RULE, "stroke-width": 1 }, svg);
+    mk("path", { d: d, fill: "none", stroke: ACCENT, "stroke-width": 1.4 }, svg);
+    mk("text", { x: mL, y: mT + 2, "class": "lblf" }, svg).textContent = "weekly minutes";
+    mk("text", { x: mL, y: yP(1) - 4, "class": "lbla" }, svg).textContent = "p(changepoint)";
+    var peaks = [["2021-12-27", "dec 2021"], ["2026-04-06", "apr 2026"]];
+    peaks.forEach(function (pk) {
+      var i = data.findIndex(function (p) { return p[0] >= pk[0]; });
+      if (i > 0) {
+        mk("line", { x1: x(i), x2: x(i), y1: mT, y2: yP(0), stroke: ACCENT, "stroke-width": 0.8, "stroke-dasharray": "3 3", opacity: 0.6 }, svg);
+        mk("text", { x: x(i) + 4, y: mT + 10, "class": "lbla" }, svg).textContent = pk[1];
+      }
+    });
+  })();
+
+  // --- 4: kaplan-meier ---
+  (function () {
+    var W = 680, H = 240, mL = 40, mR = 10, mT = 12, mB = 26;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "kaplan-meier survival curves: sideloaded books die faster than store-bought books" },
+      document.getElementById("fig-km"));
+    var pw = W - mL - mR, ph = H - mT - mB, maxH = 8;
+    var x = function (h) { return mL + Math.min(h, maxH) / maxH * pw; };
+    var y = function (s) { return mT + (1 - s) * ph; };
+    [0, 0.5, 1].forEach(function (gv) {
+      mk("line", { x1: mL, x2: W - mR, y1: y(gv), y2: y(gv), stroke: gv === 0 ? FAINT : RULE, "stroke-width": 1 }, svg);
+      mk("text", { x: mL - 5, y: y(gv) + 3, "text-anchor": "end", "class": "axis" }, svg).textContent = (gv * 100) + "%";
+    });
+    for (var h = 0; h <= 8; h += 2)
+      mk("text", { x: x(h), y: H - 8, "text-anchor": "middle", "class": "axis" }, svg).textContent = h + "h";
+    function step(arr, color, dash, width) {
+      var d = "", px = null, py = null;
+      arr.forEach(function (p, i) {
+        var cx = x(p[0]), cy = y(p[1]);
+        if (i === 0) d += "M" + cx.toFixed(1) + "," + cy.toFixed(1);
+        else d += "L" + cx.toFixed(1) + "," + py.toFixed(1) + "L" + cx.toFixed(1) + "," + cy.toFixed(1);
+        px = cx; py = cy;
+      });
+      var a = { d: d, fill: "none", stroke: color, "stroke-width": width || 1.6 };
+      if (dash) a["stroke-dasharray"] = dash;
+      mk("path", a, svg);
+    }
+    step(P.km.overall, INK, null, 2);
+    step(P.km.side, ACCENT, null, 1.6);
+    step(P.km.store, FAINT, "5 3", 1.6);
+    mk("text", { x: x(4.3), y: y(0.62), "class": "lblf" }, svg).textContent = "store-bought";
+    mk("text", { x: x(2.1), y: y(0.24), "class": "lbla" }, svg).textContent = "sideloaded";
+    mk("text", { x: x(6.4), y: y(0.40), "class": "lbl" }, svg).textContent = "all books";
+  })();
+
+  // --- 5: lorenz ---
+  (function () {
+    var W = 680, H = 300, mL = 44, mR = 10, mT = 12, mB = 26;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "lorenz curve of reading attention across books, gini 0.685" },
+      document.getElementById("fig-lorenz"));
+    var pw = W - mL - mR, ph = H - mT - mB;
+    var x = function (v) { return mL + v * pw; };
+    var y = function (v) { return mT + (1 - v) * ph; };
+    [0, 0.5, 1].forEach(function (g) {
+      mk("line", { x1: mL, x2: W - mR, y1: y(g), y2: y(g), stroke: g === 0 ? FAINT : RULE, "stroke-width": 1 }, svg);
+      mk("text", { x: mL - 5, y: y(g) + 3, "text-anchor": "end", "class": "axis" }, svg).textContent = (g * 100) + "%";
+      mk("text", { x: x(g), y: H - 8, "text-anchor": "middle", "class": "axis" }, svg).textContent = (g * 100) + "%";
+    });
+    mk("line", { x1: x(0), y1: y(0), x2: x(1), y2: y(1), stroke: FAINT, "stroke-width": 1, "stroke-dasharray": "4 3" }, svg);
+    var d = "";
+    P.lorenz.forEach(function (p, i) { d += (i ? "L" : "M") + x(p[0]).toFixed(1) + "," + y(p[1]).toFixed(1); });
+    mk("path", { d: d, fill: "none", stroke: ACCENT, "stroke-width": 2 }, svg);
+    mk("text", { x: x(0.42), y: y(0.50), "class": "lblf" }, svg).textContent = "perfect equality";
+    mk("text", { x: x(0.72), y: y(0.10), "class": "lbla" }, svg).textContent = "gini 0.685";
+    mk("text", { x: mL, y: mT + 2, "class": "lblf" }, svg).textContent = "share of minutes";
+    mk("text", { x: W - mR, y: H - 8, "text-anchor": "end", "class": "lblf" }, svg).textContent = "share of books →";
+  })();
+
+  // --- 6: clock densities ---
+  (function () {
+    var W = 680, H = 300;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "polar time-of-day density for the home and asia legs of 2026; both peak in the evening, the home curve has an extra lobe just after midnight" },
+      document.getElementById("fig-clock"));
+    var cx = W / 2, cy = H / 2 + 4, R0 = 34, R1 = 128;
+    var maxD = 0.42;
+    function pt(hour, dens) {
+      var a = (hour / 24) * 2 * Math.PI - Math.PI / 2;
+      var r = R0 + Math.min(dens, maxD) / maxD * (R1 - R0);
+      return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+    }
+    mk("circle", { cx: cx, cy: cy, r: R0, fill: "none", stroke: RULE }, svg);
+    mk("circle", { cx: cx, cy: cy, r: R1, fill: "none", stroke: RULE }, svg);
+    [[0, "12am"], [6, "6am"], [12, "12pm"], [18, "6pm"]].forEach(function (hl) {
+      var a = (hl[0] / 24) * 2 * Math.PI - Math.PI / 2;
+      mk("line", { x1: cx + R0 * Math.cos(a), y1: cy + R0 * Math.sin(a), x2: cx + R1 * Math.cos(a), y2: cy + R1 * Math.sin(a), stroke: RULE }, svg);
+      mk("text", { x: cx + (R1 + 14) * Math.cos(a), y: cy + (R1 + 14) * Math.sin(a) + 3, "text-anchor": "middle", "class": "axis" }, svg).textContent = hl[1];
+    });
+    function densPath(dens) {
+      var d = "";
+      for (var i = 0; i < 96; i++) {
+        var p = pt(i * 0.25, dens[i]);
+        d += (i ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1);
+      }
+      return d + "Z";
+    }
+    mk("path", { d: densPath(P.roseHome.dens), fill: "none", stroke: INK, "stroke-width": 1.8 }, svg);
+    mk("path", { d: densPath(P.roseAsia.dens), fill: "none", stroke: ACCENT, "stroke-width": 1.8 }, svg);
+    mk("text", { x: 12, y: 20, "class": "lbl" }, svg).textContent = "home (ny)";
+    mk("text", { x: 12, y: 36, "class": "lbla" }, svg).textContent = "asia leg";
+  })();
+
+  // --- 7: monte carlo histograms ---
+  (function () {
+    var W = 680, H = 210, gap = 44, half = (W - gap) / 2;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "distributions of the simulated longest streak and total 2026 hours" },
+      document.getElementById("fig-mc"));
+    function panel(x0, bars, title, xlabel, accentTest) {
+      var mL2 = x0 + 34, mT2 = 22, mB2 = 26, pw = half - 40, ph = H - mT2 - mB2;
+      mk("text", { x: x0, y: 12, "class": "lblf" }, svg).textContent = title;
+      var maxC = Math.max.apply(null, bars.map(function (b) { return b[1]; }));
+      var band = pw / bars.length;
+      bars.forEach(function (b, i) {
+        var bh = b[1] / maxC * ph;
+        mk("rect", { x: mL2 + i * band + 1, y: mT2 + ph - bh, width: Math.max(band - 2, 1.5), height: bh,
+          fill: accentTest(b[0]) ? ACCENT : INK, opacity: accentTest(b[0]) ? 0.9 : 0.35 }, svg);
+      });
+      mk("line", { x1: mL2, x2: mL2 + pw, y1: mT2 + ph, y2: mT2 + ph, stroke: FAINT, "stroke-width": 1 }, svg);
+      bars.forEach(function (b, i) {
+        if (b[2]) mk("text", { x: mL2 + i * band + band / 2, y: H - 10, "text-anchor": "middle", "class": "axis" }, svg).textContent = b[2];
+      });
+      return { mL2: mL2, band: band, mT2: mT2, ph: ph };
+    }
+    var lsBars = P.fc.ls.filter(function (b) { return b[0] <= 70; }).map(function (b) {
+      return [b[0], b[1], (b[0] % 10 === 0 || b[0] === 39) ? String(b[0]) : null];
+    });
+    panel(0, lsBars, "longest streak by dec 31 (days)", "", function (v) { return v > 39; });
+    var thBars = [];
+    for (var i = 0; i < P.fc.th_counts.length; i++) {
+      var lo = P.fc.th_edges[i];
+      thBars.push([lo, P.fc.th_counts[i], (lo % 10 === 0 || lo === 95) ? String(lo) : null]);
+    }
+    panel(half + gap, thBars, "total 2026 hours", "", function (v) { return false; });
+    mk("text", { x: half + gap + 34, y: 12 + 12, "class": "lblf" }, svg).textContent = "";
+  })();
+
+  // --- 8: the map ---
+  (function () {
+    var W = 680, H = 560, m = 46;
+    var svg = mk("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
+      "aria-label": "scatter map of 61 books on inward-outward and analytical-narrative axes, colored by era, with era centroids migrating inward and toward narrative" },
+      document.getElementById("fig-map"));
+    var x = function (v) { return m + (v + 1) / 2 * (W - 2 * m); };
+    var y = function (v) { return H - m - (v + 1) / 2 * (H - 2 * m); };
+    mk("line", { x1: x(-1), x2: x(1), y1: y(0), y2: y(0), stroke: RULE }, svg);
+    mk("line", { x1: x(0), x2: x(0), y1: y(-1), y2: y(1), stroke: RULE }, svg);
+    mk("text", { x: x(-1), y: y(0) - 6, "class": "axis" }, svg).textContent = "← inward / psychological";
+    mk("text", { x: x(1), y: y(0) - 6, "text-anchor": "end", "class": "axis" }, svg).textContent = "outward / worldly →";
+    mk("text", { x: x(0) + 6, y: y(1) + 10, "class": "axis" }, svg).textContent = "↑ narrative / visceral";
+    mk("text", { x: x(0) + 6, y: y(-1) - 2, "class": "axis" }, svg).textContent = "↓ systematic / analytical";
+    var tip = document.getElementById("maptip");
+    var colors = { first: FAINT, purgatory: INK, resurrection: ACCENT };
+    P.map.pts.forEach(function (p) {
+      var r = Math.max(3, Math.sqrt(p.m) / 3.2);
+      var c = mk("circle", { cx: x(p.x), cy: y(p.y), r: r, fill: colors[p.e] || INK,
+        opacity: p.e === "first" ? 0.55 : 0.8, stroke: css("--paper"), "stroke-width": 1 }, svg);
+      c.addEventListener("mousemove", function (evt) {
+        tip.style.display = "block";
+        tip.innerHTML = "<b>" + p.t + "</b><br>" + p.m + " min · " + p.c;
+        var tx = evt.clientX + 12, ty = evt.clientY + 12;
+        tip.style.left = tx + "px"; tip.style.top = ty + "px";
+      });
+      c.addEventListener("mouseleave", function () { tip.style.display = "none"; });
+    });
+    var cf = P.map.cent.first, cp = P.map.cent.purgatory, cr = P.map.cent.resurrection;
+    mk("path", { d: "M" + x(cf.x) + "," + y(cf.y) + "L" + x(cp.x) + "," + y(cp.y) + "L" + x(cr.x) + "," + y(cr.y),
+      fill: "none", stroke: INK, "stroke-width": 1, "stroke-dasharray": "3 4" }, svg);
+    [[cf, "2019–22"], [cp, "2024–25"], [cr, "2026"]].forEach(function (ce) {
+      var p = ce[0];
+      mk("line", { x1: x(p.x) - 5, x2: x(p.x) + 5, y1: y(p.y), y2: y(p.y), stroke: INK, "stroke-width": 2 }, svg);
+      mk("line", { x1: x(p.x), x2: x(p.x), y1: y(p.y) - 5, y2: y(p.y) + 5, stroke: INK, "stroke-width": 2 }, svg);
+      mk("text", { x: x(p.x) + 8, y: y(p.y) - 6, "class": "lbl" }, svg).textContent = ce[1];
+    });
+  })();
+
+  console.log("%cα = 0.76, μ ×10, gini 0.685, phase shift 21.5 min (n.s.). all fitted parameters are in this page's source.", "color:#b3372c");
+})();
+</script>
+</body>
+</html>
