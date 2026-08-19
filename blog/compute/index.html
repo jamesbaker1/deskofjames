@@ -64,8 +64,8 @@ them can run them.</p>
 before the kv cache takes a byte. llama 3.1 405b in bf16 is 810gb. the
 largest consumer gpu nvidia sells holds ~32. quantize r1 down to 4 bits and
 it still wants about 400gb, which is thirteen consumer cards wired
-together, which you cannot do, because the interconnect is the actual
-product and it does not come in consumer.</p>
+together, which you can't do, because the interconnect is the actual
+product and it doesn't come in consumer.</p>
 
 <figure id="fig-vram"></figure>
 
@@ -82,7 +82,7 @@ to make optional. open weight, closed socket.</p>
 the source of a model is the training data, the filtering pipeline, the
 training code, the schedule, the post-training recipe, and the evals that
 decided which checkpoint shipped. of those, a typical open release ships
-none. you get the artifact and a license to run it, on hardware you do not
+none. you get the artifact and a license to run it, on hardware you don't
 have.</p>
 </section>
 
@@ -105,12 +105,12 @@ layers and "weights" is one:</p>
 <li>power and cooling</li>
 </ul>
 
-<p>the fight over layer three is loud because it is the only layer with a
+<p>the fight over layer three is loud because it's the only layer with a
 license attached. the other five get decided by default, and the default is
 rented. renting is fine until the landlord deprecates the model you built
 on, or rate-limits you mid-experiment, or logs what you send. the fix is
-not everyone buying an 8x h100 node. it is a community owned and operated
-cluster that is decentralized by design.</p>
+not everyone buying an 8x h100 node. it's a community owned and operated
+cluster that's decentralized by design.</p>
 </section>
 
 <section>
@@ -120,8 +120,8 @@ cluster that is decentralized by design.</p>
 members rack their own hardware in the five boroughs and the club schedules
 jobs across all of it. jobs travel as libsodium sealed boxes; the
 coordinator that routes them sees ciphertext, a node id, and a
-self-reported wattage. it cannot read what you run. the threat model is written down and it
-is not flattering, which is how you can tell it is a threat model.</p>
+self-reported wattage. it can't read what you run. the threat model is written down and it's
+not flattering, which is how you can tell it's a threat model.</p>
 
 <p>the software is public and unfinished: <a
 href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
@@ -132,12 +132,12 @@ href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a> is the mesh
 to audit); <a
 href="https://github.com/jamesbaker1/newyorkcomputeclub">newyorkcomputeclub</a>
 is the site, which renders manhattan as a load histogram. the load is
-invented until enough nodes exist; the buildings are not. the lights above
+invented until enough nodes exist; the buildings aren't. the lights above
 the island are 60 hudson st, 111 8th ave, and the teleport. pull requests
 move your application up the pile.</p>
 
-<p>the cluster is currently a few nodes and an extension cord. that is what
-applications are for. they are open at <a
+<p>the cluster is currently a few nodes and an extension cord. that's what
+applications are for. they're open at <a
 href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
 
 <p>what's next? <strong>not your power, not your
@@ -185,7 +185,7 @@ basement in red hook and strong opinions about generators. later.</p>
   });
   s += '</svg>';
   var f = document.getElementById('fig-vram');
-  f.innerHTML = s + '<figcaption>gigabytes. hardware in ink, weights in red. the license is not the constraint.</figcaption>';
+  f.innerHTML = s + '<figcaption>gigabytes. hardware in ink, weights in red. the license isn't the constraint.</figcaption>';
 })();
 </script>
 </body>
