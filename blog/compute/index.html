@@ -48,7 +48,7 @@
 <p>crypto bro produced exactly one aphorism that survived contact with
 reality. not your keys, not your coins. it kept being true through every
 collapse, which is the only test an aphorism faces. i want it with the nouns
-swapped. <strong>not your compute, not your model.</strong></p>
+swapped. not your compute, not your model.</p>
 
 <p>open models are winning but consumers still don't seem to be reaping the
 rewards. deepseek ships frontier-adjacent weights under mit. meta ships
@@ -60,12 +60,13 @@ them can run them.</p>
 <section>
 <h2>the arithmetic</h2>
 
-<p>deepseek-r1 is 671 billion parameters, fp8 native, 689gb of weights
-before the kv cache takes a byte. llama 3.1 405b in bf16 is 810gb. the
-largest consumer gpu nvidia sells holds ~32. quantize r1 down to 4 bits and
-it still wants about 400gb, which is thirteen consumer cards wired
-together, which you can't do, because the interconnect is the actual
-product and it doesn't come in consumer.</p>
+<p>deepseek v3.2 is 685 billion parameters, fp8 native, about 685gb of
+weights before the kv cache takes a byte. kimi k3, the biggest open model
+right now, is 2.8 trillion, closer to three terabytes. the largest consumer
+gpu nvidia sells holds ~32. quantize deepseek down to 4 bits and it still
+wants about 340gb, which is eleven consumer cards wired together, which you
+can't do, because the interconnect is the actual product and it doesn't
+come in consumer.</p>
 
 <figure id="fig-vram"></figure>
 
@@ -123,7 +124,7 @@ coordinator that routes them sees ciphertext, a node id, and a
 self-reported wattage. it can't read what you run. the threat model is written down and it's
 not flattering, which is how you can tell it's a threat model.</p>
 
-<p>the software is public and unfinished. <
+<p>the software is public and unfinished. <a
 href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
 small inference engine (paged kv, continuous batching, priority
 scheduling, a numpy reference model you can read in an afternoon); <a
@@ -140,8 +141,8 @@ move your application up the pile.</p>
 applications are for. they're open at <a
 href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
 
-<p>what's next? <strong>not your power, not your
-model.</strong> an h100 turns electricity into gradients at 700 watts a
+<p>what's next? not your power, not your
+model. an h100 turns electricity into gradients at 700 watts a
 card, and whoever meters the electricity holds a veto. one member has a
 basement in red hook and strong opinions about generators. later.</p>
 </section>
@@ -167,12 +168,12 @@ basement in red hook and strong opinions about generators. later.</p>
   var rows = [
     ['rtx 5090 (consumer)', 32, 0],
     ['h100 (one card)', 80, 0],
-    ['mac studio, 512 (discontinued)', 512, 0],
-    ['r1, 4-bit', 400, 1],
-    ['r1, fp8', 689, 1],
-    ['llama 405b, bf16', 810, 1],
+    ['mac studio', 512, 0],
+    ['deepseek v3.2, 4-bit', 343, 1],
+    ['deepseek v3.2, fp8', 685, 1],
+    ['kimi k3, 4-bit', 1400, 1],
   ];
-  var W = 640, RH = 26, PAD = 150, max = 810;
+  var W = 640, RH = 26, PAD = 150, max = 1400;
   var H = rows.length * RH + 24;
   var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="memory sizes: consumer and datacenter hardware against open model weights" style="width:100%;height:auto;font:11.5px ui-monospace,Consolas,monospace">';
   rows.forEach(function (r, i) {
@@ -185,7 +186,7 @@ basement in red hook and strong opinions about generators. later.</p>
   });
   s += '</svg>';
   var f = document.getElementById('fig-vram');
-  f.innerHTML = s + '<figcaption>gigabytes. hardware in ink, weights in red. the license isn't the constraint.</figcaption>';
+  f.innerHTML = s + '<figcaption>gigabytes. hardware in ink, weights in red. the license isn\'t the constraint.</figcaption>';
 })();
 </script>
 </body>
