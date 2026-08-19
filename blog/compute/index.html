@@ -45,13 +45,14 @@
 <p class="sub">open weights arrived. the machines to run them did not. on the arithmetic of local inference, the rest of the stack, and a club in new york.</p>
 
 <section>
-<p>crypto people produced exactly one aphorism that survived contact with
+<p>crypto bro produced exactly one aphorism that survived contact with
 reality: not your keys, not your coins. it kept being true through every
 collapse, which is the only test an aphorism faces. i want it with the nouns
 swapped: <strong>not your compute, not your model.</strong></p>
 
-<p>the setup: open models won. deepseek ships frontier-adjacent weights
-under mit. meta ships llama under a livable license. the weights are on
+<p>open models are winning but consumers still don't seem to be reaping the
+rewards. deepseek ships frontier-adjacent weights under mit. meta ships
+llama under a livable license. the weights are on
 hugging face tonight, all of them, free. and almost nobody who downloads
 them can run them.</p>
 </section>
@@ -61,7 +62,7 @@ them can run them.</p>
 
 <p>deepseek-r1 is 671 billion parameters, fp8 native: 689gb of weights
 before the kv cache takes a byte. llama 3.1 405b in bf16 is 810gb. the
-largest consumer gpu nvidia sells holds 32. quantize r1 down to 4 bits and
+largest consumer gpu nvidia sells holds ~32. quantize r1 down to 4 bits and
 it still wants about 400gb, which is thirteen consumer cards wired
 together, which you cannot do, because the interconnect is the actual
 product and it does not come in consumer.</p>
@@ -108,8 +109,8 @@ layers and "weights" is one:</p>
 license attached. the other five get decided by default, and the default is
 rented. renting is fine until the landlord deprecates the model you built
 on, or rate-limits you mid-experiment, or logs what you send. the fix is
-not everyone buying an 8x h100 node. it is thirty people splitting one, at
-$8,300 or so a head.</p>
+not everyone buying an 8x h100 node. it is a community owned and operated
+cluster that is decentralized by design.</p>
 </section>
 
 <section>
@@ -119,9 +120,7 @@ $8,300 or so a head.</p>
 members rack their own hardware in the five boroughs and the club schedules
 jobs across all of it. jobs travel as libsodium sealed boxes; the
 coordinator that routes them sees ciphertext, a node id, and a
-self-reported wattage. it cannot read what you run. the node you pick can,
-today, which is why you pick the node, and why attestation is a v2 line
-item instead of a marketing slide. the threat model is written down and it
+self-reported wattage. it cannot read what you run. the threat model is written down and it
 is not flattering, which is how you can tell it is a threat model.</p>
 
 <p>the software is public and unfinished: <a
@@ -137,11 +136,11 @@ invented until enough nodes exist; the buildings are not. the lights above
 the island are 60 hudson st, 111 8th ave, and the teleport. pull requests
 move your application up the pile.</p>
 
-<p>the cluster is currently one node and an extension cord. that is what
+<p>the cluster is currently a few nodes and an extension cord. that is what
 applications are for. they are open at <a
 href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
 
-<p>the rule also has a v2 queued: <strong>not your power, not your
+<p>what's next? <strong>not your power, not your
 model.</strong> an h100 turns electricity into gradients at 700 watts a
 card, and whoever meters the electricity holds a veto. one member has a
 basement in red hook and strong opinions about generators. later.</p>
