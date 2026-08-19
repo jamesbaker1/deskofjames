@@ -1,0 +1,497 @@
+<!doctype html>
+<!-- every number below is copied from the playbook repo's own reports; the figures are the
+     committed svgs, inlined so the page stands alone. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>playbook-1, specified before it exists</title>
+<link rel="canonical" href="https://deskofjim.com/blog/playbook-1/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="description" content="a frozen contract, release gates that are tested code, three teacher pilots, one bootstrap demonstration that says how hard the bar is, and no trained model. the claim comes before the run">
+
+<meta property="og:title" content="Playbook-1, specified before it exists">
+<meta property="og:description" content="a frozen contract, release gates that are tested code, three teacher pilots, one bootstrap demonstration that says how hard the bar is, and no trained model. the claim comes before the run">
+<meta property="og:image" content="https://deskofjim.com/og.png">
+<meta property="og:url" content="https://deskofjim.com/blog/playbook-1/">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.4/dist/katex.min.css" integrity="sha384-u1zONI5gPXUx0UKI62c75/zww972y0v2rSK5ZYlVdS6xEuWDeZWUI66v6t1gvlXJ" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.4/dist/katex.min.js" integrity="sha384-ykMNcWQhhTUb0YV9SPpPUFURHZ+tWmubkakGBP+OgNK/UXdO2gtzglWx0Rj9hnO3" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.4/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.querySelector('main'), {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+<style>
+  :root {
+    --ink: #1a1916;
+    --paper: #f7f5f0;
+    --faint: #8a857a;
+    --rule: #d8d4ca;
+    --accent: #b3372c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, monospace;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 4.5rem 1.25rem 6rem; }
+  h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; }
+  .sub { color: var(--faint); margin-top: 0.3rem; }
+  section { margin-top: 3.2rem; }
+  h2 { font-size: 0.85rem; font-weight: 600; color: var(--faint); margin-bottom: 1rem; text-transform: lowercase; }
+  p { margin-bottom: 0.9rem; max-width: 40rem; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+  code { font-size: 0.92em; }
+
+  figure { margin: 1.4rem 0 0.6rem; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { color: var(--faint); font-size: 0.8rem; margin-top: 0.45rem; max-width: 40rem; }
+
+  /* display math keeps the rule-above, rule-below treatment the equations elsewhere use */
+  .eq {
+    padding: 1rem 0 1.1rem;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 1.4rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .katex { font-size: 1.02em; }
+  .katex-display { margin: 0; }
+
+  .tablewrap { overflow-x: auto; margin: 0.4rem 0 0.9rem; }
+  table { border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  th, td { text-align: left; padding: 0.28rem 1.4rem 0.28rem 0; font-weight: 400; }
+  thead th { color: var(--faint); border-bottom: 1px solid var(--rule); }
+
+  .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
+  .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="note"><a href="/blog/">← blog</a></p>
+  <h1>playbook-1, specified before it exists</h1>
+  <p class="sub">a frozen contract, release gates that are tested code, three teacher pilots, one bootstrap demonstration that says how hard the bar is, and no trained model. the claim comes before the run</p>
+
+  <section>
+
+  <p>Three failures in an AI markup get a deal lawyer in trouble, and I have now measured all three, inside a synthetic gym of twelve fictional matters, scored deterministically against a lawyer-authored answer key. No real client file is involved anywhere in this post, and no score in it is a credential.</p>
+
+  <p>The first failure is silence. Against expert reference trajectories that average 2.67 client questions per matter and score 0.958 question recall, GPT-5.6-terra asked 0.42 questions per matter and Claude Haiku 4.5 asked 0.58, under per-matter budgets of three or four. Question recall was 0.083 for Haiku, 0.056 for terra, 0.021 for Qwen2.5-7B, and exactly 0.000 for Qwen2.5-14B and -32B. These are dev-split rows from the Playbook gym; the frontier and 32B rows are single seed, twelve episodes each, the frontier rows served through a commercial gateway with a 4,096-token output cap while the open-weight rows ran on self-hosted vLLM. And the reference is the answer key executing itself (a lawyer-authored trajectory replayed through the scorer) because no human baseline exists yet.</p>
+
+  <p>The second is the concession. On the buyer-side M&amp;A matter, five of the seven open-weight runs proposed markup that gave away the survival, cap, and deductible allocation (the exact allocation the client's investment-committee mandate reserves). The model does not fail to know that a survival period matters; it fails to notice that this particular client said not to trade it. Both frontier rows cleared that matter: same dev split, same single-seed qualifier, and with twelve matter families the clustered intervals are wide and overlap heavily, so any ordering is suggestive, not established.</p>
+
+  <p>The third is fabrication: quoting language that is not in the file. All three open-weight fabricated quotations landed in rushed episodes of six, six, and five steps. Haste explains the small models. It does not explain Claude Haiku 4.5, whose four fabricated quotations came in episodes of fifteen, seventeen, and eighteen steps; GPT-5.6-terra, the other frontier row, fabricated none. One caveat travels with every failure <em>rate</em> in this post: those rates were measured under critical-failure gates I have since audited and replaced, and pre- and post-revision rates are not numerically comparable without a re-run. The underlying events (the concessions, the invented quotes) are real episodes, documented in <a href="https://github.com/jamesbaker1/playbook/blob/main/docs/baseline-report.md">the baseline report</a>.</p>
+
+  <p>None of these is a knowledge failure. Every one of these models knows what a liability cap is. They fail at process: at asking before drafting, at noticing what this client reserved. Capability is not the constraint here. Restraint is. Playbook-1 is the attempt to train that in, and this post is the unusual part: <strong>the model does not exist yet.</strong> What exists is the contract (the claim, the conditions, the primary metric, and the decision rule) frozen in a public file before any training data was generated, and implemented as code that runs and has tests.</p>
+
+  </section>
+
+  <section>
+
+  <h2>Why the claim comes before the run</h2>
+
+  <p>Legal AI has an audit history. LawGeex announced in 2018 that its system beat experienced lawyers at NDA review, and the number traveled around the world while the conditions traveled later and more slowly. The GPT-4 bar-exam percentile of 2023 traveled further still, and was then substantially deflated by Martínez's 2024 reanalysis of the comparison population. A number announced first and specified afterward has no defense. Once you have the number, every subsequent choice about what it means (which comparison group, which metric, which caveats survive editing) is made by someone who already knows which answer they would prefer. Nobody has to be dishonest for the output to be unreliable.</p>
+
+  <p>The fix is ordering. Freeze the claim and the decision rule while you are still ignorant of the outcome; then run. In the lineage this borrows from, SWE-Gym turned an evaluation suite into a training environment for software agents, and Mercor's APEX corpus has already been used commercially by Applied Compute to post-train a model that tops its corporate-law leaderboard. The eval-to-training pipeline works. What that lineage mostly does not do is write the launch post first.</p>
+
+  </section>
+
+  <section>
+
+  <h2>The experiment</h2>
+
+  <p>The design is a controlled comparison, not a demo. One teacher generates trajectories in the environment. Those trajectories are cut two ways into training data. The <strong>state-action view</strong> keeps every decision the teacher made: this observation, this action, out of the eleven action types the environment publishes. The <strong>final-answer view</strong> keeps only the final submitted summary. The two conditions optimize different objectives from the same episodes:</p>
+
+  <div class="eq">$$\mathcal{L}_{\text{final-answer}} = -\log p_\theta\!\left(y_{\text{final}} \mid o_0, D\right), \qquad \mathcal{L}_{\text{state-action}} = -\sum_t \log p_\theta\!\left(a_t \mid o_t\right),$$</div>
+
+  <p>where \(D\) is the matter's visible document text. Same teacher, same student base model, same declared token-budget group. Then a decision-level DPO stage on same-state preference pairs, gated behind the SFT result.</p>
+
+  <p>In plain terms: two apprentices, one supervisor. One apprentice watches the whole matter get worked, decision by decision. The other reads the file and then only the closing summary the supervisor filed: matter in, final write-up out. Same supervisor, same hours. Does watching the work beat reading the output?</p>
+
+  <p>The frozen contract names the student: <code>Qwen/Qwen2.5-14B-Instruct</code>, approved on 2026-08-06 after the dev-split baselines, and the contract records that approval and its date. It declares exactly five conditions (base, final-answer SFT, state-action SFT, state-action SFT plus DPO, and an external teacher reference), and the validator fails if the set does not match exactly. The DPO condition carries a literal prerequisite, <code>state_action_sft_clears_release_gates</code>: I do not get to try the fancier method if the simpler one fails its own gates. Two honesty notes, because a hostile reader will find both: "matched token budgets" is currently enforced as string equality of a label both conditions declare (nothing yet measures the tokens each condition actually consumed), and the DPO prerequisite, like the held-out requirement, is a string in the file that no code reads.</p>
+
+  <p>Two rules govern what becomes training data. A record never leaks the consequence into the prompt: a record that does is teaching hindsight, not judgment. And review sampling is stratified rather than top-k, because selecting the highest-scoring path teaches the model to be lucky.</p>
+
+  <figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 856" role="img" aria-labelledby="experiment-conditions-fig3-title experiment-conditions-fig3-desc" font-family="ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace">
+    <title id="experiment-conditions-fig3-title">Playbook-1: the five frozen conditions, the four release gates that compare state_action_sft with final_answer_sft, and the prerequisite that locks the DPO condition.</title>
+    <desc id="experiment-conditions-fig3-desc">Three conditions train or evaluate from playbook_1_base: base (no training), final_answer_sft and state_action_sft; external_reference sits apart as the open-weight teacher reference, not a training control. Four release gates compare state_action_sft against final_answer_sft: critical_failure_rate (the primary gate, decided by a one-sided cluster-bootstrap CI excluding zero at 95 per cent), citation_validity with maximum regression 0.01, fabricated_quote_count with maximum regression 0, and completion_rate with maximum regression 0.02. state_action_sft_dpo is locked behind the prerequisite state_action_sft_clears_release_gates. Beating base is secondary reporting, not a gate.</desc>
+
+    <defs>
+      <marker id="experiment-conditions-ink-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1 L9,5 L0,9 z" fill="#1a1916"/>
+      </marker>
+    </defs>
+
+    <rect x="0" y="0" width="1240" height="856" fill="#f7f5f0"/>
+
+    <!-- ============================================================= header -->
+    <text x="40" y="38" font-size="15" fill="#1a1916">Playbook-1: five frozen conditions and four release gates</text>
+    <text x="40" y="60" font-size="11" fill="#8a857a">docs/playbook-1-experiment.yaml  ·  schema_version: playbook.experiment.v1  ·  status: frozen</text>
+
+    <!-- ========================================================= conditions -->
+    <text x="40" y="92" font-size="11" fill="#8a857a" letter-spacing="0.08em">CONDITIONS</text>
+    <text x="888" y="92" font-size="11" fill="#8a857a" letter-spacing="0.08em">SET APART · NOT A TRAINING CONDITION</text>
+
+    <rect x="40" y="104" width="249" height="152" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="54" y="130" font-size="13" fill="#1a1916">base</text>
+    <text x="54" y="152" font-size="11" fill="#8a857a">training_view: none</text>
+    <text x="54" y="170" font-size="11" fill="#8a857a">base_model_group: playbook_1_base</text>
+    <text x="54" y="194" font-size="11" fill="#8a857a">no training,</text>
+    <text x="54" y="210" font-size="11" fill="#8a857a">the untrained control</text>
+
+    <rect x="313" y="104" width="249" height="152" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="327" y="130" font-size="13" fill="#1a1916">final_answer_sft</text>
+    <text x="327" y="152" font-size="11" fill="#8a857a">training_view: final_answer</text>
+    <text x="327" y="170" font-size="11" fill="#8a857a">base_model_group: playbook_1_base</text>
+    <text x="327" y="194" font-size="11" fill="#8a857a">teacher_model_group:</text>
+    <text x="327" y="210" font-size="11" fill="#8a857a" xml:space="preserve">  playbook_1_teacher</text>
+    <text x="327" y="230" font-size="11" fill="#8a857a">token_budget_group:</text>
+    <text x="327" y="246" font-size="11" fill="#8a857a" xml:space="preserve">  matched_sft_budget</text>
+
+    <rect x="586" y="104" width="249" height="152" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="600" y="130" font-size="13" fill="#1a1916">state_action_sft</text>
+    <text x="600" y="152" font-size="11" fill="#8a857a">training_view: state_action</text>
+    <text x="600" y="170" font-size="11" fill="#8a857a">base_model_group: playbook_1_base</text>
+    <text x="600" y="194" font-size="11" fill="#8a857a">teacher_model_group:</text>
+    <text x="600" y="210" font-size="11" fill="#8a857a" xml:space="preserve">  playbook_1_teacher</text>
+    <text x="600" y="230" font-size="11" fill="#8a857a">token_budget_group:</text>
+    <text x="600" y="246" font-size="11" fill="#8a857a" xml:space="preserve">  matched_sft_budget</text>
+
+    <line x1="862" y1="92" x2="862" y2="256" stroke="#d8d4ca" stroke-width="1"/>
+
+    <rect x="888" y="104" width="312" height="152" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="904" y="130" font-size="13" fill="#1a1916">external_reference</text>
+    <text x="904" y="152" font-size="11" fill="#8a857a">training_view: none</text>
+    <text x="904" y="170" font-size="11" fill="#8a857a">model_group: playbook_1_teacher</text>
+    <text x="904" y="194" font-size="11" fill="#8a857a">role: open_weight_teacher_</text>
+    <text x="904" y="210" font-size="11" fill="#8a857a" xml:space="preserve">      reference_not_training_control</text>
+    <text x="904" y="234" font-size="11" fill="#8a857a">teacher_model: null,</text>
+    <text x="904" y="250" font-size="11" fill="#8a857a">pending_owner_approval</text>
+
+    <text x="40" y="280" font-size="11" fill="#8a857a">playbook_1_base: Qwen/Qwen2.5-14B-Instruct</text>
+
+    <!-- comparison bracket -->
+    <path d="M438,256 L438,282 L710,282 L710,256" fill="none" stroke="#1a1916" stroke-width="1"/>
+    <line x1="574" y1="282" x2="574" y2="310" stroke="#1a1916" stroke-width="1" marker-end="url(#experiment-conditions-ink-arrow)"/>
+    <text x="726" y="286" font-size="11" fill="#8a857a">every release gate compares these two</text>
+
+    <!-- ====================================================== release gates -->
+    <text x="40" y="308" font-size="11" fill="#8a857a" letter-spacing="0.08em">RELEASE GATES: ALL FOUR MUST CLEAR</text>
+
+    <rect x="40" y="316" width="1160" height="240" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="40" y1="376" x2="1200" y2="376" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="40" y1="436" x2="1200" y2="436" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="40" y1="496" x2="1200" y2="496" stroke="#d8d4ca" stroke-width="1"/>
+    <rect x="40" y="316" width="4" height="60" fill="#b3372c"/>
+
+    <text x="64" y="342" font-size="12" fill="#1a1916">critical_failure_rate</text>
+    <text x="348" y="342" font-size="11" fill="#8a857a">state_action_sft_lt_final_answer_sft</text>
+    <text x="708" y="342" font-size="11" fill="#8a857a">one_sided_cluster_bootstrap_ci_excludes_zero</text>
+    <text x="64" y="362" font-size="11" fill="#b3372c">PRIMARY RELEASE GATE</text>
+    <text x="348" y="362" font-size="11" fill="#8a857a">direction: minimize · tolerance: 0</text>
+    <text x="708" y="362" font-size="11" fill="#8a857a">confidence_level: 0.95 · resampling_unit: matter_family</text>
+
+    <text x="64" y="402" font-size="12" fill="#1a1916">citation_validity</text>
+    <text x="348" y="402" font-size="11" fill="#8a857a">state_action_sft_vs_final_answer_sft</text>
+    <text x="708" y="402" font-size="11" fill="#8a857a">maximum_regression: 0.01</text>
+    <text x="348" y="422" font-size="11" fill="#8a857a">direction: maximize</text>
+
+    <text x="64" y="462" font-size="12" fill="#1a1916">fabricated_quote_count</text>
+    <text x="348" y="462" font-size="11" fill="#8a857a">state_action_sft_vs_final_answer_sft</text>
+    <text x="708" y="462" font-size="11" fill="#8a857a">maximum_regression: 0</text>
+    <text x="348" y="482" font-size="11" fill="#8a857a">direction: minimize</text>
+
+    <text x="64" y="522" font-size="12" fill="#1a1916">completion_rate</text>
+    <text x="348" y="522" font-size="11" fill="#8a857a">state_action_sft_vs_final_answer_sft</text>
+    <text x="708" y="522" font-size="11" fill="#8a857a">maximum_regression: 0.02</text>
+    <text x="348" y="542" font-size="11" fill="#8a857a">direction: maximize</text>
+
+    <line x1="574" y1="556" x2="574" y2="588" stroke="#1a1916" stroke-width="1" marker-end="url(#experiment-conditions-ink-arrow)"/>
+
+    <!-- ======================================================= the lock -->
+    <text x="40" y="584" font-size="11" fill="#8a857a" letter-spacing="0.08em">PREREQUISITE</text>
+    <rect x="40" y="592" width="1160" height="72" fill="#f7f5f0" stroke="#1a1916" stroke-width="1.5"/>
+
+    <path d="M74,628 L74,620 A6,6 0 0 1 86,620 L86,628" fill="none" stroke="#1a1916" stroke-width="1.5"/>
+    <rect x="68" y="628" width="24" height="20" fill="none" stroke="#1a1916" stroke-width="1.5"/>
+    <circle cx="80" cy="636" r="2" fill="#1a1916"/>
+
+    <text x="112" y="624" font-size="12" fill="#1a1916">prerequisite: state_action_sft_clears_release_gates</text>
+    <text x="112" y="646" font-size="11" fill="#8a857a">the DPO condition does not run until all four gates above clear</text>
+
+    <line x1="574" y1="664" x2="574" y2="690" stroke="#1a1916" stroke-width="1" marker-end="url(#experiment-conditions-ink-arrow)"/>
+
+    <!-- ============================================== dpo box + side note -->
+    <rect x="380" y="692" width="320" height="104" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="396" y="718" font-size="13" fill="#1a1916">state_action_sft_dpo</text>
+    <text x="396" y="740" font-size="11" fill="#8a857a">training_view: state_action</text>
+    <text x="396" y="758" font-size="11" fill="#8a857a">base_model_group: playbook_1_base</text>
+    <text x="396" y="780" font-size="11" fill="#8a857a">no teacher or budget group declared</text>
+
+    <rect x="740" y="692" width="460" height="104" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="756" y="718" font-size="12" fill="#1a1916">must-beat-base is not a release gate</text>
+    <text x="756" y="740" font-size="11" fill="#8a857a">secondary_reporting: state_action_sft_lt_base</text>
+    <text x="756" y="758" font-size="11" fill="#8a857a">metric: critical_failure_rate</text>
+    <text x="756" y="780" font-size="11" fill="#8a857a">purpose: guard_against_degraded_control_tool_use</text>
+
+    <text x="40" y="828" font-size="12" fill="#8a857a">frozen 2026-08-06; teacher and budget fields null pending approval</text>
+  </svg>
+  <figcaption>The five declared conditions, the release gates comparing state-action SFT against final-answer SFT, and the DPO stage locked behind the gates</figcaption>
+  </figure>
+
+  </section>
+
+  <section>
+
+  <h2>The gates, printed</h2>
+
+  <p>The primary metric is the critical-failure rate, the share of episodes containing at least one gate-tripping professional failure:</p>
+
+  <div class="eq">$$\mathrm{CFR}(c) = \frac{1}{|E_c|} \sum_{e \in E_c} \mathbb{1}\!\left[\text{critical failure in } e\right].$$</div>
+
+  <p>The primary release gate is a one-sided 95% cluster bootstrap on the paired difference, resampled by matter family, with tolerance zero:</p>
+
+  <div class="eq">$$\hat{U}_{0.95}\!\left(\mathrm{CFR}_{\text{state-action}} - \mathrm{CFR}_{\text{final-answer}}\right) &lt; 0.$$</div>
+
+  <p>Each of the 2,000 replicates (the estimator's default; the resample count and seed are two knobs the contract does not freeze) draws one list of families with replacement and applies it to both conditions, so the comparison is paired by construction, and the code refuses to run if the two conditions do not cover an identical family set. The published bounds are rounded to four decimals before anything is decided, and the excludes-zero flag is derived from those rounded, printed bounds: the flag and the published numbers can never disagree.</p>
+
+  <p>Three guardrail gates block a release regardless of the primary result, comparing rounded condition means against fixed allowances rather than intervals:</p>
+
+  <div class="eq">$$\bar v_{\text{fa}} - \bar v_{\text{sa}} \le 0.01, \qquad \bar q_{\text{sa}} - \bar q_{\text{fa}} \le 0, \qquad \bar c_{\text{fa}} - \bar c_{\text{sa}} \le 0.02,$$</div>
+
+  <p>for citation validity \(v\), fabricated-quote count \(q\), and completion rate \(c\). Zero tolerance on fabrication is the one that matters: a model that learns to fabricate more fluently does not ship, whatever it does to the headline number.</p>
+
+  <p>Three things I want on the record rather than discovered by a critic. The "must beat the unmodified base" comparison is secondary reporting in the frozen file, not a release gate: the code marks it reporting-only and excludes it from the pass aggregation. The plan's prose says the safety gates are judged against clustered intervals; the YAML and the code say rounded means, and the YAML and the code are what runs. And the DPO stage has no preregistered gate of its own, even though the plan calls the before-and-after DPO comparison the first test of whether environment feedback improves the student beyond teacher imitation.</p>
+
+  </section>
+
+  <section>
+
+  <h2>The decision rule is code, and I can run it today</h2>
+
+  <p><code>playbook-analysis</code> is a console entry point that reads every gate, comparison, allowance, and confidence level from the frozen YAML rather than from flags. The loader refuses any contract whose status is not exactly <code>frozen</code>. Pending means null in code: while teacher selection is <code>pending_owner_approval</code>, the <code>teacher_model</code> field must remain null, and there are tests named for the smuggling attempt they prevent. A missing metric column raises rather than defaulting to zero, on the stated principle that a release gate must not silently score an absent column as a perfect result.</p>
+
+  <p>Because it is code, I can demonstrate the machinery on real rows, and I want to be precise that this is a machinery demonstration, not the experiment. Neither trained condition exists. I fed the preregistered estimator the only paired data that exists today: the GPT-5.6-terra and Claude Haiku 4.5 scorecards, single seed, same twelve public dev matters, pre-revision instrument. On critical-failure rate (terra 0.000, Haiku 0.250), the one-sided 95% upper bound on the difference is \(-0.0833\). That is the gate's exact form, and it fires; the two-sided interval on the same rows is \([-0.5, 0.0]\) and touches zero, so even here the ordering is suggestive rather than settled. On normalized score, terra's advantage is 13.8 points, and the two-sided 95% interval is \([-0.0448, 0.3055]\): twelve families cannot settle even a 14-point score gap. There is also a floor built into the arithmetic: on the dev split every family is a singleton, and if the treatment is failure-free, the one-sided gate can only fire when the chance of resampling none of the failing families falls below 5%, which needs at least three critically-failing control families, since \((1 - m/F)^F \to e^{-m}\) and \(e^{-3} \approx 0.0498\). That is the quantitative reason the frozen contract targets 15 to 30 sealed families and 50 to 100 episodes rather than twelve, and why the plan writes down that a floor-effect metric cannot demonstrate improvement. The demonstration is committed: <code>scripts/bootstrap_demo.py</code>, with its resample distribution at <code>results/bootstrap-demo/2026-08-19-terra-vs-haiku.json</code>.</p>
+
+  <figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" preserveAspectRatio="xMidYMid meet" role="img" style="width:100%;height:auto;display:block">
+  <title>Family-clustered bootstrap distribution of the terra minus Haiku critical-failure-rate difference</title>
+  <desc>Histogram of 2,000 cluster-bootstrap resamples of the difference in critical-failure rate between gpt-5.6-terra and claude-haiku-4.5 over 12 dev matter families. Every resampled difference falls at or below 0: 3 at -0.75, 8 at -0.6667, 29 at -0.5833, 65 at -0.50, 199 at -0.4167, 420 at -0.3333, 503 at -0.25, 459 at -0.1667, 250 at -0.0833 and 64 at exactly 0. Bins are centred on the attainable values and clipped to the observed range -0.75 to 0, so the histogram stops at the zero line. The point estimate is -0.25 and the one-sided 95% upper bound is -0.0833, which sits clear of zero. Machinery demonstration only, not the Playbook-1 experiment.</desc>
+  <rect x="0" y="0" width="860" height="500" fill="#f7f5f0"/>
+  <g font-family="ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace">
+
+  <!-- header -->
+  <text x="90" y="32" fill="#1a1916" font-size="15">terra &#8722; Haiku critical-failure-rate difference: 2,000 bootstrap resamples</text>
+  <text x="90" y="53" fill="#8a857a" font-size="12">machinery demonstration - not the experiment: 2,000 resamples over 12 dev families</text>
+  <text x="90" y="72" fill="#8a857a" font-size="11">bar height = resample count; the resamples span &#8722;0.75 to 0, and 1,936 of 2,000 fall strictly below 0</text>
+
+  <!-- histogram bars: one bin per attainable value, k/12 for k = -9 .. 0,
+       bins centred on the value and clipped to the observed range -0.75 .. 0 -->
+  <g fill="#b5b3af">
+  <rect x="126" y="388.57" width="35" height="1.43"/>
+  <rect x="163" y="386.18" width="70" height="3.82"/>
+  <path d="M235 390 L235 379.16 Q235 376.16 238 376.16 L302 376.16 Q305 376.16 305 379.16 L305 390 Z"/>
+  <path d="M307 390 L307 361.99 Q307 358.99 310 358.99 L374 358.99 Q377 358.99 377 361.99 L377 390 Z"/>
+  <path d="M379 390 L379 298.05 Q379 295.05 382 295.05 L446 295.05 Q449 295.05 449 298.05 L449 390 Z"/>
+  <path d="M451 390 L451 192.60 Q451 189.60 454 189.60 L518 189.60 Q521 189.60 521 192.60 L521 390 Z"/>
+  <path d="M523 390 L523 153.00 Q523 150.00 526 150.00 L590 150.00 Q593 150.00 593 153.00 L593 390 Z"/>
+  <path d="M595 390 L595 174.00 Q595 171.00 598 171.00 L662 171.00 Q665 171.00 665 174.00 L665 390 Z"/>
+  <path d="M667 390 L667 273.72 Q667 270.72 670 270.72 L734 270.72 Q737 270.72 737 273.72 L737 390 Z"/>
+  <path d="M739 390 L739 362.46 Q739 359.46 742 359.46 L771 359.46 Q774 359.46 774 362.46 L774 390 Z"/>
+  </g>
+
+  <!-- selective bin labels -->
+  <text x="558" y="142" fill="#1a1916" font-size="12" text-anchor="middle">503</text>
+  <text x="757" y="351" fill="#1a1916" font-size="12" text-anchor="middle">64</text>
+
+  <!-- zero reference -->
+  <line x1="774" y1="136" x2="774" y2="390" stroke="#d8d4ca" stroke-width="1"/>
+  <text x="774" y="128" fill="#8a857a" font-size="11" text-anchor="middle">0</text>
+
+  <!-- one-sided 95% upper bound -->
+  <line x1="702" y1="136" x2="702" y2="398" stroke="#b3372c" stroke-width="2"/>
+  <circle cx="702" cy="136" r="3" fill="#b3372c"/>
+  <text x="692" y="112" fill="#8a857a" font-size="11" text-anchor="end">one-sided 95% upper bound</text>
+  <text x="692" y="128" fill="#1a1916" font-size="13" text-anchor="end">&#8722;0.0833</text>
+
+  <!-- value axis -->
+  <line x1="118" y1="390" x2="790" y2="390" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="126" y1="390" x2="126" y2="396" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="342" y1="390" x2="342" y2="396" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="774" y1="390" x2="774" y2="396" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="558" y1="390" x2="558" y2="402" stroke="#1a1916" stroke-width="2"/>
+  <text x="126" y="414" fill="#8a857a" font-size="11" text-anchor="middle">&#8722;0.75</text>
+  <text x="342" y="414" fill="#8a857a" font-size="11" text-anchor="middle">&#8722;0.50</text>
+  <text x="558" y="414" fill="#1a1916" font-size="11" text-anchor="middle">&#8722;0.25</text>
+  <text x="774" y="414" fill="#8a857a" font-size="11" text-anchor="middle">0</text>
+  <text x="558" y="430" fill="#8a857a" font-size="11" text-anchor="middle">point estimate</text>
+  <text x="450" y="456" fill="#8a857a" font-size="11" text-anchor="middle">difference in critical-failure rate (gpt-5.6-terra &#8722; claude-haiku-4.5)</text>
+
+  <text x="90" y="480" fill="#8a857a" font-size="11">estimator playbook_legal.metrics.cluster_bootstrap_difference &#183; unit matter_family &#183; seed 0</text>
+  </g>
+  </svg>
+  <figcaption>Histogram of 2,000 family-clustered bootstrap resamples of the terra-minus-Haiku critical-failure-rate difference, with the one-sided 95% bound at -0.0833 and zero marked</figcaption>
+  </figure>
+
+  <p>Precision about the word <em>preregistered</em>. The contract was frozen before any record was reviewed or approved for training use: the one dataset build that predates it is labeled, in the repository, pipeline validation and not training data. It was not frozen before all measurement: the contract file, the first dev-split baselines, and the first rollout pilot landed in the same commit, and the student was chosen after seeing those baselines. The contract has been touched exactly twice in git history, and the second change touched only the execution block; the scientific block has not moved since it was written. The release post is already written in full, with literal placeholders that the frozen gates must fill. It stays in a private working directory until it publishes, which is the one link in this chain you have to take on trust. And here, before the run, I am committing to the stronger version: if the gates do not clear, there is no model release, and the filled-in numbers publish anyway, in the same slots.</p>
+
+  </section>
+
+  <section>
+
+  <h2>What is not decided, and what the pilots say</h2>
+
+  <p>The teacher is null (<code>teacher_model_selection_status: pending_owner_approval</code>), and the note in the frozen file still names "a 70B-class open-weight teacher behind a hosted API," which neither piloted candidate quite fits.</p>
+
+  <p>Three pilots inform that decision without making it. Eight candidate episodes per teacher: four variants by two seeds, one temperature, one prompt, train split, no confidence interval on either pilot summary, and seed-to-seed spread on a single variant reached 0.73 normalized, larger than the gap between the two scaffolded teachers' means. With that deflation stated first: an unscaffolded Qwen2.5-32B produced 0 of 8 candidate episodes above the 0.5 normalized-score bar. With a scaffolded workflow prompt whose SHA-256 is recorded in both summaries, DeepSeek-V3.2 cleared 6 of 8 (mean 0.509) and Qwen3-235B cleared 2 of 8 (mean 0.378), against reference replays of 0.969 to 1.000 on the same four variants: references that are the answer key replaying itself, and means that mix a clamped 0.000 with a 0.25 critical cap, so they are not arithmetic on a continuous quality scale. The 32B comparison changed the model, the prompt, and the serving path at once, so the scaffold's own contribution is not isolated. What is visible: all sixteen scaffolded episodes read every available document; DeepSeek asked client questions in all eight episodes and ran 24 to 30 steps (it hit the 30-step budget twice, so that is a lower bound) where the unscaffolded 32B averaged 8.5 and asked none.</p>
+
+  <p>A candidate trajectory survives only if it passes four stages in order (completed without truncation, critical-failure-free, bit-exact replay-verified, and at or above the 0.5 score bar):</p>
+
+  <div class="eq">$$y = \frac{S_4}{S_0}, \qquad \kappa = \frac{\text{spend}}{S_4},$$</div>
+
+  <p>and when \(S_4 = 0\), as it was for the 32B, the cost per usable trajectory is not a large number. It is undefined. "Cleared the fabrication trap" also deserves its exact meaning: it put no non-verbatim string in the <code>quotes[]</code> field; an identical fabricated attribution asserted in analysis prose is not gated at all, which the repository calls the cheapest available reward hack in the environment today. What still fails is instructive: every critical failure across both scaffolded teachers was a verbatim-verifier catch on an invented quotation, and seven of DeepSeek's eight episodes asserted at least one unsupported issue while only one fabricated a quote.</p>
+
+  <figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 520" preserveAspectRatio="xMidYMid meet" role="img" style="width:100%;height:auto;display:block">
+  <title>Four-stage rollout filter funnel for three teacher pilots</title>
+  <desc>Three columns of descending bars, one per teacher, over the four filter stages applied to 8 candidate episodes each. Qwen2.5-32B unscaffolded: 8 candidates, 8 completed, 6 critical-free, 6 replay-verified, 0 above the 0.5 score bar, a 0% yield. Qwen3-235B scaffolded: 8, 8, 5, 5, 2, a 25% yield. DeepSeek-V3.2 scaffolded: 8, 7, 7, 7, 6, a 75% yield. The unscaffolded teacher survives every mechanical filter and then loses all six survivors at the score bar; the two scaffolded teachers lose candidates at different earlier stages. Pipeline validation only, not training data.</desc>
+  <rect x="0" y="0" width="880" height="520" fill="#f7f5f0"/>
+  <g font-family="ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace">
+
+  <!-- header -->
+  <text x="40" y="30" fill="#1a1916" font-size="15">Where each teacher loses its 8 candidate episodes</text>
+  <text x="40" y="51" fill="#8a857a" font-size="12">pipeline validation only - not training data; teacher selection still pending owner approval</text>
+
+  <!-- column headers: swatch + name, so identity is never colour alone -->
+  <rect x="246" y="82" width="10" height="10" fill="#b3372c"/>
+  <text x="262" y="91" fill="#1a1916" font-size="12">Qwen2.5-32B</text>
+  <text x="262" y="107" fill="#8a857a" font-size="11">unscaffolded</text>
+
+  <rect x="452" y="82" width="10" height="10" fill="#28588c"/>
+  <text x="468" y="91" fill="#1a1916" font-size="12">Qwen3-235B</text>
+  <text x="468" y="107" fill="#8a857a" font-size="11">scaffolded</text>
+
+  <rect x="658" y="82" width="10" height="10" fill="#79913a"/>
+  <text x="674" y="91" fill="#1a1916" font-size="12">DeepSeek-V3.2</text>
+  <text x="674" y="107" fill="#8a857a" font-size="11">scaffolded</text>
+
+  <line x1="40" y1="120" x2="840" y2="120" stroke="#d8d4ca" stroke-width="1"/>
+
+  <!-- per-column baselines (0) and full-cohort reference (8 candidates) -->
+  <g stroke="#d8d4ca" stroke-width="1">
+  <line x1="246" y1="134" x2="246" y2="392"/><line x1="406" y1="134" x2="406" y2="392"/>
+  <line x1="452" y1="134" x2="452" y2="392"/><line x1="612" y1="134" x2="612" y2="392"/>
+  <line x1="658" y1="134" x2="658" y2="392"/><line x1="818" y1="134" x2="818" y2="392"/>
+  </g>
+
+  <!-- stage labels -->
+  <g fill="#8a857a" font-size="11" text-anchor="end">
+  <text x="206" y="154">candidates</text>
+  <text x="206" y="210">completed</text>
+  <text x="206" y="266">critical-free</text>
+  <text x="206" y="322">replay-verified</text>
+  </g>
+  <text x="206" y="386" fill="#1a1916" font-size="12" text-anchor="end">score &#8805; 0.5</text>
+
+  <!-- stage 1: candidates generated (8 / 8 / 8) -->
+  <g>
+  <path d="M246 143 L403 143 Q406 143 406 146 L406 154 Q406 157 403 157 L246 157 Z" fill="#b3372c"/>
+  <path d="M452 143 L609 143 Q612 143 612 146 L612 154 Q612 157 609 157 L452 157 Z" fill="#28588c"/>
+  <path d="M658 143 L815 143 Q818 143 818 146 L818 154 Q818 157 815 157 L658 157 Z" fill="#79913a"/>
+  </g>
+  <g fill="#1a1916" font-size="12">
+  <text x="414" y="154">8</text><text x="620" y="154">8</text><text x="826" y="154">8</text>
+  </g>
+
+  <!-- stage 2: completed (8 / 8 / 7) -->
+  <g>
+  <path d="M246 199 L403 199 Q406 199 406 202 L406 210 Q406 213 403 213 L246 213 Z" fill="#b3372c"/>
+  <path d="M452 199 L609 199 Q612 199 612 202 L612 210 Q612 213 609 213 L452 213 Z" fill="#28588c"/>
+  <path d="M658 199 L795 199 Q798 199 798 202 L798 210 Q798 213 795 213 L658 213 Z" fill="#79913a"/>
+  </g>
+  <g fill="#1a1916" font-size="12">
+  <text x="414" y="210">8</text><text x="620" y="210">8</text><text x="806" y="210">7</text>
+  </g>
+
+  <!-- stage 3: critical-free (6 / 5 / 7) -->
+  <g>
+  <path d="M246 255 L363 255 Q366 255 366 258 L366 266 Q366 269 363 269 L246 269 Z" fill="#b3372c"/>
+  <path d="M452 255 L549 255 Q552 255 552 258 L552 266 Q552 269 549 269 L452 269 Z" fill="#28588c"/>
+  <path d="M658 255 L795 255 Q798 255 798 258 L798 266 Q798 269 795 269 L658 269 Z" fill="#79913a"/>
+  </g>
+  <g fill="#1a1916" font-size="12">
+  <text x="374" y="266">6</text><text x="560" y="266">5</text><text x="806" y="266">7</text>
+  </g>
+
+  <!-- stage 4: replay-verified (6 / 5 / 7) -->
+  <g>
+  <path d="M246 311 L363 311 Q366 311 366 314 L366 322 Q366 325 363 325 L246 325 Z" fill="#b3372c"/>
+  <path d="M452 311 L549 311 Q552 311 552 314 L552 322 Q552 325 549 325 L452 325 Z" fill="#28588c"/>
+  <path d="M658 311 L795 311 Q798 311 798 314 L798 322 Q798 325 795 325 L658 325 Z" fill="#79913a"/>
+  </g>
+  <g fill="#1a1916" font-size="12">
+  <text x="374" y="322">6</text><text x="560" y="322">5</text><text x="806" y="322">7</text>
+  </g>
+
+  <!-- last gate: the 0.5 normalized-score bar (0 / 2 / 6) -->
+  <line x1="40" y1="350" x2="840" y2="350" stroke="#d8d4ca" stroke-width="1"/>
+  <rect x="246" y="373" width="3" height="14" fill="#b3372c"/>
+  <path d="M452 373 L489 373 Q492 373 492 376 L492 384 Q492 387 489 387 L452 387 Z" fill="#28588c"/>
+  <path d="M658 373 L775 373 Q778 373 778 376 L778 384 Q778 387 775 387 L658 387 Z" fill="#79913a"/>
+  <g fill="#1a1916" font-size="18">
+  <text x="258" y="387">0</text><text x="504" y="387">2</text><text x="790" y="387">6</text>
+  </g>
+  <g fill="#8a857a" font-size="11">
+  <text x="258" y="405">0% yield</text><text x="504" y="405">25% yield</text><text x="790" y="405">75% yield</text>
+  </g>
+
+  <!-- caption -->
+  <text x="40" y="440" fill="#8a857a" font-size="11">n=8 candidate episodes per teacher; four variants x two seeds</text>
+  <text x="40" y="458" fill="#8a857a" font-size="11">stage tests: terminated and not truncated &#183; no critical failure &#183; bit-exact trace replay &#183; normalized_score &#8805; 0.5</text>
+  <text x="40" y="476" fill="#8a857a" font-size="11">sources: results/v0.4.0/rollout-pilot.json &#183; results/rollout-pilot-2/{qwen3-235b,deepseek-v3.2}-summary.json</text>
+  <text x="40" y="494" fill="#8a857a" font-size="11">the Qwen2.5-32B pilot predates the 0.5 bar; stage 4 recomputed from per-candidate scores (max 0.1923)</text>
+  </g>
+  </svg>
+  <figcaption>The four-stage filter funnel per teacher (candidates through completed, critical-free, replay-verified, above-bar) with the 32B ending at zero and DeepSeek at six of eight</figcaption>
+  </figure>
+
+  <p>The economics are asymmetric in a way worth stating exactly. The recorded pilot spend was $0.235 for Qwen3-235B and $0.523 for DeepSeek (about $0.087 per surviving trajectory at DeepSeek's yield), though those dollar figures are recorded assertions in the summaries, without token-level backing. The 32B pilot's $0.31 was Modal GPU rent, not API tokens, so it is not even the same kind of number. Scaling from the one measured dataset build (ten state-action records per surviving trajectory, measured on the 32B's short episodes and therefore a conservative basis for DeepSeek's longer ones), the plan's 2,000-to-5,000-record target needs 200 to 500 survivors, roughly 267 to 667 generated episodes at DeepSeek's 0.75 yield, on the order of $17 to $44 of teacher tokens. The same target implies 30 to 150-plus hours of qualified legal review at one to two minutes per record. The teacher inference for a Playbook-1-sized dataset costs less than dinner; every serious cost in this project is a lawyer's time, and no amount of cheaper inference touches it. The budget field in the contract is null and stays null until approved.</p>
+
+  <p>The frontier rows do not solve this, and the contract is explicit about why: the external-reference condition is marked <code>open_weight_teacher_reference_not_training_control</code>. Frontier rows are the ruler, not the source: I want weights I can point at, a license I can read, and a provenance line I can write into a data card.</p>
+
+  <p>The sealed evaluation corpus is unfinished. As of 2026-08-08, six families are owner-reviewed against an interim floor of ten; five more were drafted and then blocked at adversarial pre-review with ten blockers, every one reproduced twice by engine replay. The public registry ships zero sealed identifiers and zero hashes today; the mechanism to publish identifiers and SHA-256 content hashes without contents exists in code and is tested, and the artifact ships when the corpus clears review. Until then, the contract's held-out requirement is enforced by discipline, not by the CLI: the tool will not stop you from ignoring it, which is exactly the kind of sentence I would rather write about myself than read in someone else's audit.</p>
+
+  </section>
+
+  <section>
+
+  <h2>The audit happened in the right order</h2>
+
+  <p>Ordering already paid off once. In August I ran an adversarial probe against the gym's own critical-failure gates (the preregistered primary metric) before any training run existed. It replay-confirmed 84 blocker-grade and 52 major false positives across the eleven gated public matters and the variant specs, bare regexes failing correct, playbook-compliant lawyering, plus 100 cataloged dodges going the other way. The tracked summary is blunt: "the instrument currently penalizes careful lawyering more reliably than it catches careless lawyering." The fix shipped as a declared instrument revision: 116 of 121 shipped gate entries now carry structured guards, a 406-entry probe regression suite runs against the live rubrics, and the comparability note says plainly that post-revision rates are not comparable to the v0.4.0 rows without a re-run. The evidence record is published at <a href="https://github.com/jamesbaker1/playbook/blob/main/docs/instrument-audit-2026-08.md">docs/instrument-audit-2026-08.md</a>. That is uncomfortable to write, and it is the point: the primary metric got audited before any training run produced a number anyone would want to defend. Preregistration is what made the order possible.</p>
+
+  </section>
+
+  <section>
+
+  <h2>How to check me, and what would make me wrong</h2>
+
+  <p>The contract is <a href="https://github.com/jamesbaker1/playbook/blob/main/docs/playbook-1-experiment.yaml"><code>docs/playbook-1-experiment.yaml</code></a>, and its git history is two commits long. The decision rule is <code>playbook-analysis</code>, with its tests, in a suite of 1,255 at this release. The two scaffolded pilots are in <code>results/rollout-pilot-2/</code> and the 32B pilot in <code>results/v0.4.0/rollout-pilot.json</code>; the scaffold prompt is <code>training/scaffold_prompt.txt</code>, its SHA-256 recorded in both summaries. The summaries and their per-candidate digests are public, but the raw pilot traces are not in the repository, a gap in my own openness I would rather name than dress up. The same is true one level up: the v0.4.0 model rows shipped derived metrics without per-episode traces, so those baselines are not replayable by a reader today; the lawyer-authored reference is (<code>examples/*/good.jsonl</code>), and trace retention ships with the bench from here on.</p>
+
+  <p>What would make me wrong. If the one-sided upper bound does not clear zero, state-action distillation did not beat matched final-answer distillation on this metric, with this teacher, into this student. And I will say so in those words. If it clears zero while the protocol-failure secondary shows the final-answer control simply lost the ability to call tools, the win is an artifact, and the secondary exists to catch exactly that. If the sealed families lack enough temptation density that the base model's critical-failure rate sits on the floor, the comparison is uninformative rather than negative. A positive result generalizes to one teacher's trajectories, and until the post-DPO comparison runs, nothing here is evidence about reinforcement learning. Until the gates clear, the artifact is a Playbook-distilled workflow model, and I will not call it more than that.</p>
+
+  <p>This is a preregistration, not a finding. That is the only reason it is publishable today. The environment it all runs on (and the audit that bent its gates back into shape) is <a href="/blog/playbook/">the other post</a>.</p>
+
+  </section>
+
+  <p class="foot">james baker, <time datetime="2026-08-19">august 19, 2026</time> · <a href="https://github.com/jamesbaker1/playbook">the gym is open source</a> · <a href="mailto:james@deskofjim.com">james@deskofjim.com</a></p>
+</main>
+</body>
+</html>

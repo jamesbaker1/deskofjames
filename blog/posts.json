@@ -3,6 +3,22 @@
   "generated": "2026-07-30T04:05:25Z",
   "posts": [
     {
+      "title": "A deal gym where the score is a computation",
+      "url": "https://deskofjim.com/blog/playbook/",
+      "date": "2026-08-19",
+      "subtitle": "twelve synthetic matters, a scripted counterparty, 121 deterministic gates, five measured models, and the adversarial audit that found 84 blocker-grade false positives in my own instrument",
+      "slug": "playbook",
+      "local": true
+    },
+    {
+      "title": "Playbook-1, specified before it exists",
+      "url": "https://deskofjim.com/blog/playbook-1/",
+      "date": "2026-08-19",
+      "subtitle": "a frozen contract, release gates that are tested code, three teacher pilots, one bootstrap demonstration that says how hard the bar is, and no trained model. the claim comes before the run",
+      "slug": "playbook-1",
+      "local": true
+    },
+    {
       "title": "Not your compute, not your model",
       "url": "https://deskofjim.com/blog/compute/",
       "date": "2026-08-19",

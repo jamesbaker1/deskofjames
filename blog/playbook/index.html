@@ -1,0 +1,599 @@
+<!doctype html>
+<!-- every number below is copied from the playbook repo's own reports; the figures are the
+     committed svgs, inlined so the page stands alone. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>a deal gym where the score is a computation</title>
+<link rel="canonical" href="https://deskofjim.com/blog/playbook/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="description" content="twelve synthetic matters, a scripted counterparty, 121 deterministic gates, five measured models, and the adversarial audit that found 84 blocker-grade false positives in my own instrument">
+
+<meta property="og:title" content="A deal gym where the score is a computation">
+<meta property="og:description" content="twelve synthetic matters, a scripted counterparty, 121 deterministic gates, five measured models, and the adversarial audit that found 84 blocker-grade false positives in my own instrument">
+<meta property="og:image" content="https://deskofjim.com/og.png">
+<meta property="og:url" content="https://deskofjim.com/blog/playbook/">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.4/dist/katex.min.css" integrity="sha384-u1zONI5gPXUx0UKI62c75/zww972y0v2rSK5ZYlVdS6xEuWDeZWUI66v6t1gvlXJ" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.4/dist/katex.min.js" integrity="sha384-ykMNcWQhhTUb0YV9SPpPUFURHZ+tWmubkakGBP+OgNK/UXdO2gtzglWx0Rj9hnO3" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.4/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous" onload="renderMathInElement(document.querySelector('main'), {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+<style>
+  :root {
+    --ink: #1a1916;
+    --paper: #f7f5f0;
+    --faint: #8a857a;
+    --rule: #d8d4ca;
+    --accent: #b3372c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, monospace;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 4.5rem 1.25rem 6rem; }
+  h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em; }
+  .sub { color: var(--faint); margin-top: 0.3rem; }
+  section { margin-top: 3.2rem; }
+  h2 { font-size: 0.85rem; font-weight: 600; color: var(--faint); margin-bottom: 1rem; text-transform: lowercase; }
+  p { margin-bottom: 0.9rem; max-width: 40rem; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+  code { font-size: 0.92em; }
+
+  figure { margin: 1.4rem 0 0.6rem; }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption { color: var(--faint); font-size: 0.8rem; margin-top: 0.45rem; max-width: 40rem; }
+
+  /* display math keeps the rule-above, rule-below treatment the equations elsewhere use */
+  .eq {
+    padding: 1rem 0 1.1rem;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 1.4rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .katex { font-size: 1.02em; }
+  .katex-display { margin: 0; }
+
+  .tablewrap { overflow-x: auto; margin: 0.4rem 0 0.9rem; }
+  table { border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  th, td { text-align: left; padding: 0.28rem 1.4rem 0.28rem 0; font-weight: 400; }
+  thead th { color: var(--faint); border-bottom: 1px solid var(--rule); }
+
+  .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
+  .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <p class="note"><a href="/blog/">← blog</a></p>
+  <h1>a deal gym where the score is a computation</h1>
+  <p class="sub">twelve synthetic matters, a scripted counterparty, 121 deterministic gates, five measured models, and the adversarial audit that found 84 blocker-grade false positives in my own instrument</p>
+
+  <section>
+
+  <p>Hand a model a synthetic SaaS master services agreement, its data processing addendum, a set of professional instructions, and the client's negotiation playbook. Tell it that it may ask the client up to four questions before it commits to a position. Then watch what it spends them on.</p>
+
+  <p>Claude Haiku 4.5 spends 0.58 of them. GPT-5.6-terra spends 0.42 (one seed of twelve episodes each).</p>
+
+  <p>Across the rows I have measured on twelve public matters, question recall against an expert-authored reference is 0.083 for Claude Haiku 4.5, 0.056 for GPT-5.6-terra, 0.021 for Qwen2.5-7B-Instruct, and exactly 0.000 for Qwen2.5-14B and Qwen2.5-32B. The reference asks 2.67 questions per matter and recalls 0.958 of the ones that matter. No measured model, at any scale, from any lab, treats fact gathering as part of the job. Two qualifiers before anything else: all of this is the public development split, so read every ordering here as indicative rather than settled. And there is no human baseline anywhere in this project: the "expert reference" is a lawyer-authored trajectory replayed through the scorer, a ceiling, not a measured person.</p>
+
+  <figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 430" preserveAspectRatio="xMidYMid meet" role="img" style="width:100%;height:auto;display:block">
+  <title>Client questions asked per matter, v0.4.0 dev split</title>
+  <desc>Horizontal bar chart of mean client questions asked per matter. The expert reference replay asks 2.67; every measured model asks between 0.25 and 1.47, all far short of the 3 to 4 question budget marked on the axis.</desc>
+  <rect x="0" y="0" width="880" height="430" fill="#f7f5f0"/>
+  <g font-family="ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace" font-size="12">
+  <text x="48" y="34" fill="#8a857a" font-size="12">client questions asked per matter, v0.4.0 dev split</text>
+  <rect x="642.00" y="96.00" width="130.67" height="264.00" fill="#d8d4ca" fill-opacity="0.70"/>
+  <text x="707.33" y="84" fill="#8a857a" font-size="11" text-anchor="middle">question budget (3-4 per matter)</text>
+  <line x1="380.67" y1="96.00" x2="380.67" y2="360.00" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="511.33" y1="96.00" x2="511.33" y2="360.00" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="642.00" y1="96.00" x2="642.00" y2="360.00" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="772.67" y1="96.00" x2="772.67" y2="360.00" stroke="#d8d4ca" stroke-width="1"/>
+  <text x="228" y="122.00" fill="#1a1916" text-anchor="end">Expert reference (replay)</text>
+  <path d="M250.00 109.00 H594.44 Q598.44 109.00 598.44 113.00 V123.00 Q598.44 127.00 594.44 127.00 H250.00 Z" fill="#b3372c"/>
+  <text x="608.44" y="122.00" fill="#1a1916">2.67</text>
+  <text x="228" y="166.00" fill="#1a1916" text-anchor="end">GPT-5.6-terra</text>
+  <path d="M250.00 153.00 H300.44 Q304.44 153.00 304.44 157.00 V167.00 Q304.44 171.00 300.44 171.00 H250.00 Z" fill="#1a1916"/>
+  <text x="314.44" y="166.00" fill="#1a1916">0.42</text>
+  <text x="228" y="210.00" fill="#1a1916" text-anchor="end">Claude Haiku 4.5</text>
+  <path d="M250.00 197.00 H322.22 Q326.22 197.00 326.22 201.00 V211.00 Q326.22 215.00 322.22 215.00 H250.00 Z" fill="#1a1916"/>
+  <text x="336.22" y="210.00" fill="#1a1916">0.58</text>
+  <text x="228" y="254.00" fill="#1a1916" text-anchor="end">Qwen2.5-32B-Instruct</text>
+  <path d="M250.00 241.00 H278.67 Q282.67 241.00 282.67 245.00 V255.00 Q282.67 259.00 278.67 259.00 H250.00 Z" fill="#1a1916"/>
+  <text x="292.67" y="254.00" fill="#1a1916">0.25</text>
+  <text x="228" y="298.00" fill="#1a1916" text-anchor="end">Qwen2.5-14B-Instruct</text>
+  <path d="M250.00 285.00 H278.67 Q282.67 285.00 282.67 289.00 V299.00 Q282.67 303.00 278.67 303.00 H250.00 Z" fill="#1a1916"/>
+  <text x="292.67" y="298.00" fill="#1a1916">0.25</text>
+  <text x="228" y="342.00" fill="#1a1916" text-anchor="end">Qwen2.5-7B-Instruct</text>
+  <path d="M250.00 329.00 H438.37 Q442.37 329.00 442.37 333.00 V343.00 Q442.37 347.00 438.37 347.00 H250.00 Z" fill="#1a1916"/>
+  <text x="452.37" y="342.00" fill="#1a1916">1.47</text>
+  <line x1="250.00" y1="360.00" x2="838.00" y2="360.00" stroke="#d8d4ca" stroke-width="1"/>
+  <text x="250.00" y="380" fill="#8a857a" font-size="11" text-anchor="middle">0</text>
+  <text x="380.67" y="380" fill="#8a857a" font-size="11" text-anchor="middle">1</text>
+  <text x="511.33" y="380" fill="#8a857a" font-size="11" text-anchor="middle">2</text>
+  <text x="642.00" y="380" fill="#8a857a" font-size="11" text-anchor="middle">3</text>
+  <text x="772.67" y="380" fill="#8a857a" font-size="11" text-anchor="middle">4</text>
+  <text x="48" y="398" fill="#8a857a" font-size="11">pooled over 12 matters; Qwen2.5-14B and 7B pool 3 seeds (36 episodes each), 12 episodes for the rest</text>
+  <text x="48" y="416" fill="#8a857a" font-size="11">the expert reference is a replay of expert traces, not a model under test</text>
+  </g></svg>
+  <figcaption>Questions asked per matter, by model, against a budget of three to four and the reference's 2.67: every model bar falls short of the budget, from 0.25 to 1.47 against three to four</figcaption>
+  </figure>
+
+  <p>The second thing a lawyer recognizes is the concession. One matter sends the agent into a live negotiation carrying a client non-negotiable: notice of a security incident within 24 hours of discovery. The counterparty resists once. One scripted counter, verbatim from the file: "Our security organization cannot commit to a discovery trigger; discovery is a judgement call made by a duty engineer at three in the morning. What we can do is move from 72 hours to 48 hours after confirmation. That is a real concession and it is faster than what our largest accounts have." Forty-eight sounds like movement from seventy-two. It keeps the confirmation trigger the client playbook forbids. Exactly one run in the whole campaign closed on it. The wider pattern is duller and worse: on the buyer-side acquisition matter, five of seven open-weight runs gave away a point the client had reserved. The report calls it a systematic blind spot, not a coin flip.</p>
+
+  <p>The third is fabrication. Claude Haiku 4.5 produced four fabricated quotations across twelve episodes (every one of its three critical episodes contained one), and two of the four came from a single fifteen-step episode on an inbound source-license matter. The model quoted contract language that is not in the file.</p>
+
+  <p>None of these are knowledge failures. A model that can explain a liability supercap in the abstract still hands back a markup built on a sentence that does not exist in the document it cites. This post is mostly about the instrument rather than the models, because the instrument is the part I am asking you to trust, and the honest way to earn that is to show you where it broke.</p>
+
+  </section>
+
+  <section>
+
+  <h2>The loop, and what is scored</h2>
+
+  <p><a href="https://github.com/jamesbaker1/playbook">Playbook</a> is a gym in the reinforcement-learning sense: a partially observable environment with a Gymnasium-shaped step interface, budgets, and a reward function. An episode is a matter, and every matter is synthetic. The agent reads documents, spends a budget of client questions, submits issues anchored to the provision they target, proposes redlines, escalates what exceeds its authority, negotiates against a scripted counterparty where the matter has one, and files a final summary. There are eleven action types: nine available on every matter, plus <code>send_markup</code> and <code>accept_counterparty</code> on the three matters that ship a counterparty. Nine of the twelve matters cap the episode at thirty steps and three at thirty-four; ten allow four client questions and two allow three; escalations are budgeted at two by default and one on the two M&amp;A matters. Over-escalating costs real budget, because the professional cost of crying wolf is exactly that you cannot cry it again.</p>
+
+  <p>Formally, a matter defines a POMDP whose hidden state holds the rubric \(\rho\), the client's hidden facts \(F\), and the counterparty script \(\kappa\); the observation function never emits any of them, or any scoring detail:</p>
+
+  <div class="eq">$$o_t = \Omega(s_t), \qquad \rho \not\subseteq o_t,\quad F \not\subseteq o_t,\quad \kappa \not\subseteq o_t.$$</div>
+
+  <p>Hidden facts exist for the agent only once the right question is asked. The transition is a total function (no distribution, the counterparty included), so the whole episode is deterministic in the action sequence. The seed changes nothing inside the environment (it is recorded, and forwarded to the model's sampler, which is the only stochastic component in the loop):</p>
+
+  <div class="eq">$$\Phi(m, \varsigma, a_{1:T}) = \Phi(m, \varsigma', a_{1:T}) \quad \text{for all } \varsigma, \varsigma'.$$</div>
+
+  <p>Credit is earned by content, not by guessing rubric internals. Each rubric issue declares a unique anchor (the operative provision), and the first of the agent's resolvable citations that hits an anchor decides the match, provided the agent has actually read that provision. A matched issue, together with the redline that answers it, earns (at the engine's default weights; a rubric may reset any of them, and on the shipped corpus base points run 0.75 to 1.25 while twenty of the fifty-one issues carry no redline credit)</p>
+
+  <div class="eq">$$p = 1.0 + 0.25\,\mathbb{1}[\text{severity}] + 0.25\,\mathbb{1}[\text{citations}] + 0.5\,f_{\text{concept}} + 0.25\,\mathbb{1}[\text{verified quote}] + 1.0\,f_{\text{redline}} - 0.75\,n_{\text{invalid}},$$</div>
+
+  <p>with a settlement term on top for the negotiation matters. An unmatched issue costs 0.5 plus 0.75 per unresolvable citation. Quotations are verified by whitespace-normalized, case-insensitive containment in the section actually cited. Anything under fifteen characters is refused verification at a quarter-point cost, and an unverifiable quotation costs a full point on top of the gate it trips. Which brings us to the gates. A fabricated quotation, an unauthorized concession, or an accepted trap counter does not shade the average down; it caps the episode:</p>
+
+  <div class="eq">$$s = \begin{cases} \operatorname{clip}_{[0,1]}\!\left(R / R_{\max}\right), &amp; \text{no critical failure},\\[1.2ex] \min\!\Big(\operatorname{clip}_{[0,1]}\!\left(R / R_{\max}\right),\; 0.25\Big), &amp; \text{critical failure}. \end{cases}$$</div>
+
+  <p>That 0.25 is declared by all twelve public rubrics, and it is the design compressed into one line: polish cannot rescue fabrication. The cap is an operator, not a rescoring: a fabricated quotation also costs a raw point, but the point is beside the point once the ceiling drops to 0.25. Which raises the bar on the instrument itself: a cap that fires on the wrong sentence is not a rounding error. It is a wrong answer about the agent, and I have to be able to prove it fired correctly.</p>
+
+  <figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 660" role="img" aria-labelledby="episode-loop-fig1-title episode-loop-fig1-desc" font-family="ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace">
+    <title id="episode-loop-fig1-title">One episode in the Playbook legal gym: the matter package, eleven agent actions, and the scoring surfaces that produce a normalized score capped by the critical gate.</title>
+    <desc id="episode-loop-fig1-desc">Left: the matter package. Its documents are readable; hidden_facts.yaml (F), counterparty.yaml (kappa) and rubric.yaml (rho) are never observed. Middle: the agent's eleven actions in six groups (investigate, ask, work product, authority, negotiation, close) with their per-matter budgets, one action per step. Right: four scoring surfaces feed a raw score R, which is normalized by clip of R over max_score, then capped at 0.25 if any critical gate fires.</desc>
+
+    <defs>
+      <pattern id="episode-loop-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="8" stroke="#d8d4ca" stroke-width="1"/>
+      </pattern>
+      <marker id="episode-loop-ink-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1 L9,5 L0,9 z" fill="#1a1916"/>
+      </marker>
+      <marker id="episode-loop-faint-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1 L9,5 L0,9 z" fill="#8a857a"/>
+      </marker>
+    </defs>
+
+    <rect x="0" y="0" width="1240" height="660" fill="#f7f5f0"/>
+
+    <!-- ============================================================= header -->
+    <text x="40" y="38" font-size="15" fill="#1a1916">One episode in the Playbook legal gym</text>
+    <text x="40" y="60" font-size="11" fill="#8a857a">matters/&lt;matter_id&gt;/  ·  src/playbook_legal/schemas.py  ·  src/playbook_legal/rewards.py</text>
+
+    <!-- =================================================== A: matter package -->
+    <text x="40" y="92" font-size="11" fill="#8a857a" letter-spacing="0.08em">MATTER PACKAGE</text>
+
+    <rect x="40" y="104" width="280" height="92" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="56" y="128" font-size="12" fill="#1a1916">documents/ · readable</text>
+    <text x="56" y="150" font-size="11" fill="#8a857a">instructions · playbook</text>
+    <text x="56" y="168" font-size="11" fill="#8a857a">msa · dpa</text>
+    <text x="56" y="188" font-size="11" fill="#8a857a">read_document · search_matter</text>
+
+    <rect x="40" y="216" width="280" height="188" fill="#f7f5f0"/>
+    <rect x="40" y="216" width="280" height="188" fill="url(#episode-loop-hatch)"/>
+    <rect x="40" y="216" width="280" height="188" fill="none" stroke="#8a857a" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="56" y="240" font-size="11" fill="#8a857a" letter-spacing="0.08em">HIDDEN · NEVER OBSERVED</text>
+    <text x="56" y="266" font-size="12" fill="#1a1916">hidden_facts.yaml   F</text>
+    <text x="56" y="284" font-size="11" fill="#8a857a">revealed only by ask_client</text>
+    <text x="56" y="312" font-size="12" fill="#1a1916">counterparty.yaml   κ</text>
+    <text x="56" y="330" font-size="11" fill="#8a857a">deterministic replies to</text>
+    <text x="56" y="346" font-size="11" fill="#8a857a">send_markup</text>
+    <text x="56" y="374" font-size="12" fill="#1a1916">rubric.yaml         ρ</text>
+    <text x="56" y="392" font-size="11" fill="#8a857a">anchors · concepts · gates</text>
+
+    <!-- A -> B -->
+    <text x="360" y="136" font-size="11" fill="#8a857a" text-anchor="middle">observation</text>
+    <line x1="322" y1="150" x2="392" y2="150" stroke="#1a1916" stroke-width="1" marker-end="url(#episode-loop-ink-arrow)"/>
+
+    <!-- ============================================================ B: agent -->
+    <text x="400" y="92" font-size="11" fill="#8a857a" letter-spacing="0.08em">AGENT · 11 ACTIONS, ONE PER STEP</text>
+
+    <rect x="400" y="104" width="400" height="396" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="400" y1="164" x2="800" y2="164" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="400" y1="232" x2="800" y2="232" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="400" y1="292" x2="800" y2="292" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="400" y1="362" x2="800" y2="362" stroke="#d8d4ca" stroke-width="1"/>
+    <line x1="400" y1="438" x2="800" y2="438" stroke="#d8d4ca" stroke-width="1"/>
+
+    <text x="416" y="132" font-size="11" fill="#8a857a">investigate</text>
+    <text x="516" y="132" font-size="12" fill="#1a1916">read_document</text>
+    <text x="516" y="152" font-size="12" fill="#1a1916">search_matter</text>
+
+    <text x="416" y="190" font-size="11" fill="#8a857a">ask</text>
+    <text x="516" y="190" font-size="12" fill="#1a1916">ask_client</text>
+    <text x="516" y="208" font-size="11" fill="#8a857a">maximum_client_questions:</text>
+    <text x="516" y="224" font-size="11" fill="#8a857a">4 (ten matters) · 3 (two)</text>
+
+    <text x="416" y="260" font-size="11" fill="#8a857a">work product</text>
+    <text x="516" y="260" font-size="12" fill="#1a1916">submit_issue   revise_issue</text>
+    <text x="516" y="280" font-size="12" fill="#1a1916">propose_redline   revise_redline</text>
+
+    <text x="416" y="320" font-size="11" fill="#8a857a">authority</text>
+    <text x="516" y="320" font-size="12" fill="#1a1916">escalate</text>
+    <text x="516" y="338" font-size="11" fill="#8a857a">maximum_escalations:</text>
+    <text x="516" y="354" font-size="11" fill="#8a857a">2 (one) · 1 (two) · unset on nine</text>
+
+    <text x="416" y="390" font-size="11" fill="#8a857a">negotiation</text>
+    <text x="516" y="390" font-size="12" fill="#1a1916">send_markup</text>
+    <text x="516" y="410" font-size="12" fill="#1a1916">accept_counterparty</text>
+    <text x="516" y="428" font-size="11" fill="#8a857a">only when counterparty.yaml ships</text>
+
+    <text x="416" y="470" font-size="11" fill="#8a857a">close</text>
+    <text x="516" y="470" font-size="12" fill="#1a1916">submit_final</text>
+
+    <text x="404" y="528" font-size="11" fill="#8a857a">maximum_steps: 30 (nine matters) · 34 (three)</text>
+
+    <!-- the loop -->
+    <path d="M800,462 L826,462 L826,560 L374,560 L374,462 L392,462" fill="none" stroke="#8a857a" stroke-width="1" marker-end="url(#episode-loop-faint-arrow)"/>
+    <text x="600" y="582" font-size="11" fill="#8a857a" text-anchor="middle">env applies the action → new observation → next step</text>
+
+    <!-- B -> C -->
+    <text x="830" y="136" font-size="11" fill="#8a857a" text-anchor="middle">actions</text>
+    <line x1="802" y1="150" x2="852" y2="150" stroke="#1a1916" stroke-width="1" marker-end="url(#episode-loop-ink-arrow)"/>
+
+    <!-- ========================================================= C: scoring -->
+    <text x="860" y="92" font-size="11" fill="#8a857a" letter-spacing="0.08em">SCORING SURFACES</text>
+
+    <rect x="860" y="104" width="340" height="216" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="876" y="130" font-size="12" fill="#1a1916">issues</text>
+    <text x="876" y="148" font-size="11" fill="#8a857a">credited by anchor citation</text>
+    <text x="876" y="178" font-size="12" fill="#1a1916">questions · escalations</text>
+    <text x="876" y="196" font-size="11" fill="#8a857a">matched by concept phrases</text>
+    <text x="876" y="226" font-size="12" fill="#1a1916">quotes</text>
+    <text x="876" y="244" font-size="11" fill="#8a857a">verbatim in the cited section</text>
+    <text x="876" y="274" font-size="12" fill="#1a1916">settlements</text>
+    <text x="876" y="292" font-size="11" fill="#8a857a">counterparty close vs. concepts</text>
+
+    <line x1="1030" y1="320" x2="1030" y2="344" stroke="#1a1916" stroke-width="1" marker-end="url(#episode-loop-ink-arrow)"/>
+
+    <rect x="860" y="346" width="340" height="56" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="876" y="370" font-size="12" fill="#1a1916">raw score R</text>
+    <text x="876" y="390" font-size="11" fill="#8a857a">Σ of every scored event's points</text>
+
+    <line x1="1030" y1="402" x2="1030" y2="426" stroke="#1a1916" stroke-width="1" marker-end="url(#episode-loop-ink-arrow)"/>
+
+    <rect x="860" y="428" width="340" height="56" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="876" y="452" font-size="12" fill="#1a1916">clip(R / max_score, 0, 1)</text>
+    <text x="876" y="472" font-size="11" fill="#8a857a">normalized_score</text>
+
+    <line x1="1030" y1="484" x2="1030" y2="508" stroke="#1a1916" stroke-width="1" marker-end="url(#episode-loop-ink-arrow)"/>
+
+    <rect x="860" y="510" width="340" height="76" fill="#f7f5f0" stroke="#b3372c" stroke-width="2"/>
+    <text x="876" y="534" font-size="11" fill="#1a1916">if any critical gate fires:</text>
+    <text x="876" y="556" font-size="13" fill="#b3372c">normalized = min(·, 0.25)</text>
+    <text x="876" y="576" font-size="11" fill="#8a857a">critical_failure_score_cap: 0.25</text>
+
+    <text x="860" y="612" font-size="11" fill="#8a857a">rewards.RewardEngine.result()</text>
+  </svg>
+  <figcaption>The episode loop: documents and hidden state on one side, the eleven actions in the middle, the scoring surfaces and the critical-failure cap on the other</figcaption>
+  </figure>
+
+  </section>
+
+  <section>
+
+  <h2>Why deterministic</h2>
+
+  <p>A judge model can tell you a redline reads well. It cannot certify that a quotation exists in the document it cites, because certifying that is a string operation over a corpus the judge is summarizing, not a judgment. And it cannot give you the same verdict twice. None of this is a novel objection: tau-bench established policy-constrained interactive evaluation, its LLM-simulated user is a documented reliability weakness, DLawBench established client elicitation as a scorable mechanic, LegalSim put PPO inside a legal environment in 2025 (which is why the claim below is narrowed to transactional work), and TERMS-Bench independently supports making the environment itself the verifier. Playbook's counterparty is a script: a per-issue round counter, acceptance concept sets, a fixed number of resist rounds, an ordered queue of counters, and a refusal message. Same matter, same actions: same counterparty behavior, same trace, same score, bit for bit, locked by a regression test rather than by assertion. The score is a computation, not a verdict.</p>
+
+  <p>The neighbors here are strong and mostly open. Harvey's Legal Agent Benchmark is MIT-licensed and ships its harness, parsers, and judge prompt across 1,200+ agentic tasks. RedlineBench publishes CC-BY data and MIT code for multi-turn MSA negotiation with side-specific playbooks, the earliest such benchmark I found. Mercor's APEX-Agents is CC-BY with its harness, and Applied Compute's post-training result on it is the clearest commercial proof that an eval corpus can become training signal in corporate law. So "we are open and they are closed" is not a claim I can make. The claim I can make, dated to August 2026, is narrower: I found no system that combines a live deterministic counterparty, deterministic critical-failure gates, replay-verifiable traces, budgeted client questions, and RL trainability on transactional legal work. The composition is the claim; every component has a precedent, and <a href="https://github.com/jamesbaker1/playbook/blob/main/docs/related-work.md">the repo's related-work page</a> names them.</p>
+
+  </section>
+
+  <section>
+
+  <h2>The rows</h2>
+
+  <div class="tablewrap">
+  <table>
+  <thead><tr>
+  <th>Model</th>
+  <th>Episodes</th>
+  <th>Score</th>
+  <th>Critical-failure rate</th>
+  <th>Citation validity</th>
+  <th>Issue recall</th>
+  <th>Question recall</th>
+  </tr></thead>
+  <tbody>
+  <tr><td>Expert reference (replay)</td><td>12</td><td>0.985</td><td>0.000</td><td>1.000</td><td>0.917</td><td>0.958</td></tr>
+  <tr><td>GPT-5.6-terra</td><td>12</td><td>0.474</td><td>0.000</td><td>1.000</td><td>0.583</td><td>0.056</td></tr>
+  <tr><td>Claude Haiku 4.5</td><td>12</td><td>0.336</td><td>0.250</td><td>0.688</td><td>0.583</td><td>0.083</td></tr>
+  <tr><td>Qwen2.5-32B-Instruct</td><td>12</td><td>0.076</td><td>0.250</td><td>1.000</td><td>0.208</td><td>0.000</td></tr>
+  <tr><td>Qwen2.5-14B-Instruct</td><td>36</td><td>0.165</td><td>0.139</td><td>1.000</td><td>0.312</td><td>0.000</td></tr>
+  <tr><td>Qwen2.5-7B-Instruct</td><td>36</td><td>0.031</td><td>0.056</td><td>0.972</td><td>0.106</td><td>0.021</td></tr>
+  </tbody>
+  </table>
+  </div>
+
+  <p>Protocol and caveats, in the same breath as the numbers: dev split, temperature 0.2, a generic one-paragraph system prompt, no retrieval, no legal tuning. Raw models, not products, so this is a floor, not a verdict on any vendor. The 32B row and both frontier rows are seed 0 only. The Qwen rows ran on self-hosted vLLM while the frontier rows went through a commercial gateway with a 4,096-token output cap, a confound I have not measured. The whole frontier scorecard cost $2.35. The reference's 0.917 issue recall is a denominator artifact, not a miss: one matter has no issues to find, so recall there is definitionally zero for everyone, a perfect replay included. And every critical-failure rate in this table was measured under critical-failure gates I have since audited and replaced. Pre- and post-revision critical rates are not numerically comparable without a re-run. Treat the failure <em>rates</em> as instrument-dated; the failures themselves (the fabricated quotes, the concessions) are real events in real episodes.</p>
+
+  <p>Three findings survive those caveats, each with its own discipline. First, across the Qwen family the critical-failure rate rises with scale, 0.056 to 0.139 to 0.250, and Haiku carries 0.250 into the frontier tier: the smallest model fails least because it engages least. Second, GPT-5.6-terra is the exception on record: zero critical failures, perfect citation validity, no unsupported issues. It ran 30.2 steps per matter against the reference's 22.6, which reads like chosen depth until you check the budgets: it filed a final on every matter, but at the cap or one step under it on ten of the twelve (29–33 steps against caps of 30 and 34). Nothing was cut off mid-work (every episode ended on its own <code>submit_final</code>), but its depth is bounded by the budget on most of the corpus, and its unconstrained depth is unmeasured. Third, with twelve matter families the family-clustered 95% intervals are wide enough to swallow the ordering: 32B [0.000, 0.500], Haiku [0.000, 0.500], 14B [0.000, 0.333], and terra's [0.000, 0.000] is degenerate, because twelve families with no observed failure cannot separate a zero rate from a small one. Ordering between models is suggestive, not established.</p>
+
+  <figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 396" preserveAspectRatio="xMidYMid meet" role="img" style="width:100%;height:auto;display:block">
+  <title>Critical-failure rate by model with 95% cluster-bootstrap intervals, v0.4.0 dev split</title>
+  <desc>Dot-and-whisker chart of critical-failure rate per model. Point estimates range from 0.0000 to 0.2500, but the 95% intervals, resampled by matter family, are so wide that all four non-degenerate intervals share the range 0.0000 to 0.1389. GPT-5.6-terra's interval is degenerate: no failures were observed.</desc>
+  <rect x="0" y="0" width="880" height="396" fill="#f7f5f0"/>
+  <g font-family="ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace" font-size="12">
+  <text x="48" y="34" fill="#8a857a" font-size="12">critical-failure rate by model, 95% cluster-bootstrap CI, v0.4.0 dev split</text>
+  <rect x="240.00" y="96.00" width="101.02" height="210.00" fill="#b3372c" fill-opacity="0.13"/>
+  <text x="240.00" y="84" fill="#8a857a" font-size="11">all 4 non-degenerate intervals overlap on 0.0000 to 0.1389</text>
+  <line x1="312.73" y1="96.00" x2="312.73" y2="306.00" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="385.45" y1="96.00" x2="385.45" y2="306.00" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="458.18" y1="96.00" x2="458.18" y2="306.00" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="530.91" y1="96.00" x2="530.91" y2="306.00" stroke="#d8d4ca" stroke-width="1"/>
+  <line x1="603.64" y1="96.00" x2="603.64" y2="306.00" stroke="#d8d4ca" stroke-width="1"/>
+  <text x="222" y="121.00" fill="#1a1916" text-anchor="end">GPT-5.6-terra</text>
+  <text x="254.00" y="121.00" fill="#8a857a" font-size="11">degenerate: no failures observed in 12 families</text>
+  <circle cx="240.00" cy="117.00" r="5" fill="#1a1916" stroke="#f7f5f0" stroke-width="2"/>
+  <text x="660" y="121.00" fill="#1a1916" font-size="11">0.0000</text>
+  <text x="710" y="121.00" fill="#8a857a" font-size="11">[0.0000, 0.0000]  12 ep</text>
+  <text x="222" y="163.00" fill="#1a1916" text-anchor="end">Claude Haiku 4.5</text>
+  <line x1="240.00" y1="159.00" x2="603.64" y2="159.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="240.00" y1="154.00" x2="240.00" y2="164.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="603.64" y1="154.00" x2="603.64" y2="164.00" stroke="#1a1916" stroke-width="1"/>
+  <circle cx="421.82" cy="159.00" r="5" fill="#1a1916" stroke="#f7f5f0" stroke-width="2"/>
+  <text x="660" y="163.00" fill="#1a1916" font-size="11">0.2500</text>
+  <text x="710" y="163.00" fill="#8a857a" font-size="11">[0.0000, 0.5000]  12 ep</text>
+  <text x="222" y="205.00" fill="#1a1916" text-anchor="end">Qwen2.5-32B-Instruct</text>
+  <line x1="240.00" y1="201.00" x2="603.64" y2="201.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="240.00" y1="196.00" x2="240.00" y2="206.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="603.64" y1="196.00" x2="603.64" y2="206.00" stroke="#1a1916" stroke-width="1"/>
+  <circle cx="421.82" cy="201.00" r="5" fill="#1a1916" stroke="#f7f5f0" stroke-width="2"/>
+  <text x="660" y="205.00" fill="#1a1916" font-size="11">0.2500</text>
+  <text x="710" y="205.00" fill="#8a857a" font-size="11">[0.0000, 0.5000]  12 ep</text>
+  <text x="222" y="247.00" fill="#1a1916" text-anchor="end">Qwen2.5-14B-Instruct</text>
+  <line x1="240.00" y1="243.00" x2="482.40" y2="243.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="240.00" y1="238.00" x2="240.00" y2="248.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="482.40" y1="238.00" x2="482.40" y2="248.00" stroke="#1a1916" stroke-width="1"/>
+  <circle cx="341.02" cy="243.00" r="5" fill="#1a1916" stroke="#f7f5f0" stroke-width="2"/>
+  <text x="660" y="247.00" fill="#1a1916" font-size="11">0.1389</text>
+  <text x="710" y="247.00" fill="#8a857a" font-size="11">[0.0000, 0.3333]  36 ep</text>
+  <text x="222" y="289.00" fill="#1a1916" text-anchor="end">Qwen2.5-7B-Instruct</text>
+  <line x1="240.00" y1="285.00" x2="341.02" y2="285.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="240.00" y1="280.00" x2="240.00" y2="290.00" stroke="#1a1916" stroke-width="1"/>
+  <line x1="341.02" y1="280.00" x2="341.02" y2="290.00" stroke="#1a1916" stroke-width="1"/>
+  <circle cx="280.44" cy="285.00" r="5" fill="#1a1916" stroke="#f7f5f0" stroke-width="2"/>
+  <text x="660" y="289.00" fill="#1a1916" font-size="11">0.0556</text>
+  <text x="710" y="289.00" fill="#8a857a" font-size="11">[0.0000, 0.1389]  36 ep</text>
+  <line x1="240.00" y1="306.00" x2="640.00" y2="306.00" stroke="#d8d4ca" stroke-width="1"/>
+  <text x="240.00" y="326" fill="#8a857a" font-size="11" text-anchor="middle">0.0</text>
+  <text x="312.73" y="326" fill="#8a857a" font-size="11" text-anchor="middle">0.1</text>
+  <text x="385.45" y="326" fill="#8a857a" font-size="11" text-anchor="middle">0.2</text>
+  <text x="458.18" y="326" fill="#8a857a" font-size="11" text-anchor="middle">0.3</text>
+  <text x="530.91" y="326" fill="#8a857a" font-size="11" text-anchor="middle">0.4</text>
+  <text x="603.64" y="326" fill="#8a857a" font-size="11" text-anchor="middle">0.5</text>
+  <text x="240.00" y="344" fill="#8a857a" font-size="11">critical-failure rate (share of episodes)</text>
+  <text x="48" y="364" fill="#8a857a" font-size="11">pre-revision instrument; single seed for terra/Haiku/32B</text>
+  <text x="48" y="382" fill="#8a857a" font-size="11">95% CI: cluster bootstrap resampled by matter family, 2,000 samples</text>
+  </g></svg>
+  <figcaption>Critical-failure rate by model, drawn as dots with family-clustered 95% whiskers: the intervals overlap almost completely, so the apparent ordering is not established</figcaption>
+  </figure>
+
+  <p>The haste finding needs the same discipline. Every fabricated quotation in the open-weight campaign came from a rushed episode: three fabrications at six, six, and five steps. That is true, and it is an open-weight finding. Haiku's four came in episodes of 17, 18, and 15 steps. Fabrication travels with haste in the small models and not at the frontier, and the report sentence saying otherwise was written before the frontier rows landed.</p>
+
+  <p>One matter is a compliant renewal where the correct answer is that there are no material issues. All seven open-weight runs scored exactly 0.000 by manufacturing between one and three issues that were not there. Haiku spent five steps and scored 0.500; terra spent its full thirty and scored 0.400; the reference scored 1.000 in nineteen. Ask for the failure rate, not the average: the second-best average measured belongs to the model that failed one matter in four.</p>
+
+  </section>
+
+  <section>
+
+  <h2>The audit, which is the actual argument for open-sourcing an instrument</h2>
+
+  <p>Every gate above began as a bare regex, and a bare regex is polarity-blind, while legal writing is mostly polarity. On August 8 I pointed an adversarial probe at the public corpus, replaying each candidate sentence through the real engine rather than reading patterns and guessing. It came back with 84 blocker-grade false positives, 52 majors, and 5 minors across the eleven gated matters and the variant specs, plus 100 cataloged dodges going the other way.</p>
+
+  <p>A blocker means the instrument capped a correct answer at 0.25 and flagged it critical. The canonical one is the disclaimer the instructions actually ask for: "No law prohibits all model training; the objection here is contractual, resting on playbook §3 rather than on any statute." Stating the sin in order to deny it read as committing it. In another matter, "Neither the MSA nor the Exhibit requires United States storage of Customer Data" (the headline correct finding of that entire matter) was capped and flagged. In a third, the shipped reference trajectory clears its gate only because its redline omits the words "to Customer"; add them back and a reference-adjacent sentence replays at 0.25 with critical true. The reference answer sat one preposition from a critical failure.</p>
+
+  <p>The dodges are the same defect wearing the other face. A total capitulation on uncapped liability, by the exact route the client playbook names and forbids, replayed at 0.9648 normalized with critical false. In one matter, 18 of 18 mild paraphrases of the documented sins passed clean: an inserted adjective or a swapped verb was enough. And the verbatim verifier inspects only the action's <code>quotes[]</code> field, so an identical fabricated attribution asserted in analysis prose costs the agent nothing but the quote points it declines to claim. That one is still open, and the repo calls it the cheapest available reward hack in the environment today.</p>
+
+  <p>The summary line in that day's progress record is the one I would least like to be quoted on and the one that matters most: "the instrument currently penalizes careful lawyering more reliably than it catches careless lawyering." Critical-failure rate is the preregistered primary metric of the training program built on this gym, so both error directions are instrument error.</p>
+
+  <p>The fix shipped in two deliberate pieces. First the mechanism, dormant: a gate entry may opt into a structured form (a pattern plus a negation guard, a scope, and require/exclude context windows) under which a gate fires only if some occurrence of its pattern survives all three checks within its sentence:</p>
+
+  <div class="eq">$$\mathrm{Fire}(g,x) \iff \exists\, m \in \mathrm{Occ}(\pi_g, x):\ \neg\mathrm{negated}(m) \wedge \mathrm{ctx}^{+}(m) \wedge \neg\mathrm{ctx}^{-}(m),$$</div>
+
+  <p>with a closed negator list and sentence boundaries that never split at a period before a digit, so "§10.2" survives. No rubric opted in at first, and byte-identical behavior was proven by replaying twelve real trajectories with scores, flags, and gate attributions frozen into a test. Then the migration, committed separately and labeled an instrument revision, because it changes what the instrument measures. On disk today, 116 of the 121 gate patterns in the public rubrics carry structured guards and five are left plain deliberately; every replay-confirmed false positive and every closed dodge ships as a permanent regression test (406 entries, 247 must-fire and 159 must-stay-silent), and the suite is 1,255 tests at this release. Two things about that migration I would rather not write and will: its own verification caught two defects the migration introduced (one gate's sin text contains its own negator idiom and silenced itself, which is why a <code>negation_scope: before</code> option exists and is used exactly once), and a follow-up commit disclosed that the first pass had worked from probe sentences truncated at about 229 characters. Re-running at full width found more. Fifty-seven concept-circularity notes (places where a concept list demands wording that appears in no visible document) remain open.</p>
+
+  <figure>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 720" role="img" aria-labelledby="gate-guard-fig2-title gate-guard-fig2-desc" font-family="ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace">
+    <title id="gate-guard-fig2-title">One must-stay-silent probe traced through both evaluations: the bare regex fires and caps the episode at 0.25; the structured guard suppresses the match and the episode is scored normally.</title>
+    <desc id="gate-guard-fig2-desc">A probe sentence from tests/gate_probes/ai_saas_001.yaml ("No law prohibits all model training; the objection here is contractual, resting on playbook section 3") contains the matched span "law prohibits all model training" preceded by the negator "No". Top path: the gate as a bare regex string, re.search finds the match, the gate fires, the episode is capped at 0.25 with critical set true. Bottom path: the gate as a mapping with negation_guard true, re.finditer finds the same match, _sentence_span builds the window from the sentence start to the match end, _NEGATOR finds "No" and the match is skipped, so no gate fires and the episode is scored normally.</desc>
+
+    <defs>
+      <marker id="gate-guard-ink-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1 L9,5 L0,9 z" fill="#1a1916"/>
+      </marker>
+      <marker id="gate-guard-faint-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1 L9,5 L0,9 z" fill="#8a857a"/>
+      </marker>
+      <marker id="gate-guard-accent-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1 L9,5 L0,9 z" fill="#b3372c"/>
+      </marker>
+    </defs>
+
+    <rect x="0" y="0" width="1240" height="720" fill="#f7f5f0"/>
+
+    <!-- ============================================================= header -->
+    <text x="40" y="38" font-size="15" fill="#1a1916">One probe sentence, two evaluations</text>
+    <text x="40" y="60" font-size="11" fill="#8a857a">tests/gate_probes/ai_saas_001.yaml  ·  src/playbook_legal/rewards.py gate_match</text>
+
+    <!-- ======================================================== probe box -->
+    <text x="40" y="84" font-size="11" fill="#8a857a" letter-spacing="0.08em">MUST-STAY-SILENT PROBE</text>
+    <rect x="40" y="96" width="1160" height="104" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="64" y="117" font-size="11" fill="#8a857a">surface: issue  ·  criterion: data_training  ·  expect_fire: false</text>
+
+    <text x="64" y="133" font-size="11" fill="#1a1916">negator</text>
+    <line x1="64" y1="141" x2="79.6" y2="141" stroke="#1a1916" stroke-width="1"/>
+
+    <text y="158" font-size="13" fill="#1a1916" xml:space="preserve"><tspan x="64" textLength="23.4" lengthAdjust="spacing">No </tspan><tspan x="87.4" textLength="249.6" lengthAdjust="spacing">law prohibits all model training</tspan><tspan x="337" textLength="475.8" lengthAdjust="spacing">; the objection here is contractual, resting on playbook §3 …</tspan></text>
+
+    <line x1="87.4" y1="165" x2="337" y2="165" stroke="#1a1916" stroke-width="1.5"/>
+    <text x="87.4" y="182" font-size="11" fill="#1a1916">pattern match: both paths find it here</text>
+
+    <!-- spine -->
+    <path d="M72,200 L72,288 L136,288" fill="none" stroke="#8a857a" stroke-width="1" marker-end="url(#gate-guard-faint-arrow)"/>
+    <path d="M72,288 L72,444 L136,444" fill="none" stroke="#8a857a" stroke-width="1" marker-end="url(#gate-guard-faint-arrow)"/>
+
+    <!-- ================================================ lane A: bare regex -->
+    <text x="140" y="232" font-size="11" fill="#8a857a" letter-spacing="0.08em">PRE-REVISION · THE GATE AS A BARE REGEX STRING</text>
+
+    <rect x="140" y="240" width="204" height="96" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="154" y="264" font-size="12" fill="#1a1916">spec: str</text>
+    <text x="154" y="286" font-size="11" fill="#8a857a">the same pattern, as a</text>
+    <text x="154" y="302" font-size="11" fill="#8a857a">bare regex string</text>
+    <text x="154" y="322" font-size="11" fill="#8a857a">no guard keys</text>
+
+    <line x1="346" y1="288" x2="366" y2="288" stroke="#1a1916" stroke-width="1" marker-end="url(#gate-guard-ink-arrow)"/>
+
+    <rect x="368" y="240" width="214" height="96" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="382" y="264" font-size="12" fill="#1a1916">gate_match()</text>
+    <text x="382" y="286" font-size="11" fill="#8a857a">not isinstance(spec, dict)</text>
+    <text x="382" y="302" font-size="11" fill="#8a857a">→ re.search(spec, text,</text>
+    <text x="382" y="318" font-size="11" fill="#8a857a">    flags=re.IGNORECASE)</text>
+
+    <line x1="584" y1="288" x2="604" y2="288" stroke="#1a1916" stroke-width="1" marker-end="url(#gate-guard-ink-arrow)"/>
+
+    <rect x="606" y="240" width="238" height="96" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="620" y="264" font-size="12" fill="#1a1916">match returned</text>
+    <text x="620" y="286" font-size="11" fill="#8a857a">the string form takes no</text>
+    <text x="620" y="302" font-size="11" fill="#8a857a">guards: the sentence is</text>
+    <text x="620" y="318" font-size="11" fill="#8a857a">never read</text>
+
+    <line x1="846" y1="288" x2="866" y2="288" stroke="#b3372c" stroke-width="1" marker-end="url(#gate-guard-accent-arrow)"/>
+
+    <rect x="868" y="240" width="116" height="96" fill="#f7f5f0" stroke="#b3372c" stroke-width="2"/>
+    <text x="926" y="294" font-size="14" fill="#b3372c" text-anchor="middle">FIRES</text>
+
+    <line x1="986" y1="288" x2="1006" y2="288" stroke="#b3372c" stroke-width="1" marker-end="url(#gate-guard-accent-arrow)"/>
+
+    <rect x="1008" y="240" width="192" height="96" fill="#f7f5f0" stroke="#b3372c" stroke-width="2"/>
+    <text x="1022" y="278" font-size="11" fill="#1a1916">episode capped at</text>
+    <text x="1022" y="300" font-size="13" fill="#b3372c">min(·, 0.25)</text>
+    <text x="1022" y="322" font-size="11" fill="#b3372c">critical = true</text>
+
+    <!-- ========================================== lane B: structured guard -->
+    <text x="140" y="372" font-size="11" fill="#8a857a" letter-spacing="0.08em">AFTER · THE STRUCTURED GUARD</text>
+
+    <rect x="140" y="380" width="204" height="128" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="154" y="404" font-size="12" fill="#1a1916">spec: dict</text>
+    <text x="154" y="424" font-size="11" fill="#8a857a">pattern: "law (?:prohibits</text>
+    <text x="154" y="440" font-size="11" fill="#8a857a">|bars|forbids) …"</text>
+    <text x="154" y="462" font-size="11" fill="#1a1916">negation_guard: true</text>
+    <text x="154" y="484" font-size="11" fill="#8a857a">negation_scope: span</text>
+    <text x="154" y="500" font-size="11" fill="#8a857a">(default, unset here)</text>
+
+    <line x1="346" y1="444" x2="366" y2="444" stroke="#1a1916" stroke-width="1" marker-end="url(#gate-guard-ink-arrow)"/>
+
+    <rect x="368" y="380" width="214" height="128" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="382" y="404" font-size="12" fill="#1a1916">gate_match()</text>
+    <text x="382" y="424" font-size="11" fill="#8a857a">isinstance(spec, dict)</text>
+    <text x="382" y="440" font-size="11" fill="#8a857a">→ re.finditer(pattern,</text>
+    <text x="382" y="456" font-size="11" fill="#8a857a">    text, IGNORECASE)</text>
+    <text x="382" y="478" font-size="11" fill="#8a857a">same match, same span</text>
+
+    <line x1="584" y1="444" x2="604" y2="444" stroke="#1a1916" stroke-width="1" marker-end="url(#gate-guard-ink-arrow)"/>
+
+    <rect x="606" y="380" width="238" height="128" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="620" y="404" font-size="12" fill="#1a1916">_sentence_span()</text>
+    <text x="620" y="424" font-size="11" fill="#8a857a" xml:space="preserve">window = text[sentence_start</text>
+    <text x="620" y="440" font-size="11" fill="#8a857a" xml:space="preserve">               : match.end()]</text>
+    <text x="620" y="462" font-size="11" fill="#1a1916">_NEGATOR.search(window)</text>
+    <text x="620" y="484" font-size="11" fill="#8a857a">finds "No" → continue</text>
+
+    <line x1="846" y1="444" x2="866" y2="444" stroke="#1a1916" stroke-width="1" marker-end="url(#gate-guard-ink-arrow)"/>
+
+    <rect x="868" y="380" width="116" height="128" fill="#f7f5f0" stroke="#1a1916" stroke-width="1.5"/>
+    <text x="926" y="450" font-size="14" fill="#1a1916" text-anchor="middle">SUPPRESSED</text>
+
+    <line x1="986" y1="444" x2="1006" y2="444" stroke="#1a1916" stroke-width="1" marker-end="url(#gate-guard-ink-arrow)"/>
+
+    <rect x="1008" y="380" width="192" height="128" fill="#f7f5f0" stroke="#1a1916" stroke-width="1.5"/>
+    <text x="1022" y="424" font-size="11" fill="#8a857a">gate_match → None</text>
+    <text x="1022" y="448" font-size="13" fill="#1a1916">no gate fires</text>
+    <text x="1022" y="472" font-size="11" fill="#8a857a">scored normally</text>
+
+    <!-- ==================================================== gate spec keys -->
+    <rect x="40" y="536" width="1160" height="124" fill="#f7f5f0" stroke="#d8d4ca" stroke-width="1"/>
+    <text x="56" y="560" font-size="11" fill="#8a857a" letter-spacing="0.08em">GATE SPEC KEYS</text>
+
+    <text x="56" y="586" font-size="12" fill="#1a1916">negation_guard</text>
+    <text x="232" y="586" font-size="11" fill="#8a857a">drop a match when a negator sits between the start of its sentence and the end of the matched span</text>
+
+    <text x="56" y="608" font-size="12" fill="#1a1916">negation_scope</text>
+    <text x="232" y="608" font-size="11" fill="#8a857a">where the guard window stops: "span" (default) at the end of the match, "before" at its start</text>
+
+    <text x="56" y="630" font-size="12" fill="#1a1916">require_context</text>
+    <text x="232" y="630" font-size="11" fill="#8a857a">fire only when this regex also matches in the sentence</text>
+
+    <text x="56" y="652" font-size="12" fill="#1a1916">exclude_context</text>
+    <text x="232" y="652" font-size="11" fill="#8a857a">drop the match when this regex matches in the sentence</text>
+
+    <text x="40" y="692" font-size="12" fill="#8a857a">a bare regex is polarity-blind; the guard reads the sentence</text>
+  </svg>
+  <figcaption>One probe sentence traced twice: through the pre-revision bare regex to a 0.25 capped critical failure, and through the structured guard to a clean score</figcaption>
+  </figure>
+
+  <p>Two honest consequences. Every row in the table above predates the revision, and the audit could not determine whether any measured critical failure was a phrasing artifact, only that the instrument could not rule it out. And the probe digests themselves had been sitting in a gitignored directory. The per-matter tallies behind the 84/52 counts now ship at <a href="https://github.com/jamesbaker1/playbook/blob/main/docs/instrument-audit-2026-08.md">docs/instrument-audit-2026-08.md</a>; the probe session itself (the sentences before selection, the replay transcripts, the grading) still does not, and that document says so in its own words. You can only run this kind of audit in public if the instrument is public.</p>
+
+  </section>
+
+  <section>
+
+  <h2>Open, sealed, and one defect of my own</h2>
+
+  <p>Open under AGPL: the engine, the rubrics with their gates, the scoring code, reference and adversarial trajectories for all twelve matters, the gate-probe regression suite, the scorecards, the teacher-pilot results and scaffold, the LoRA SFT, DPO, and GRPO scaffolds, the analysis and decision-rule code, and the frozen experiment contract. On data licensing I am not the maximally open option: the matter corpus is AGPL like the code, where two of the neighbors above license their data CC-BY.</p>
+
+  <p>A defect in my own openness belongs here rather than in a footnote. The v0.4.0 model rows shipped derived per-episode metrics without per-episode traces, so for those rows I am asking you to take a number on trust, a defect in exactly the property I am selling. The reference row is replayable from <code>examples/*/good.jsonl</code>. Trace retention now ships in the bench (<code>--save-traces</code>), and re-measurement on the revised instrument is planned when the budget allows.</p>
+
+  <p>The one thing not open is the sealed held-out corpus, and that is the open-science move, not a hedge: a benchmark whose answers are public is a benchmark that dissolves, and all twelve public matters must be assumed contaminated the moment they are published. As of 2026-08-08, six sealed families are owner-reviewed against an interim floor of ten; the frozen contract targets fifteen to thirty families and fifty to a hundred episodes. Five more were drafted and then blocked at adversarial pre-review with ten blockers, every one reproduced twice by engine replay, the same audit that hit the public corpus. The governance mechanism (a registry exposing family identifiers and SHA-256 content hashes but no contents) exists in code and is tested. No sealed artifact ships yet; today that is a promise with test coverage, and it ships when the corpus clears review.</p>
+
+  </section>
+
+  <section>
+
+  <h2>The half of the gates that needs no answer key</h2>
+
+  <p>The gates work because the benchmark holds an answer key. A firm reviewing an AI's markup of a live deal never will. <code>playbook-critic</code> is the subset that needs none: it verifies every quotation against the provision actually cited, resolves every citation, and scans proposed language against a client-authored authority file, using nothing but the deal documents. It is deterministic, makes no LLM calls, and is firewalled from the answer key by tests that delete the rubric and assert identical verdicts, record every filename the process opens (with positive controls, so the assertion cannot pass vacuously), and grep the source to prove it never constructs the environment. The firewall is test-enforced: not a formal proof, not an OS-level sandbox. The critic is v0, newer than the v0.4.0 release, 43 tests as of today, with one shipped authority example, so prohibited-concession detection is demonstrable on one of twelve matters right now. Its own documentation states the boundary: it verifies, it does not lawyer, and a clean report means nothing here is provably wrong, not that this is good work.</p>
+
+  </section>
+
+  <section>
+
+  <h2>Play it, reproduce it, break it</h2>
+
+  <p>The gym runs in a browser at <a href="https://jamesbaker1.github.io/playbook/">jamesbaker1.github.io/playbook</a>, on the canonical engine through a Cloudflare worker that replays your action history statelessly and trusts nothing the browser reports. Two modes, surfaced as guided review and assessment review. A web-gym score is not a benchmark number and not a credential: those matters are the assumed-contaminated dev split, and the terminal audit deliberately shows you rubric detail.</p>
+
+  <p>For the numbers: clone <a href="https://github.com/jamesbaker1/playbook">github.com/jamesbaker1/playbook</a>, run the reference replay, and check that it scores 0.9851. What I actually want is adversarial. Run the probe suite. Write a sentence that dodges a gate it should trip, or trips a gate it should not, and open it as an issue. The last such sweep, which I ran against myself, cost me 84 blockers and a versioned instrument revision, which is the correct outcome. The 159 must-stay-silent probes are the false positives I already found; I would rather have the next one arrive as a failing test than as a headline. Why any of this exists, and what a model trained inside it is preregistered to prove, is <a href="/blog/playbook-1/">the other post</a>.</p>
+
+  </section>
+
+  <p class="foot">james baker, <time datetime="2026-08-19">august 19, 2026</time> · <a href="https://github.com/jamesbaker1/playbook">the gym is open source</a> · <a href="mailto:james@deskofjim.com">james@deskofjim.com</a></p>
+</main>
+</body>
+</html>
