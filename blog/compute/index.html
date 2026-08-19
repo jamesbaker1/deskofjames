@@ -46,9 +46,9 @@
 
 <section>
 <p>crypto bro produced exactly one aphorism that survived contact with
-reality: not your keys, not your coins. it kept being true through every
+reality. not your keys, not your coins. it kept being true through every
 collapse, which is the only test an aphorism faces. i want it with the nouns
-swapped: <strong>not your compute, not your model.</strong></p>
+swapped. <strong>not your compute, not your model.</strong></p>
 
 <p>open models are winning but consumers still don't seem to be reaping the
 rewards. deepseek ships frontier-adjacent weights under mit. meta ships
@@ -60,7 +60,7 @@ them can run them.</p>
 <section>
 <h2>the arithmetic</h2>
 
-<p>deepseek-r1 is 671 billion parameters, fp8 native: 689gb of weights
+<p>deepseek-r1 is 671 billion parameters, fp8 native, 689gb of weights
 before the kv cache takes a byte. llama 3.1 405b in bf16 is 810gb. the
 largest consumer gpu nvidia sells holds ~32. quantize r1 down to 4 bits and
 it still wants about 400gb, which is thirteen consumer cards wired
@@ -90,7 +90,7 @@ have.</p>
 <h2>the rest of the stack</h2>
 
 <p>even with weights and hardware in hand, inference is its own software
-problem: an engine (paged kv cache, continuous batching, quantized
+problem. an engine (paged kv cache, continuous batching, quantized
 kernels), a scheduler that decides whose job runs when the vram runs out, a
 way to move jobs between machines without reading them. none of that
 arrives with the weights either. the stack under a running model has six
@@ -116,14 +116,14 @@ cluster that's decentralized by design.</p>
 <section>
 <h2>the club</h2>
 
-<p>so: <a href="https://newyorkcomputeclub.com">new york compute club</a>.
+<p>so, <a href="https://newyorkcomputeclub.com">new york compute club</a>.
 members rack their own hardware in the five boroughs and the club schedules
 jobs across all of it. jobs travel as libsodium sealed boxes; the
 coordinator that routes them sees ciphertext, a node id, and a
 self-reported wattage. it can't read what you run. the threat model is written down and it's
 not flattering, which is how you can tell it's a threat model.</p>
 
-<p>the software is public and unfinished: <a
+<p>the software is public and unfinished. <
 href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
 small inference engine (paged kv, continuous batching, priority
 scheduling, a numpy reference model you can read in an afternoon); <a
