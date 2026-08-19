@@ -1,0 +1,204 @@
+<!doctype html>
+<!-- the numbers are list prices and spec sheets, not vibes. the club is real. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>not your compute, not your model</title>
+<link rel="canonical" href="https://deskofjim.com/blog/compute/">
+<link rel="icon" href="/favicon.svg">
+<meta name="description" content="open weights arrived. the machines to run them did not. on the arithmetic of local inference, the rest of the stack, and a club in new york.">
+<style>
+  :root { --ink:#1a1916; --paper:#f7f5f0; --faint:#8a857a; --rule:#d8d4ca; --accent:#b3372c; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, Menlo, monospace;
+    font-size: 14.5px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 4.5rem 1.25rem 6rem; }
+  h1 { font-size: 1.55rem; line-height: 1.25; margin: 0 0 .4rem; font-weight: 700; }
+  h2 { font-size: 1rem; margin: 2.6rem 0 .8rem; font-weight: 700; }
+  p { margin: 0 0 1rem; max-width: 40rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .sub { color: var(--faint); margin-bottom: 2.2rem; }
+  .note { color: var(--faint); font-size: .85rem; }
+  ul { list-style: none; margin: 0 0 1rem; padding: 0; max-width: 40rem; }
+  li { margin-bottom: .35rem; }
+  li::before { content: "\00b7  "; color: var(--faint); }
+  figure { margin: 1.6rem 0; }
+  figcaption { color: var(--faint); font-size: .85rem; margin-top: .5rem; }
+  .foot { color: var(--faint); font-size: .85rem; border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-top: 3rem; }
+  strong { font-weight: 700; }
+</style>
+</head>
+<body>
+<main>
+<p class="note"><a href="/blog/">&larr; blog</a></p>
+
+<h1>not your compute, not your model</h1>
+<p class="sub">open weights arrived. the machines to run them did not. on the arithmetic of local inference, the rest of the stack, and a club in new york.</p>
+
+<section>
+<p>crypto people produced exactly one aphorism that survived contact with
+reality: not your keys, not your coins. it kept being true through every
+collapse, which is the only test an aphorism faces. i want it with the nouns
+swapped: <strong>not your compute, not your model.</strong></p>
+
+<p>the setup: open models won. deepseek ships frontier-adjacent weights
+under mit. meta ships llama under a livable license. the weights are on
+hugging face tonight, all of them, free. and almost nobody who downloads
+them can run them.</p>
+</section>
+
+<section>
+<h2>the arithmetic</h2>
+
+<p>deepseek-r1 is 671 billion parameters, fp8 native: 689gb of weights
+before the kv cache takes a byte. llama 3.1 405b in bf16 is 810gb. the
+largest consumer gpu nvidia sells holds 32. quantize r1 down to 4 bits and
+it still wants about 400gb, which is thirteen consumer cards wired
+together, which you cannot do, because the interconnect is the actual
+product and it does not come in consumer.</p>
+
+<figure id="fig-vram"></figure>
+
+<p>the honest counterexample: apple sold a mac studio with 512gb of
+unified memory. it ran 4-bit r1 at seventeen or so tokens per second while
+the context stayed short, less as it grew. the list price was $9,499. then
+apple pulled the 512gb option, dram shortage, and the ceiling is 256 now. the point survives the counterexample. "you can drive to alaska" is
+also true.</p>
+
+<p>so the license says the model is yours and the memory map says it
+belongs to whoever owns an 8x h100 node. those start around $250,000
+racked, or by the hour from the same few clouds the weights were supposed
+to make optional. open weight, closed socket.</p>
+</section>
+
+<section>
+<h2>weights are the binary</h2>
+
+<p>calling weights "open source" is calling a compiled binary open source.
+the source of a model is the training data, the filtering pipeline, the
+training code, the schedule, the post-training recipe, and the evals that
+decided which checkpoint shipped. of those, a typical open release ships
+none. you get the artifact and a license to run it, on hardware you do not
+have.</p>
+
+<p>the exceptions are real and worth naming: allenai's olmo ships data,
+code, and checkpoints; pythia did it first at smaller scale. everyone else
+chose the phrase "open weight" with lawyers in the room, and the phrase is
+accurate. weight is the part they opened.</p>
+</section>
+
+<section>
+<h2>the rest of the stack</h2>
+
+<p>even with weights and hardware in hand, inference is its own software
+problem: an engine (paged kv cache, continuous batching, quantized
+kernels), a scheduler that decides whose job runs when the vram runs out, a
+way to move jobs between machines without reading them. none of that
+arrives with the weights either. the stack under a running model has six
+layers and "weights" is one:</p>
+
+<ul>
+<li>training data</li>
+<li>training code and recipe</li>
+<li>weights</li>
+<li>inference engine</li>
+<li>scheduling and routing</li>
+<li>power and cooling</li>
+</ul>
+
+<p>the fight over layer three is loud because it is the only layer with a
+license attached. the other five get decided by default, and the default is
+rented. renting is fine until the landlord deprecates the model you built
+on, or rate-limits you mid-experiment, or logs what you send. the fix is
+not everyone buying an 8x h100 node. it is thirty people splitting one, at
+$8,300 or so a head.</p>
+</section>
+
+<section>
+<h2>the club</h2>
+
+<p>so: <a href="https://newyorkcomputeclub.com">new york compute club</a>.
+members rack their own hardware in the five boroughs and the club schedules
+jobs across all of it. jobs travel as libsodium sealed boxes; the
+coordinator that routes them sees ciphertext, a node id, and a
+self-reported wattage. it cannot read what you run. the node you pick can,
+today, which is why you pick the node, and why attestation is a v2 line
+item instead of a marketing slide. the threat model is written down and it
+is not flattering, which is how you can tell it is a threat model.</p>
+
+<p>the software is public and unfinished: <a
+href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
+small inference engine (paged kv, continuous batching, priority
+scheduling, a numpy reference model you can read in an afternoon); <a
+href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a> is the mesh
+(sealed jobs, signed node traffic, an untrusted coordinator small enough
+to audit); <a
+href="https://github.com/jamesbaker1/newyorkcomputeclub">newyorkcomputeclub</a>
+is the site, which renders manhattan as a load histogram. the load is
+invented until enough nodes exist; the buildings are not. the lights above
+the island are 60 hudson st, 111 8th ave, and the teleport. pull requests
+move your application up the pile.</p>
+
+<p>the cluster is currently one node and an extension cord. that is what
+applications are for. they are open at <a
+href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
+
+<p>the rule also has a v2 queued: <strong>not your power, not your
+model.</strong> an h100 turns electricity into gradients at 700 watts a
+card, and whoever meters the electricity holds a veto. one member has a
+basement in red hook and strong opinions about generators. later.</p>
+</section>
+
+<section>
+<h2>artifacts</h2>
+<ul>
+<li><a href="https://newyorkcomputeclub.com">newyorkcomputeclub.com</a>, the site</li>
+<li><a href="https://newyorkcomputeclub.com/about">the application</a></li>
+<li><a href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a>, the engine</li>
+<li><a href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a>, the mesh</li>
+<li><a href="https://github.com/jamesbaker1/newyorkcomputeclub">the site's source</a></li>
+</ul>
+</section>
+
+<p class="foot">james baker, august 2026 &middot; the club answers slowly &middot; <a href="mailto:james@deskofjim.com">james@deskofjim.com</a></p>
+
+</main>
+<script>
+(function () {
+  // gb on the x axis. hardware in ink, weights in accent. spec sheets as of
+  // august 2026; the 512gb mac studio config was discontinued in february.
+  var rows = [
+    ['rtx 5090 (consumer)', 32, 0],
+    ['h100 (one card)', 80, 0],
+    ['mac studio, 512 (discontinued)', 512, 0],
+    ['r1, 4-bit', 400, 1],
+    ['r1, fp8', 689, 1],
+    ['llama 405b, bf16', 810, 1],
+  ];
+  var W = 640, RH = 26, PAD = 150, max = 810;
+  var H = rows.length * RH + 24;
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="memory sizes: consumer and datacenter hardware against open model weights" style="width:100%;height:auto;font:11.5px ui-monospace,Consolas,monospace">';
+  rows.forEach(function (r, i) {
+    var y = i * RH + 12;
+    var w = (W - PAD - 60) * (r[1] / max);
+    var c = r[2] ? '#b3372c' : '#1a1916';
+    s += '<text x="' + (PAD - 8) + '" y="' + (y + 12) + '" text-anchor="end" fill="#8a857a">' + r[0] + '</text>';
+    s += '<rect x="' + PAD + '" y="' + y + '" width="' + Math.max(w, 2) + '" height="15" fill="' + c + '"/>';
+    s += '<text x="' + (PAD + Math.max(w, 2) + 6) + '" y="' + (y + 12) + '" fill="#1a1916">' + r[1] + '</text>';
+  });
+  s += '</svg>';
+  var f = document.getElementById('fig-vram');
+  f.innerHTML = s + '<figcaption>gigabytes. hardware in ink, weights in red. the license is not the constraint.</figcaption>';
+})();
+</script>
+</body>
+</html>

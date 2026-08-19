@@ -3,6 +3,14 @@
   "generated": "2026-07-30T04:05:25Z",
   "posts": [
     {
+      "title": "Not your compute, not your model",
+      "url": "https://deskofjim.com/blog/compute/",
+      "date": "2026-08-19",
+      "subtitle": "open weights arrived. the machines to run them did not. on the arithmetic of local inference, the rest of the stack, and a club in new york",
+      "slug": "compute",
+      "local": true
+    },
+    {
       "title": "My Kindle thinks I died in 2022",
       "url": "https://deskofjim.com/blog/kindle/",
       "date": "2026-08-10",
