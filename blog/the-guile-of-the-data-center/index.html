@@ -29,10 +29,9 @@
   .note { color: var(--faint); font-size: .85rem; }
   h2 { font-size: 1rem; margin: 2.6rem 0 .8rem; font-weight: 700; }
   .foot { color: var(--faint); font-size: .85rem; border-top: 1px solid var(--rule); padding-top: 1.2rem; margin-top: 3rem; }
-  .foot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.8rem; }
+  .foot { display:flex; flex-direction:column; align-items:center; text-align:center; gap:.6rem; }
   .foot p { margin:0; }
-  .foot .subscribe-form { margin-top:0; max-width:20rem; flex:1 1 16rem; }
-  @media (max-width:480px) { .foot { flex-direction:column; align-items:flex-start; } .foot .subscribe-form { max-width:100%; width:100%; } }
+  .foot .subscribe-form { margin-top:0; }
 
   .subscribe-form { display: flex; gap: .6rem; max-width: 26rem; margin-top: .6rem; }
   .subscribe-form input {
@@ -91,7 +90,7 @@ Who can blame them for pushing back? Maybe we should reconsider driving
 
 <div class="foot">
   <p><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, august 2026 &middot; <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
-  <iframe class="subscribe-form" src="https://jamesfbaker.substack.com/embed" width="280" height="130" style="border:1px solid var(--rule); background:var(--paper); max-width:100%;" frameborder="0" scrolling="no"></iframe>
+  <iframe class="subscribe-form" src="https://jamesfbaker.substack.com/embed" width="240" height="90" style="max-width:100%;" frameborder="0" scrolling="no"></iframe>
 </div>
 
 </main>
