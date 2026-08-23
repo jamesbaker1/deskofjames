@@ -58,6 +58,10 @@
   li::before { content: "· "; color: var(--faint); }
   .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
   .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+  .foot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.8rem; }
+  .foot p { margin:0; }
+  .foot .subscribe-form { margin-top:0; max-width:20rem; flex:1 1 16rem; }
+  @media (max-width:480px) { .foot { flex-direction:column; align-items:flex-start; } .foot .subscribe-form { max-width:100%; width:100%; } }
   #maptip {
     position: fixed; display: none; pointer-events: none; z-index: 5;
     background: var(--ink); color: var(--paper); font-size: 12px;
@@ -464,23 +468,20 @@
     </ul>
   </section>
 
-  <p class="foot">data: amazon "request my data" → kindle, exported aug 2026. 410 files; sessions
+  <div class="foot">
+    <p>data: amazon "request my data" → kindle, exported aug 2026. 410 files; sessions
   from the reading-insights and device logs, cross-checked against whispersync, library index,
   and lockscreen-ad telemetry. timestamps converted from utc to true local time (nyc, then
   sf jul 15–19, then tokyo/taipei, per the phone's own timezone stamps). every chart is drawn
   from the real arrays, and every fitted parameter (hawkes, von mises, kaplan-meier, BOCPD,
   the 20,000 monte carlo runs) is embedded in this page's source.</p>
-
-  <section style="margin-top:3.2rem;">
-    <h2>subscribe</h2>
-    <p>new posts by email, no spam.</p>
     <form class="subscribe-form" action="https://jamesfbaker.substack.com/api/v1/free" method="post" target="_blank">
   <input type="email" name="email" placeholder="you@email.com" required>
   <button type="submit">subscribe &rarr;</button>
 </form>
-  </section>
+  </div>
 
-  <p class="foot"><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, august 2026 · <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
+<p class="foot"><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, august 2026 · <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
 </main>
 
 <div id="maptip"></div>
