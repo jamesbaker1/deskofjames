@@ -3,6 +3,14 @@
   "generated": "2026-07-30T04:05:25Z",
   "posts": [
     {
+      "title": "The Guile of the Data Center",
+      "url": "https://deskofjim.com/blog/the-guile-of-the-data-center/",
+      "date": "2026-08-23",
+      "subtitle": "on the risk-risk tradeoff, cancer as an alibi, and the fancy financial footwork bankrolling the buildout",
+      "slug": "the-guile-of-the-data-center",
+      "local": true
+    },
+    {
       "title": "A deal gym where the score is a computation",
       "url": "https://deskofjim.com/blog/playbook/",
       "date": "2026-08-19",
