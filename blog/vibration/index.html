@@ -65,6 +65,32 @@
   li { margin-bottom: 0.45rem; }
   li::before { content: "· "; color: var(--faint); }
   .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+
+  .subscribe-form { display: flex; gap: .6rem; max-width: 26rem; margin-top: .6rem; }
+  .subscribe-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    font: inherit;
+    font-size: .95em;
+    padding: .35rem .1rem;
+    outline: none;
+  }
+  .subscribe-form input:focus { border-bottom-color: var(--accent); }
+  .subscribe-form input::placeholder { color: var(--faint); }
+  .subscribe-form button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font: inherit;
+    font-size: .95em;
+    cursor: pointer;
+    padding: .35rem 0;
+    white-space: nowrap;
+  }
+  .subscribe-form button:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -381,10 +407,13 @@
   <section style="margin-top:3.2rem;">
     <h2>subscribe</h2>
     <p>new posts by email, no spam.</p>
-    <iframe src="https://jamesfbaker.substack.com/embed" width="480" height="150" style="border:1px solid var(--rule); background:var(--paper); max-width:100%;" frameborder="0" scrolling="no"></iframe>
+    <form class="subscribe-form" action="https://jamesfbaker.substack.com/api/v1/free" method="post" target="_blank">
+  <input type="email" name="email" placeholder="you@email.com" required>
+  <button type="submit">subscribe &rarr;</button>
+</form>
   </section>
 
-  <p class="foot">James Francis Baker, august 2026 · <a href="https://www.linkedin.com/in/jamesfrancisbaker/">LinkedIn</a> · no cohort data obtained or analysed; everything above is
+  <p class="foot"><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, august 2026 · no cohort data obtained or analysed; everything above is
   published measurements and simulation · <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
 </main>
 <script>
