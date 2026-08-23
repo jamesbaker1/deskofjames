@@ -71,6 +71,10 @@
 
   .note { color: var(--faint); font-size: 0.85rem; max-width: 40rem; }
   .foot { margin-top: 4rem; color: var(--faint); font-size: 0.85rem; }
+  .foot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.8rem; }
+  .foot p { margin:0; }
+  .foot .subscribe-form { margin-top:0; max-width:20rem; flex:1 1 16rem; }
+  @media (max-width:480px) { .foot { flex-direction:column; align-items:flex-start; } .foot .subscribe-form { max-width:100%; width:100%; } }
 
   .subscribe-form { display: flex; gap: .6rem; max-width: 26rem; margin-top: .6rem; }
   .subscribe-form input {
@@ -517,16 +521,13 @@
 
   </section>
 
-  <section style="margin-top:3rem;">
-  <h2>Subscribe</h2>
-  <p>new posts by email, no spam.</p>
+<div class="foot">
+  <p><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, <time datetime="2026-08-19">august 19, 2026</time> · <a href="https://github.com/jamesbaker1/playbook">the gym is open source</a> · <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
   <form class="subscribe-form" action="https://jamesfbaker.substack.com/api/v1/free" method="post" target="_blank">
   <input type="email" name="email" placeholder="you@email.com" required>
   <button type="submit">subscribe &rarr;</button>
 </form>
-  </section>
-
-  <p class="foot"><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, <time datetime="2026-08-19">august 19, 2026</time> · <a href="https://github.com/jamesbaker1/playbook">the gym is open source</a> · <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
+</div>
 </main>
 </body>
 </html>
