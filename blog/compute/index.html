@@ -74,69 +74,86 @@
 <p class="sub">open weights arrived. the machines to run them did not. on the arithmetic of local inference, the rest of the stack, and a club in new york.</p>
 
 <section>
-<p>the crypto world left behind exactly one saying that turned out to be
-durably true: not your keys, not your coins. every exchange collapse
-proved it over again, which is the only test a saying like that ever
-faces. i've been thinking about it lately with the nouns swapped, because
-i believe the same principle now applies to ai: not your compute, not
-your model.</p>
+<p>crypto produced exactly one saying that stayed true through every
+collapse: not your keys, not your coins. hold your coins on an exchange
+and what you actually hold is an iou from whoever runs the exchange. i
+keep coming back to that saying with the nouns swapped, because the
+open-model era has quietly reproduced the same structure: not your
+compute, not your model.</p>
 
-<p>open models are having a remarkable run, and yet the people they were
-meant for aren't really reaping the rewards. deepseek ships
-frontier-adjacent weights under an mit license, meta ships llama under
-terms you can live with, and all of it is sitting on hugging face
-tonight, free to download. the trouble is that almost nobody who
-downloads those weights can actually run them. i want to walk through
-why, and then tell you about a club in new york that's trying to do
-something about it.</p>
+<p>here is the paradox. open weights have never been better or freer.
+deepseek ships frontier-adjacent weights under an mit license, meta ships
+llama under terms you can live with, and all of it is sitting on hugging
+face tonight, free to download. by the usual logic of open source, this
+should be the moment control over ai diffuses out to anyone with a
+machine and a compiler. instead, almost nobody who downloads those
+weights can run them. the gap between "licensed to you" and "runnable by
+you" is the subject of this post: the first half is about why that gap
+exists, because it is wider than it looks and it is not just about gpus,
+and the second half is about what a few of us in new york are building to
+close it.</p>
 </section>
 
 <section>
 <h2>the arithmetic</h2>
 
-<p>start with the sizes. deepseek v3.2 has 685 billion parameters and is
-fp8 native, which puts the weights alone at about 685gb before the kv
-cache takes a single byte. kimi k3, the largest open model right now, is
-2.8 trillion parameters, closer to three terabytes. for comparison, the
-largest consumer gpu nvidia sells holds about 32gb. even if you quantize
-deepseek down to 4 bits, it still wants about 340gb, which works out to
-eleven consumer cards wired together. and you can't actually wire eleven
-consumer cards together, because the high-speed interconnect that makes
-multi-gpu inference work is the real product, and it isn't sold at the
-consumer tier.</p>
+<p>the first wall is memory, and it's worth doing the numbers honestly.
+deepseek v3.2 has 685 billion parameters and is fp8 native, so the
+weights alone occupy about 685gb before the kv cache claims a byte. kimi
+k3, the largest open model right now, is 2.8 trillion parameters, closer
+to three terabytes. the largest consumer gpu nvidia sells holds about
+32gb.</p>
 
 <figure id="fig-vram"></figure>
 
-<p>so the license says the model is yours, but the memory map says it
-belongs to whoever owns an 8x h100 node. those start around $250,000
-racked, or you can rent one by the hour from the same few clouds the
-open weights were supposed to make optional. the weights are open; the
-socket they need is closed.</p>
+<p>quantization narrows the gap less than you'd hope. push deepseek down
+to 4 bits and it still wants roughly 340gb, which is eleven consumer
+cards' worth of vram. sparsity doesn't rescue you either: these are
+mixture-of-experts models, and while only a small fraction of the
+parameters activate for any given token, you don't know which experts the
+next token will route to, so every expert has to be resident. the memory
+bill is for the whole model, always.</p>
+
+<p>so could you wire eleven consumer cards together? not usefully.
+splitting a model across gpus means shipping activations between them at
+every layer, and the bandwidth that makes that viable — nvlink, and the
+switching fabric around it — is exactly what nvidia reserves for its
+datacenter parts. consumer cards talk to each other over pcie, and recent
+generations dropped nvlink entirely. the interconnect is the actual
+product, and it does not come in consumer.</p>
+
+<p>which leaves the practical unit of open-model inference: the 8x h100
+node. those start around $250,000 racked, or you can rent one by the hour
+from the same few clouds the open weights were supposed to make optional.
+the license says the model is yours. the memory map says it belongs to
+whoever owns the node.</p>
 </section>
 
 <section>
 <h2>weights are the binary</h2>
 
-<p>there's a second, quieter problem, which is that "open weights" and
-"open source" get used interchangeably and mean different things. calling
-weights open source is like calling a compiled binary open source. the
-source of a model is everything that produced it: the training data, the
-filtering pipeline, the training code, the schedule, the post-training
-recipe, and the evals that decided which checkpoint shipped. a typical
-open release includes none of those. what you get is the finished
-artifact and a license to run it, on hardware you don't have.</p>
+<p>the second wall is quieter: what shipped isn't source. calling
+weights "open source" is like calling a compiled binary open source. the
+source of a model — everything you'd need to reproduce it or meaningfully
+fork it — is the training data, the filtering pipeline, the training code,
+the schedule, the post-training recipe, and the evals that decided which
+checkpoint shipped. a typical open release includes none of those. you
+can fine-tune the artifact, the way you can patch bytes in a binary, but
+you can't rebuild it, audit what went into it, or fork the process that
+produced it. what you hold is the artifact and a license to run it, on
+hardware you don't have.</p>
 </section>
 
 <section>
 <h2>the rest of the stack</h2>
 
-<p>even with weights and hardware in hand, inference is its own software
-problem. you need an engine (paged kv cache, continuous batching,
-quantized kernels), a scheduler that decides whose job runs when the vram
-runs out, and a way to move jobs between machines without reading them.
-none of that arrives with the weights either. i find it clarifying to
-picture the stack under a running model as six layers, of which "weights"
-is only one:</p>
+<p>the third wall is that even with weights and hardware in hand,
+inference is its own software problem. you need an engine — paged kv
+cache, continuous batching, quantized kernels. you need a scheduler that
+decides whose job runs when the vram runs out. you need a way to move
+jobs between machines without the machines being able to read them. none
+of that arrives with the weights either. laid out end to end, the stack
+under a running model has six layers, and "weights" is one of them:</p>
 
 <ul>
 <li>training data</li>
@@ -148,26 +165,36 @@ is only one:</p>
 </ul>
 
 <p>the fight over layer three is the loud one, because it's the only
-layer with a license attached. the other five tend to get decided by
-default, and the default is renting. renting is genuinely fine, right up
-until the landlord deprecates the model you built on, or rate-limits you
-in the middle of an experiment, or logs what you send. i don't think the
-fix is everyone buying their own 8x h100 node. i think it's a cluster
-that a community owns and operates together, decentralized by
-design.</p>
+layer with a license attached. the other five get decided by default, and
+the default at every one of them is renting. renting is genuinely fine,
+right up until it isn't: the landlord deprecates the model you built on,
+or rate-limits you in the middle of an experiment, or logs what you send.
+none of that requires malice. it's just what happens when the layer you
+depend on is operated for someone else's purposes, and yours only
+coincide with theirs on average.</p>
+
+<p>so that's the problem, stated as flatly as i can manage: the
+open-model era has the licenses of a commons and the physical structure
+of a landlord economy. the fix is not everyone buying their own 8x h100
+node — the arithmetic above rules that out for almost everyone. the fix
+is the one communities have always reached for when the capital is too
+lumpy for one person: pool it.</p>
 </section>
 
 <section>
 <h2>the club</h2>
 
 <p>which brings me to the <a
-href="https://newyorkcomputeclub.com">new york compute club</a>. members
-rack their own hardware somewhere in the five boroughs, and the club
-schedules jobs across all of it. jobs travel as libsodium sealed boxes,
-so the coordinator that routes them sees only ciphertext, a node id, and
-a self-reported wattage. it cannot read what you run. the threat model is
-written down, and it is honest about what the design doesn't protect
-against, which is how you can tell it's a real threat model.</p>
+href="https://newyorkcomputeclub.com">new york compute club</a>. the
+shape is simple: members rack their own hardware somewhere in the five
+boroughs, and the club schedules jobs across all of it. what makes it
+more than a shared gpu spreadsheet is the trust design. jobs travel as
+libsodium sealed boxes, so the coordinator that routes them sees only
+ciphertext, a node id, and a self-reported wattage. it cannot read what
+you run — not as a policy, but as a property of the construction. the
+threat model is written down, and it is candid about what the design does
+not protect against, which is how you can tell it's a real threat model
+and not marketing.</p>
 
 <p>the software is public and unfinished. <a
 href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
@@ -184,16 +211,19 @@ the buildings are not: the lights above the island are 60 hudson st, 111
 8th ave, and the teleport. pull requests move your application up the
 pile.</p>
 
-<p>i should be honest about scale: the cluster is currently a few nodes
-and an extension cord. that is exactly what the applications are for, and
-they're open at <a
+<p>i want to be honest about scale: the cluster today is a few nodes and
+an extension cord. that is exactly what the applications are for. if the
+memory arithmetic above describes your relationship with open models —
+weights you're licensed to run and no way to run them — they're open at
+<a
 href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
 
-<p>there's an obvious next chapter, too: not your power, not your model.
-an h100 turns electricity into gradients at 700 watts a card, and whoever
-meters that electricity holds a veto over everything above it. one member
-has a basement in red hook and strong opinions about generators. but
-that's a later post.</p>
+<p>and there's an obvious next chapter, because compute isn't the bottom
+of the stack either: not your power, not your model. an h100 turns
+electricity into gradients at 700 watts a card, and whoever meters that
+electricity holds a veto over everything above it. one member has a
+basement in red hook and strong opinions about generators. but that's a
+later post.</p>
 </section>
 
 <section>
