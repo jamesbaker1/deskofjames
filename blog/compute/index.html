@@ -75,10 +75,10 @@
 
 <section>
 <p>crypto produced exactly one saying that stayed true through every
-collapse: not your keys, not your coins. hold your coins on an exchange
+collapse — not your keys, not your coins. hold your coins on an exchange
 and what you actually hold is an iou from whoever runs the exchange. i
 keep coming back to that saying with the nouns swapped, because the
-open-model era has quietly reproduced the same structure: not your
+open-model era has quietly reproduced the same structure. not your
 compute, not your model.</p>
 
 <p>here is the paradox. open weights have never been better or freer.
@@ -88,7 +88,7 @@ face tonight, free to download. by the usual logic of open source, this
 should be the moment control over ai diffuses out to anyone with a
 machine and a compiler. instead, almost nobody who downloads those
 weights can run them. the gap between "licensed to you" and "runnable by
-you" is the subject of this post: the first half is about why that gap
+you" is the subject of this post. the first half is about why that gap
 exists, because it is wider than it looks and it is not just about gpus,
 and the second half is about what a few of us in new york are building to
 close it.</p>
@@ -108,11 +108,11 @@ to three terabytes. the largest consumer gpu nvidia sells holds about
 
 <p>quantization narrows the gap less than you'd hope. push deepseek down
 to 4 bits and it still wants roughly 340gb, which is eleven consumer
-cards' worth of vram. sparsity doesn't rescue you either: these are
-mixture-of-experts models, and while only a small fraction of the
-parameters activate for any given token, you don't know which experts the
-next token will route to, so every expert has to be resident. the memory
-bill is for the whole model, always.</p>
+cards' worth of vram. sparsity doesn't rescue you either, because these
+are mixture-of-experts models. only a small fraction of the parameters
+activate for any given token, but you don't know which experts the next
+token will route to, so every expert has to be resident. the memory bill
+is for the whole model, always.</p>
 
 <p>so could you wire eleven consumer cards together? not usefully.
 splitting a model across gpus means shipping activations between them at
@@ -122,8 +122,8 @@ datacenter parts. consumer cards talk to each other over pcie, and recent
 generations dropped nvlink entirely. the interconnect is the actual
 product, and it does not come in consumer.</p>
 
-<p>which leaves the practical unit of open-model inference: the 8x h100
-node. those start around $250,000 racked, or you can rent one by the hour
+<p>which leaves the 8x h100 node as the practical unit of open-model
+inference. those start around $250,000 racked, or you can rent one by the hour
 from the same few clouds the open weights were supposed to make optional.
 the license says the model is yours. the memory map says it belongs to
 whoever owns the node.</p>
@@ -132,7 +132,7 @@ whoever owns the node.</p>
 <section>
 <h2>weights are the binary</h2>
 
-<p>the second wall is quieter: what shipped isn't source. calling
+<p>the second wall is quieter. what shipped isn't source, and calling
 weights "open source" is like calling a compiled binary open source. the
 source of a model — everything you'd need to reproduce it or meaningfully
 fork it — is the training data, the filtering pipeline, the training code,
@@ -153,7 +153,8 @@ cache, continuous batching, quantized kernels. you need a scheduler that
 decides whose job runs when the vram runs out. you need a way to move
 jobs between machines without the machines being able to read them. none
 of that arrives with the weights either. laid out end to end, the stack
-under a running model has six layers, and "weights" is one of them:</p>
+under a running model has six layers, and "weights" is only one of
+them.</p>
 
 <ul>
 <li>training data</li>
@@ -166,19 +167,19 @@ under a running model has six layers, and "weights" is one of them:</p>
 
 <p>the fight over layer three is the loud one, because it's the only
 layer with a license attached. the other five get decided by default, and
-the default at every one of them is renting. renting is genuinely fine,
-right up until it isn't: the landlord deprecates the model you built on,
-or rate-limits you in the middle of an experiment, or logs what you send.
+the default at every one of them is renting. renting is genuinely fine
+right up until the landlord deprecates the model you built on, or
+rate-limits you in the middle of an experiment, or logs what you send.
 none of that requires malice. it's just what happens when the layer you
 depend on is operated for someone else's purposes, and yours only
 coincide with theirs on average.</p>
 
-<p>so that's the problem, stated as flatly as i can manage: the
+<p>so here is the problem, stated as flatly as i can manage. the
 open-model era has the licenses of a commons and the physical structure
 of a landlord economy. the fix is not everyone buying their own 8x h100
 node — the arithmetic above rules that out for almost everyone. the fix
 is the one communities have always reached for when the capital is too
-lumpy for one person: pool it.</p>
+lumpy for any one person, which is to pool it.</p>
 </section>
 
 <section>
@@ -186,7 +187,7 @@ lumpy for one person: pool it.</p>
 
 <p>which brings me to the <a
 href="https://newyorkcomputeclub.com">new york compute club</a>. the
-shape is simple: members rack their own hardware somewhere in the five
+shape is simple. members rack their own hardware somewhere in the five
 boroughs, and the club schedules jobs across all of it. what makes it
 more than a shared gpu spreadsheet is the trust design. jobs travel as
 libsodium sealed boxes, so the coordinator that routes them sees only
@@ -202,16 +203,16 @@ small inference engine, with a paged kv cache, continuous batching,
 priority scheduling, and a numpy reference model you can read in an
 afternoon. <a
 href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a> is the
-mesh: sealed jobs, signed node traffic, and an untrusted coordinator kept
-small enough to audit. <a
+mesh, with sealed jobs, signed node traffic, and an untrusted coordinator
+kept small enough to audit. <a
 href="https://github.com/jamesbaker1/newyorkcomputeclub">newyorkcomputeclub</a>
 is the site, which renders manhattan as a load histogram. the load
 numbers are invented until enough nodes exist to report real ones, but
-the buildings are not: the lights above the island are 60 hudson st, 111
+the buildings are not. the lights above the island are 60 hudson st, 111
 8th ave, and the teleport. pull requests move your application up the
 pile.</p>
 
-<p>i want to be honest about scale: the cluster today is a few nodes and
+<p>i want to be honest about scale. the cluster today is a few nodes and
 an extension cord. that is exactly what the applications are for. if the
 memory arithmetic above describes your relationship with open models —
 weights you're licensed to run and no way to run them — they're open at
@@ -219,7 +220,7 @@ weights you're licensed to run and no way to run them — they're open at
 href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
 
 <p>and there's an obvious next chapter, because compute isn't the bottom
-of the stack either: not your power, not your model. an h100 turns
+of the stack either. not your power, not your model. an h100 turns
 electricity into gradients at 700 watts a card, and whoever meters that
 electricity holds a veto over everything above it. one member has a
 basement in red hook and strong opinions about generators. but that's a
@@ -257,7 +258,7 @@ later post.</p>
   ];
   var W = 640, RH = 26, PAD = 150, max = 1400;
   var H = rows.length * RH + 24;
-  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="memory sizes: consumer and datacenter hardware against open model weights" style="width:100%;height:auto;font:11.5px ui-monospace,Consolas,monospace">';
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="memory sizes of consumer and datacenter hardware against open model weights" style="width:100%;height:auto;font:11.5px ui-monospace,Consolas,monospace">';
   rows.forEach(function (r, i) {
     var y = i * RH + 12;
     var w = (W - PAD - 60) * (r[1] / max);
