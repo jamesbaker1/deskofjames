@@ -28,4 +28,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=deskofjim --branch=master --commit-hash=${{ github.sha }} --commit-message="${{ github.event.head_commit.message || 'manual run' }}"
+          command: pages deploy . --project-name=deskofjim --branch=master --commit-dirty=true
