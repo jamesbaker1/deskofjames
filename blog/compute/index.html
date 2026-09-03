@@ -4,10 +4,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>not your compute, not your model</title>
+<title>Not Your Compute, Not Your Model</title>
 <link rel="canonical" href="https://deskofjim.com/blog/compute/">
 <link rel="icon" href="/favicon.svg">
-<meta name="description" content="on why open weights are so hard to run even when you are licensed to run them, and on a club in new york that pools hardware to do it.">
+<meta name="description" content="On why open weights are so hard to run even when you're licensed to run them, and on a club in New York that pools the hardware to do it.">
 <style>
   :root { --ink:#1a1916; --paper:#f7f5f0; --faint:#8a857a; --rule:#d8d4ca; --accent:#b3372c; }
   * { box-sizing: border-box; }
@@ -70,171 +70,173 @@
 <main>
 <p class="note"><a href="/blog/">&larr; blog</a></p>
 
-<h1>not your compute, not your model</h1>
-<p class="sub">on why open weights are so hard to run even when you are licensed to run them, and on a club in new york that pools hardware to do it.</p>
+<h1>Not Your Compute, Not Your Model</h1>
+<p class="sub">On why open weights are so hard to run even when you're licensed to run them, and on a club in New York that pools the hardware to do it.</p>
 
 <section>
-<p>crypto produced exactly one saying that stayed true through every
-collapse, which is not your keys, not your coins. hold your coins on an exchange
-and what you actually hold is an iou from whoever runs the exchange. i
-keep coming back to that saying with the nouns swapped, because the
-open-model era has reproduced the same structure. not your
+<p>Crypto produced exactly one saying that stayed true through every
+collapse, which is not your keys, not your coins. Hold your coins on an
+exchange and what you actually hold is an IOU from whoever runs the
+exchange. I keep coming back to that saying with the nouns swapped,
+because the open-model era has reproduced the same structure. Not your
 compute, not your model.</p>
 
-<p>the strange part is that open weights have never been better or
-easier to get. deepseek releases weights close to the frontier under an
-mit license, and all of it is sitting on hugging face right now for
-anyone to download. if this were ordinary open source software, this would be the
-point where control over ai spreads out to anyone with a machine and a
-compiler. that isn't what has happened. most people who download those
-weights have nowhere to run them. this post is about the gap between
-being licensed to run a model and being able to run it. the first half
-covers why the gap exists, and why it is wider than it looks and not only
-a matter of gpus. the second half is about what a few of us in new york
-are building to close it.</p>
+<p>The strange part is that open weights have never been better or
+easier to get. DeepSeek releases weights close to the frontier under an
+MIT license, and all of it is sitting on Hugging Face right now for
+anyone to download. If this were ordinary open source software, this
+would be the point where control over AI spreads out to anyone with a
+machine and a compiler. That isn't what has happened. Most people who
+download those weights, and I include myself, have nowhere to run them.
+This post is about the gap between being licensed to run a model and
+being able to run it. The first half covers why the gap exists, and why
+it is wider than it looks and not only a matter of GPUs. The second half
+is about what a few of us in New York are building to close it.</p>
 </section>
 
 <section>
-<h2>the arithmetic</h2>
+<h2>The Arithmetic</h2>
 
-<p>the first wall is memory.
-deepseek v3.2 has 685 billion parameters and is fp8 native, so the
-weights alone occupy about 685gb before the kv cache. kimi
-k3, the largest open model right now, is 2.8 trillion parameters, closer
-to three terabytes. the largest consumer gpu nvidia sells holds about
-32gb.</p>
+<p>The first wall is memory. DeepSeek V3.2 has 685 billion parameters
+and is FP8 native, so the weights alone occupy about 685 GB before the KV
+cache. Kimi K3, the largest open model right now, is 2.8 trillion
+parameters, closer to three terabytes. The largest consumer GPU Nvidia
+sells holds about 32 GB.</p>
 
 <figure id="fig-vram"></figure>
 
-<p>quantization narrows the gap less than you'd hope. push deepseek down
-to 4 bits and it still wants roughly 340gb, which is eleven consumer
-cards' worth of vram. sparsity doesn't rescue you either. these are
+<p>Quantization narrows the gap less than you'd hope. Push DeepSeek down
+to 4 bits and it still wants roughly 340 GB, which is eleven consumer
+cards' worth of VRAM. Sparsity doesn't rescue you either. These are
 mixture-of-experts models, so only a few experts fire for any given
 token, but you don't know which ones the next token will route to, and
-every expert has to be held in memory. the memory bill is for the whole model,
-always.</p>
+every expert has to be held in memory. The memory bill is for the whole
+model, always.</p>
 
-<p>so could you wire eleven consumer cards together? not usefully.
-splitting a model across gpus means shipping activations between them at
-every layer. the bandwidth that makes that viable, nvlink and the
-switching fabric around it, is exactly what nvidia reserves for its
-datacenter parts. consumer cards talk to each other over pcie, and recent
-generations dropped nvlink entirely.</p>
+<p>So could you wire eleven consumer cards together? Not usefully.
+Splitting a model across GPUs means shipping activations between them at
+every layer. The bandwidth that makes that viable, NVLink and the
+switching fabric around it, is exactly what Nvidia reserves for its
+datacenter parts. Consumer cards talk to each other over PCIe, and recent
+generations dropped NVLink entirely.</p>
 
-<p>which leaves the 8x h100 node as the practical unit of open-model
-inference. those start around $250,000 racked, or you can rent one by the hour
-from the same few clouds the open weights were supposed to make optional.</p>
+<p>Which leaves the 8x H100 node as the practical unit of open-model
+inference. Those start around $250,000 racked, or you can rent one by
+the hour from the same few clouds the open weights were supposed to make
+optional.</p>
 </section>
 
 <section>
-<h2>weights are the binary</h2>
+<h2>Weights Are the Binary</h2>
 
-<p>the second wall is source code. the source of a model, meaning everything you'd need to reproduce it or
-meaningfully fork it, is the training data, the filtering pipeline, the training code,
-the schedule, the post-training recipe, and the evals that decided which
-checkpoint shipped. a typical open release includes none of those. you
-can fine-tune the artifact, the way you can patch bytes in a binary, but
-you can't rebuild it, audit what went into it, or fork the process that
-produced it. what you hold is the artifact and a license to run it, on
-hardware you don't have.</p>
+<p>The second wall is source code. The source of a model, meaning
+everything you'd need to reproduce it or meaningfully fork it, is the
+training data, the filtering pipeline, the training code, the schedule,
+the post-training recipe, and the evals that decided which checkpoint
+shipped. A typical open release includes none of those. You can fine-tune
+the artifact, the way you can patch bytes in a binary, but you can't
+rebuild it, audit what went into it, or fork the process that produced
+it. What you hold is the artifact and a license to run it, on hardware
+you don't have.</p>
 </section>
 
 <section>
-<h2>the rest of the stack</h2>
+<h2>The Rest of the Stack</h2>
 
-<p>the third wall is that even with weights and hardware in hand,
-inference is its own software problem. you need an engine, with a paged kv
-cache, continuous batching, and quantized kernels. you need a scheduler that
-decides whose job runs when the vram runs out. you need a way to move
-jobs between machines without the machines being able to read them. none
-of that arrives with the weights either. laid out end to end, the stack
-under a running model has six layers, and "weights" is only one of
-them.</p>
+<p>The third wall is that even with weights and hardware in hand,
+inference is its own software problem. You need an engine, with a paged
+KV cache, continuous batching, and quantized kernels. You need a
+scheduler that decides whose job runs when the VRAM runs out. You need a
+way to move jobs between machines without the machines being able to
+read them. None of that arrives with the weights either. Laid out end to
+end, the stack under a running model has six layers, and weights are
+only one of them.</p>
 
 <ul>
-<li>training data</li>
-<li>training code and recipe</li>
-<li>weights</li>
-<li>inference engine</li>
-<li>scheduling and routing</li>
-<li>power and cooling</li>
+<li>Training data</li>
+<li>Training code and recipe</li>
+<li>Weights</li>
+<li>Inference engine</li>
+<li>Scheduling and routing</li>
+<li>Power and cooling</li>
 </ul>
 
-<p>the fight over weights is the loud one, because it's the only
-layer with a license attached. the other five get decided by default, and
-the default at every one of them is renting. renting is fine
-right up until the landlord deprecates the model you built on, or
-rate-limits you in the middle of an experiment, or logs what you send.
-none of that requires malice. it's just what happens when the layer you
-depend on is operated for someone else's purposes, and yours only
-coincide with theirs on average.</p>
+<p>The fight over weights is the loud one, because it's the only layer
+with a license attached. The other five get decided by default, and the
+default at every one of them is renting. Renting is fine right up until
+the landlord deprecates the model you built on, or rate-limits you in
+the middle of an experiment, or logs what you send. None of that requires
+malice. It's just what happens when the layer you depend on is operated
+for someone else's purposes, and yours only coincide with theirs on
+average. I've been on the wrong end of each of those at least once.</p>
 
-<p>so here is the problem. the
-open-model era has the licenses of a commons and the physical structure
-of a landlord economy. the fix is not everyone buying their own 8x h100
-node, since the arithmetic above rules that out for almost everyone. the fix
-is the one communities have always reached for when the capital is too
-lumpy for any one person, which is to pool it.</p>
+<p>So here is the problem as I see it. The open-model era has the
+licenses of a commons and the physical structure of a landlord economy.
+The fix is not everyone buying their own 8x H100 node, since the
+arithmetic above rules that out for almost everyone, me included. The
+fix is the one communities have always reached for when the capital is
+too lumpy for any one person, which is to pool it.</p>
 </section>
 
 <section>
-<h2>the club</h2>
+<h2>The Club</h2>
 
-<p>which brings me to the <a
-href="https://newyorkcomputeclub.com">new york compute club</a>. the
-cluster today is a few nodes and an extension cord. the shape is simple. members rack
-their own hardware somewhere in the five boroughs, and the club
-schedules jobs across all of it. what makes it more than a shared gpu
-spreadsheet is the trust design. jobs travel as libsodium sealed boxes,
-so the coordinator that routes them sees only ciphertext, a node id,
-and a self-reported wattage. it cannot read what you run, and that is a
-property of the construction rather than a policy. the threat model is
-written down, and it says what the design does not protect
-against, which is how you can tell it's a real threat model and not
-marketing.</p>
+<p>Which brings me to the <a
+href="https://newyorkcomputeclub.com">New York Compute Club</a>, the
+thing I've been building. The cluster today is a few nodes and an
+extension cord. The shape is simple. Members rack their own hardware
+somewhere in the five boroughs, and the club schedules jobs across all
+of it. What makes it more than a shared GPU spreadsheet is the trust
+design. Jobs travel as libsodium sealed boxes, so the coordinator that
+routes them sees only ciphertext, a node ID, and a self-reported wattage.
+It cannot read what you run, and that is a property of the construction
+rather than a policy. I wrote the threat model down, and it says what
+the design does not protect against, which is how you can tell it's a
+real threat model and not marketing.</p>
 
-<p><a
+<p>All of the software is on GitHub. <a
 href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
-small inference engine, with a paged kv cache, continuous batching,
-priority scheduling, and a numpy reference model you can read in an
+small inference engine, with a paged KV cache, continuous batching,
+priority scheduling, and a NumPy reference model you can read in an
 afternoon. <a
 href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a> is the
 mesh, with sealed jobs, signed node traffic, and an untrusted coordinator
 kept small enough to audit. <a
 href="https://github.com/jamesbaker1/newyorkcomputeclub">newyorkcomputeclub</a>
-is the site, which renders manhattan as a load histogram. the load
+is the site, which renders Manhattan as a load histogram. The load
 numbers are invented until enough nodes exist to report real ones, but
-the buildings are not. the lights above the island are 60 hudson st, 111
-8th ave, and the teleport. pull requests move your application up the
+the buildings are not. The lights above the island are 60 Hudson St, 111
+8th Ave, and the Teleport. Pull requests move your application up the
 pile.</p>
 
-<p>the applications exist to change that node count. if the memory
+<p>The applications exist to change that node count. If the memory
 arithmetic above describes your relationship with open models, weights
 you're licensed to run and no way to run them, they're open at
 <a
-href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
+href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.
+I read every one.</p>
 
-<p>and there's an obvious next chapter, because compute isn't the bottom
-of the stack either. not your power, not your model. an h100 turns
+<p>And there's an obvious next chapter, because compute isn't the bottom
+of the stack either. Not your power, not your model. An H100 turns
 electricity into gradients at 700 watts a card, and whoever meters that
-electricity holds a veto over everything above it. one member has a
-basement in red hook and strong opinions about generators. but that's a
+electricity holds a veto over everything above it. One member has a
+basement in Red Hook and strong opinions about generators. But that's a
 later post.</p>
 </section>
 
 <section>
-<h2>artifacts</h2>
+<h2>Artifacts</h2>
 <ul>
 <li><a href="https://newyorkcomputeclub.com">newyorkcomputeclub.com</a>, the site</li>
-<li><a href="https://newyorkcomputeclub.com/about">the application</a></li>
+<li><a href="https://newyorkcomputeclub.com/about">The application</a></li>
 <li><a href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a>, the engine</li>
 <li><a href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a>, the mesh</li>
-<li><a href="https://github.com/jamesbaker1/newyorkcomputeclub">the site's source</a></li>
+<li><a href="https://github.com/jamesbaker1/newyorkcomputeclub">The site's source</a></li>
 </ul>
 </section>
 
 <div class="foot">
-  <p><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, august 2026 &middot; the club answers slowly &middot; <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
+  <p><a href="https://www.linkedin.com/in/jamesfrancisbaker/">James Baker</a>, August 2026 &middot; The club answers slowly &middot; <a href="mailto:j@deskofjim.com">j@deskofjim.com</a></p>
   <iframe class="subscribe-form" src="https://jamesfbaker.substack.com/embed" width="420" height="130" style="max-width:100%; border:1px solid var(--rule);" frameborder="0" scrolling="auto" loading="lazy"></iframe>
 </div>
 
@@ -244,12 +246,12 @@ later post.</p>
   // gb on the x axis. hardware in ink, weights in accent. spec sheets as of
   // august 2026; the 512gb mac studio config was discontinued in february.
   var rows = [
-    ['rtx 5090 (consumer)', 32, 0],
-    ['h100 (one card)', 80, 0],
-    ['mac studio', 512, 0],
-    ['deepseek v3.2, 4-bit', 343, 1],
-    ['deepseek v3.2, fp8', 685, 1],
-    ['kimi k3, 4-bit', 1400, 1],
+    ['RTX 5090 (consumer)', 32, 0],
+    ['H100 (one card)', 80, 0],
+    ['Mac Studio', 512, 0],
+    ['DeepSeek V3.2, 4-bit', 343, 1],
+    ['DeepSeek V3.2, FP8', 685, 1],
+    ['Kimi K3, 4-bit', 1400, 1],
   ];
   var W = 640, RH = 26, PAD = 150, max = 1400;
   var H = rows.length * RH + 24;
@@ -264,7 +266,7 @@ later post.</p>
   });
   s += '</svg>';
   var f = document.getElementById('fig-vram');
-  f.innerHTML = s + '<figcaption>gigabytes. hardware in ink, weights in red. the license isn\'t the constraint.</figcaption>';
+  f.innerHTML = s + '<figcaption>Gigabytes. Hardware in ink, weights in red. The license isn\'t the constraint.</figcaption>';
 })();
 </script>
 <!-- Cloudflare Web Analytics -->
