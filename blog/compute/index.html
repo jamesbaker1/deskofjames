@@ -75,7 +75,7 @@
 
 <section>
 <p>crypto produced exactly one saying that stayed true through every
-collapse — not your keys, not your coins. hold your coins on an exchange
+collapse, which is not your keys, not your coins. hold your coins on an exchange
 and what you actually hold is an iou from whoever runs the exchange. i
 keep coming back to that saying with the nouns swapped, because the
 open-model era has reproduced the same structure. not your
@@ -134,8 +134,8 @@ whoever owns the node.</p>
 
 <p>the second wall is quieter. what shipped isn't source, and calling
 weights "open source" is like calling a compiled binary open source. the
-source of a model — everything you'd need to reproduce it or meaningfully
-fork it — is the training data, the filtering pipeline, the training code,
+source of a model, meaning everything you'd need to reproduce it or
+meaningfully fork it, is the training data, the filtering pipeline, the training code,
 the schedule, the post-training recipe, and the evals that decided which
 checkpoint shipped. a typical open release includes none of those. you
 can fine-tune the artifact, the way you can patch bytes in a binary, but
@@ -148,8 +148,8 @@ hardware you don't have.</p>
 <h2>the rest of the stack</h2>
 
 <p>the third wall is that even with weights and hardware in hand,
-inference is its own software problem. you need an engine — paged kv
-cache, continuous batching, quantized kernels. you need a scheduler that
+inference is its own software problem. you need an engine, with a paged kv
+cache, continuous batching, and quantized kernels. you need a scheduler that
 decides whose job runs when the vram runs out. you need a way to move
 jobs between machines without the machines being able to read them. none
 of that arrives with the weights either. laid out end to end, the stack
@@ -177,7 +177,7 @@ coincide with theirs on average.</p>
 <p>so here is the problem, stated as flatly as i can manage. the
 open-model era has the licenses of a commons and the physical structure
 of a landlord economy. the fix is not everyone buying their own 8x h100
-node — the arithmetic above rules that out for almost everyone. the fix
+node, since the arithmetic above rules that out for almost everyone. the fix
 is the one communities have always reached for when the capital is too
 lumpy for any one person, which is to pool it.</p>
 </section>
