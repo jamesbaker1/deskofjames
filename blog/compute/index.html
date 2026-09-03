@@ -95,9 +95,9 @@ is about what a few of us in New York are building to close it.</p>
 </section>
 
 <section>
-<h2>The Arithmetic</h2>
+<h2>Doing the Numbers</h2>
 
-<p>The first wall is memory. DeepSeek V3.2 has 685 billion parameters
+<p>DeepSeek V3.2 has 685 billion parameters
 and is FP8 native, so the weights alone occupy about 685 GB before the KV
 cache. Kimi K3, the largest open model right now, is 2.8 trillion
 parameters, closer to three terabytes. The largest consumer GPU Nvidia
@@ -129,7 +129,7 @@ optional.</p>
 <section>
 <h2>Weights Are the Binary</h2>
 
-<p>The second wall is source code. The source of a model, meaning
+<p>The next wall is source code. The source of a model, meaning
 everything you'd need to reproduce it or meaningfully fork it, is the
 training data, the filtering pipeline, the training code, the schedule,
 the post-training recipe, and the evals that decided which checkpoint
@@ -143,7 +143,7 @@ you don't have.</p>
 <section>
 <h2>The Rest of the Stack</h2>
 
-<p>The third wall is that even with weights and hardware in hand,
+<p>The last wall is that even with weights and hardware in hand,
 inference is its own software problem. You need an engine, with a paged
 KV cache, continuous batching, and quantized kernels. You need a
 scheduler that decides whose job runs when the VRAM runs out. You need a
