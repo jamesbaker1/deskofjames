@@ -123,17 +123,13 @@ generations dropped nvlink entirely.</p>
 
 <p>which leaves the 8x h100 node as the practical unit of open-model
 inference. those start around $250,000 racked, or you can rent one by the hour
-from the same few clouds the open weights were supposed to make optional.
-the license says the model is yours. the memory map says it belongs to
-whoever owns the node.</p>
+from the same few clouds the open weights were supposed to make optional.</p>
 </section>
 
 <section>
 <h2>weights are the binary</h2>
 
-<p>the second wall is quieter. what shipped isn't source, and calling
-weights "open source" is like calling a compiled binary open source. the
-source of a model, meaning everything you'd need to reproduce it or
+<p>the second wall is source code. the source of a model, meaning everything you'd need to reproduce it or
 meaningfully fork it, is the training data, the filtering pipeline, the training code,
 the schedule, the post-training recipe, and the evals that decided which
 checkpoint shipped. a typical open release includes none of those. you
