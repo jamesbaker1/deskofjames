@@ -7,7 +7,7 @@
 <title>not your compute, not your model</title>
 <link rel="canonical" href="https://deskofjim.com/blog/compute/">
 <link rel="icon" href="/favicon.svg">
-<meta name="description" content="open weights arrived. the machines to run them did not. on why that gap is wider than gpus, and a club in new york trying to close it.">
+<meta name="description" content="open weights arrived. the machines to run them did not. on the arithmetic of local inference, the rest of the stack, and a club in new york.">
 <style>
   :root { --ink:#1a1916; --paper:#f7f5f0; --faint:#8a857a; --rule:#d8d4ca; --accent:#b3372c; }
   * { box-sizing: border-box; }
@@ -71,7 +71,7 @@
 <p class="note"><a href="/blog/">&larr; blog</a></p>
 
 <h1>not your compute, not your model</h1>
-<p class="sub">open weights arrived. the machines to run them did not. on why that gap is wider than gpus, and a club in new york trying to close it.</p>
+<p class="sub">open weights arrived. the machines to run them did not. on the arithmetic of local inference, the rest of the stack, and a club in new york.</p>
 
 <section>
 <p>crypto produced exactly one saying that stayed true through every
@@ -108,16 +108,16 @@ to three terabytes. the largest consumer gpu nvidia sells holds about
 
 <p>quantization narrows the gap less than you'd hope. push deepseek down
 to 4 bits and it still wants roughly 340gb, which is eleven consumer
-cards' worth of vram. sparsity doesn't rescue you either. these are
-mixture-of-experts models, so only a few experts fire for any given
-token, but you don't know which ones the next token will route to, and
-every expert has to be resident. the memory bill is for the whole model,
-always.</p>
+cards' worth of vram. sparsity doesn't rescue you either, because these
+are mixture-of-experts models. only a small fraction of the parameters
+activate for any given token, but you don't know which experts the next
+token will route to, so every expert has to be resident. the memory bill
+is for the whole model, always.</p>
 
 <p>so could you wire eleven consumer cards together? not usefully.
 splitting a model across gpus means shipping activations between them at
-every layer. the bandwidth that makes that viable, nvlink and the
-switching fabric around it, is exactly what nvidia reserves for its
+every layer, and the bandwidth that makes that viable — nvlink, and the
+switching fabric around it — is exactly what nvidia reserves for its
 datacenter parts. consumer cards talk to each other over pcie, and recent
 generations dropped nvlink entirely. the interconnect is the actual
 product, and it does not come in consumer.</p>
@@ -165,7 +165,7 @@ them.</p>
 <li>power and cooling</li>
 </ul>
 
-<p>the fight over weights is the loud one, because it's the only
+<p>the fight over layer three is the loud one, because it's the only
 layer with a license attached. the other five get decided by default, and
 the default at every one of them is renting. renting is genuinely fine
 right up until the landlord deprecates the model you built on, or
@@ -186,18 +186,16 @@ lumpy for any one person, which is to pool it.</p>
 <h2>the club</h2>
 
 <p>which brings me to the <a
-href="https://newyorkcomputeclub.com">new york compute club</a>. i
-want to be honest about scale before anything else. the cluster today
-is a few nodes and an extension cord. the shape is simple. members rack
-their own hardware somewhere in the five boroughs, and the club
-schedules jobs across all of it. what makes it more than a shared gpu
-spreadsheet is the trust design. jobs travel as libsodium sealed boxes,
-so the coordinator that routes them sees only ciphertext, a node id,
-and a self-reported wattage. it cannot read what you run, and that is a
-property of the construction rather than a policy. the threat model is
-written down, and it is candid about what the design does not protect
-against, which is how you can tell it's a real threat model and not
-marketing.</p>
+href="https://newyorkcomputeclub.com">new york compute club</a>. the
+shape is simple. members rack their own hardware somewhere in the five
+boroughs, and the club schedules jobs across all of it. what makes it
+more than a shared gpu spreadsheet is the trust design. jobs travel as
+libsodium sealed boxes, so the coordinator that routes them sees only
+ciphertext, a node id, and a self-reported wattage. it cannot read what
+you run — not as a policy, but as a property of the construction. the
+threat model is written down, and it is candid about what the design does
+not protect against, which is how you can tell it's a real threat model
+and not marketing.</p>
 
 <p>the software is public and unfinished. <a
 href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
@@ -214,9 +212,10 @@ the buildings are not. the lights above the island are 60 hudson st, 111
 8th ave, and the teleport. pull requests move your application up the
 pile.</p>
 
-<p>the applications exist to change that node count. if the memory
-arithmetic above describes your relationship with open models, weights
-you're licensed to run and no way to run them, they're open at
+<p>i want to be honest about scale. the cluster today is a few nodes and
+an extension cord. that is exactly what the applications are for. if the
+memory arithmetic above describes your relationship with open models —
+weights you're licensed to run and no way to run them — they're open at
 <a
 href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.</p>
 
