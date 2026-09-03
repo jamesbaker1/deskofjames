@@ -111,7 +111,7 @@ to 4 bits and it still wants roughly 340gb, which is eleven consumer
 cards' worth of vram. sparsity doesn't rescue you either. these are
 mixture-of-experts models, so only a few experts fire for any given
 token, but you don't know which ones the next token will route to, and
-every expert has to be resident. the memory bill is for the whole model,
+every expert has to be held in memory. the memory bill is for the whole model,
 always.</p>
 
 <p>so could you wire eleven consumer cards together? not usefully.
