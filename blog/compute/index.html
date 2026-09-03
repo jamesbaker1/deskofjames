@@ -119,8 +119,7 @@ splitting a model across gpus means shipping activations between them at
 every layer. the bandwidth that makes that viable, nvlink and the
 switching fabric around it, is exactly what nvidia reserves for its
 datacenter parts. consumer cards talk to each other over pcie, and recent
-generations dropped nvlink entirely. the interconnect is the actual
-product, and it does not come in consumer.</p>
+generations dropped nvlink entirely.</p>
 
 <p>which leaves the 8x h100 node as the practical unit of open-model
 inference. those start around $250,000 racked, or you can rent one by the hour
