@@ -97,9 +97,9 @@ close it.</p>
 <section>
 <h2>the arithmetic</h2>
 
-<p>the first wall is memory, and it's worth doing the numbers honestly.
+<p>the first wall is memory.
 deepseek v3.2 has 685 billion parameters and is fp8 native, so the
-weights alone occupy about 685gb before the kv cache claims a byte. kimi
+weights alone occupy about 685gb before the kv cache. kimi
 k3, the largest open model right now, is 2.8 trillion parameters, closer
 to three terabytes. the largest consumer gpu nvidia sells holds about
 32gb.</p>
@@ -167,14 +167,14 @@ them.</p>
 
 <p>the fight over weights is the loud one, because it's the only
 layer with a license attached. the other five get decided by default, and
-the default at every one of them is renting. renting is genuinely fine
+the default at every one of them is renting. renting is fine
 right up until the landlord deprecates the model you built on, or
 rate-limits you in the middle of an experiment, or logs what you send.
 none of that requires malice. it's just what happens when the layer you
 depend on is operated for someone else's purposes, and yours only
 coincide with theirs on average.</p>
 
-<p>so here is the problem, stated as flatly as i can manage. the
+<p>so here is the problem. the
 open-model era has the licenses of a commons and the physical structure
 of a landlord economy. the fix is not everyone buying their own 8x h100
 node, since the arithmetic above rules that out for almost everyone. the fix
@@ -186,16 +186,15 @@ lumpy for any one person, which is to pool it.</p>
 <h2>the club</h2>
 
 <p>which brings me to the <a
-href="https://newyorkcomputeclub.com">new york compute club</a>. i
-want to be honest about scale before anything else. the cluster today
-is a few nodes and an extension cord. the shape is simple. members rack
+href="https://newyorkcomputeclub.com">new york compute club</a>. the
+cluster today is a few nodes and an extension cord. the shape is simple. members rack
 their own hardware somewhere in the five boroughs, and the club
 schedules jobs across all of it. what makes it more than a shared gpu
 spreadsheet is the trust design. jobs travel as libsodium sealed boxes,
 so the coordinator that routes them sees only ciphertext, a node id,
 and a self-reported wattage. it cannot read what you run, and that is a
 property of the construction rather than a policy. the threat model is
-written down, and it is candid about what the design does not protect
+written down, and it says what the design does not protect
 against, which is how you can tell it's a real threat model and not
 marketing.</p>
 
