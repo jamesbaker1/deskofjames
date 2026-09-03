@@ -89,9 +89,49 @@ would be the point where control over AI spreads out to anyone with a
 machine and a compiler. That isn't what has happened. Most people who
 download those weights, and I include myself, have nowhere to run them.
 This post is about the gap between being licensed to run a model and
-being able to run it. The first half covers why the gap exists, and why
-it is wider than it looks and not only a matter of GPUs. The second half
-is about what a few of us in New York are building to close it.</p>
+being able to run it. I'll start with what a few of us in New York are
+building to close it, and then go through why the gap exists, and why
+it is wider than it looks and not only a matter of GPUs.</p>
+</section>
+
+<section>
+<h2>The Club</h2>
+
+<p>The <a
+href="https://newyorkcomputeclub.com">New York Compute Club</a> is the
+thing I've been building. The cluster today is a few nodes and an
+extension cord. The shape is simple. Members rack their own hardware
+somewhere in the five boroughs, and the club schedules jobs across all
+of it. What makes it more than a shared GPU spreadsheet is the trust
+design. Jobs travel as libsodium sealed boxes, so the coordinator that
+routes them sees only ciphertext, a node ID, and a self-reported wattage.
+It cannot read what you run, and that is a property of the construction
+rather than a policy. I wrote the threat model down, and it says what
+the design does not protect against, which is how you can tell it's a
+real threat model and not marketing.</p>
+
+<p>All of the software is on GitHub. <a
+href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
+small inference engine, with a paged KV cache, continuous batching,
+priority scheduling, and a NumPy reference model you can read in an
+afternoon. <a
+href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a> is the
+mesh, with sealed jobs, signed node traffic, and an untrusted coordinator
+kept small enough to audit. <a
+href="https://github.com/jamesbaker1/newyorkcomputeclub">newyorkcomputeclub</a>
+is the site, which renders Manhattan as a load histogram. The load
+numbers are invented until enough nodes exist to report real ones, but
+the buildings are not. The lights above the island are 60 Hudson St, 111
+8th Ave, and the Teleport. Pull requests move your application up the
+pile.</p>
+
+<p>The applications exist to change that node count. If the
+arithmetic below describes your relationship with open models, weights
+you're licensed to run and no way to run them, they're open at
+<a
+href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.
+I read every one.</p>
+
 </section>
 
 <section>
@@ -175,46 +215,7 @@ licenses of a commons and the physical structure of a landlord economy.
 The fix is not everyone buying their own 8x H100 node, since the
 arithmetic above rules that out for almost everyone, me included. The
 fix is the one communities have always reached for when the capital is
-too lumpy for any one person, which is to pool it.</p>
-</section>
-
-<section>
-<h2>The Club</h2>
-
-<p>Which brings me to the <a
-href="https://newyorkcomputeclub.com">New York Compute Club</a>, the
-thing I've been building. The cluster today is a few nodes and an
-extension cord. The shape is simple. Members rack their own hardware
-somewhere in the five boroughs, and the club schedules jobs across all
-of it. What makes it more than a shared GPU spreadsheet is the trust
-design. Jobs travel as libsodium sealed boxes, so the coordinator that
-routes them sees only ciphertext, a node ID, and a self-reported wattage.
-It cannot read what you run, and that is a property of the construction
-rather than a policy. I wrote the threat model down, and it says what
-the design does not protect against, which is how you can tell it's a
-real threat model and not marketing.</p>
-
-<p>All of the software is on GitHub. <a
-href="https://github.com/jamesbaker1/nycc-engine">nycc-engine</a> is a
-small inference engine, with a paged KV cache, continuous batching,
-priority scheduling, and a NumPy reference model you can read in an
-afternoon. <a
-href="https://github.com/jamesbaker1/nycc-grid">nycc-grid</a> is the
-mesh, with sealed jobs, signed node traffic, and an untrusted coordinator
-kept small enough to audit. <a
-href="https://github.com/jamesbaker1/newyorkcomputeclub">newyorkcomputeclub</a>
-is the site, which renders Manhattan as a load histogram. The load
-numbers are invented until enough nodes exist to report real ones, but
-the buildings are not. The lights above the island are 60 Hudson St, 111
-8th Ave, and the Teleport. Pull requests move your application up the
-pile.</p>
-
-<p>The applications exist to change that node count. If the memory
-arithmetic above describes your relationship with open models, weights
-you're licensed to run and no way to run them, they're open at
-<a
-href="https://newyorkcomputeclub.com/about">newyorkcomputeclub.com/about</a>.
-I read every one.</p>
+too lumpy for any one person, which is to pool it. That is the club.</p>
 
 <p>And there's an obvious next chapter, because compute isn't the bottom
 of the stack either. Not your power, not your model. An H100 turns
